@@ -1,111 +1,56 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import Map, { Layer, Marker, NavigationControl, Popup, Source } from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
-import { Badge } from "@/components/ui/badge";
-import { filterProperties, minPrice } from "@/lib/filters";
-import { propertiesBetween } from "@/lib/geo";
-import { CAMPUSES, PROVIDER_COLOURS, SAMPLE_PROPERTIES } from "@/lib/sample-data";
-import type { Property, ProviderGroup } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { useState, useMemo } from 'react';
+import { FilterSheet, GroupChips } from '@/components/filters';
+import { SAMPLE_PROPERTIES } from '@/lib/sample-data';
+import { filterProperties } from '@/lib/filters';
 
-// Free vector tiles, no API key needed.
-const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
-const GROUPS = Object.keys(PROVIDER_COLOURS).filter((g) => g !== "Other") as ProviderGroup[];
-
-// Starter map (Person A owns this). Uses SAMPLE data until Supabase is seeded.
 export function MapView() {
-  const [groups, setGroups] = useState<ProviderGroup[]>([]);
-  const [between, setBetween] = useState(false);
-  const [selected, setSelected] = useState<Property | null>(null);
+const [selectedProvider, setSelectedProvider] = useState('All');
+const [filters, setFilters] = useState({
+maxPrice: 600,
+cateredOnly: false,
+reception24h: false,
+accessibleOnly: false,
+});
 
-  // Demo of "between two points" using the first two campuses (UCL Bloomsbury → UCL East).
-  const [a, b] = CAMPUSES;
-  const visible = useMemo(() => {
-    const filtered = filterProperties(SAMPLE_PROPERTIES, { providers: groups });
-    return between ? propertiesBetween(filtered, a, b, 1) : filtered;
-  }, [groups, between, a, b]);
+// Count active filter toggles
+const activeFilterCount = useMemo(() => {
+let count = 0;
+if (filters.maxPrice < 600) count++;
+if (filters.cateredOnly) count++;
+if (filters.reception24h) count++;
+if (filters.accessibleOnly) count++;
+return count;
+}, [filters]);
 
-  const toggle = (g: ProviderGroup) =>
-    setGroups((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : [...cur, g]));
+// Apply filters to sample data
+const filteredProperties = useMemo(() => {
+let list = filterProperties(SAMPLE_PROPERTIES, filters);
+if (selectedProvider !== 'All') {
+  list = list.filter((p) => p.provider_id === selectedProvider);
+}
+return list;
+}, [filters, selectedProvider]);
 
-  return (
-    <div className="absolute inset-0">
-      <Map
-        initialViewState={{ longitude: -0.1, latitude: 51.515, zoom: 11.5 }}
-        mapStyle={MAP_STYLE}
-        style={{ width: "100%", height: "100%" }}
-      >
-        <NavigationControl position="bottom-right" />
-
-        {between && (
-          <Source
-            type="geojson"
-            data={{
-              type: "Feature",
-              properties: {},
-              geometry: { type: "LineString", coordinates: [[a.lng, a.lat], [b.lng, b.lat]] },
-            }}
-          >
-            <Layer type="line" paint={{ "line-color": "#4f46e5", "line-width": 4, "line-dasharray": [2, 1] }} />
-          </Source>
-        )}
-
-        {CAMPUSES.map((c) => (
-          <Marker key={c.id} longitude={c.lng} latitude={c.lat}>
-            <div className="rounded bg-foreground px-1.5 py-0.5 text-[10px] font-medium text-background">
-              {c.name}
-            </div>
-          </Marker>
-        ))}
-
-        {visible.map((p) => (
-          <Marker
-            key={p.id}
-            longitude={p.lng}
-            latitude={p.lat}
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setSelected(p);
-            }}
-          >
-            <div
-              className="size-4 cursor-pointer rounded-full border-2 border-white shadow"
-              style={{ background: PROVIDER_COLOURS[p.provider] }}
-            />
-          </Marker>
-        ))}
-
-        {selected && (
-          <Popup longitude={selected.lng} latitude={selected.lat} onClose={() => setSelected(null)} offset={12}>
-            <div className="space-y-0.5 text-xs">
-              <p className="font-semibold">{selected.name}</p>
-              <p>{selected.provider} · from £{minPrice(selected)}/wk</p>
-              {selected.stationName && <p>{selected.stationName} · {selected.stationM}m</p>}
-            </div>
-          </Popup>
-        )}
-      </Map>
-
-      <div className="absolute inset-x-0 top-0 flex gap-2 overflow-x-auto p-3">
-        <button onClick={() => setBetween((v) => !v)}>
-          <Badge variant={between ? "default" : "outline"} className={cn(!between && "bg-background/90")}>
-            {between ? "✓ " : ""}Between UCL Bloomsbury ↔ East
-          </Badge>
-        </button>
-        {GROUPS.map((g) => (
-          <button key={g} onClick={() => toggle(g)}>
-            <Badge
-              variant="outline"
-              className={cn("bg-background/90", groups.includes(g) && "text-white")}
-              style={groups.includes(g) ? { background: PROVIDER_COLOURS[g] } : undefined}
-            >
-              {g}
-            </Badge>
-          </button>
-        ))}
-      </div>
+return (
+<div className="relative h-screen w-full bg-slate-100">
+  {/* Top Filter Overlay Bar */}
+  <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 bg-background/80 p-3 backdrop-blur-md rounded-2xl shadow-md">
+    <div className="flex items-center justify-between gap-2">
+      <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} />
+      <FilterSheet
+        filters={filters}
+        onChange={setFilters}
+        activeCount={activeFilterCount}
+      />
     </div>
-  );
+  </div>
+
+  {/* Map Canvas Placeholder */}
+  <div className="flex h-full w-full items-center justify-center text-muted-foreground font-medium">
+    Map Canvas ({filteredProperties.length} properties displayed)
+  </div>
+</div>
+);
 }
