@@ -16,10 +16,29 @@
 10. Don't add new paid services or API keys without telling the team.
 
 ## Getting started
-- **Scaffold (Person B, once):** `create-next-app` refuses a non-empty folder, so run `npx create-next-app@latest web-tmp --ts --tailwind --eslint --app --no-src-dir`, move its contents into the repo root, and merge its `.gitignore` with ours.
-- Then: `npx shadcn@latest init`, `npm i @supabase/supabase-js @supabase/ssr react-map-gl maplibre-gl @turf/turf`, `npm i -D vitest`.
-- Copy `.env.example` → `.env.local` and fill in Supabase values (ask Person C).
-- Python (Person C): `python -m venv .venv && pip install -r data/requirements.txt`.
+The scaffold is **done** (Next.js 16, React 19, Tailwind 4, shadcn/ui on Base UI, Supabase clients, MapLibre, turf, Vitest). Just:
+```bash
+npm install
+cp .env.example .env.local     # Supabase values from Person C (map works without them)
+npm run dev                    # http://localhost:3000 → /map
+npm test                       # Vitest unit tests (lib/*.test.ts)
+```
+Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate` on Windows), `pip install -r data/requirements.txt`.
+
+### What's already there
+- `app/layout.tsx`: mobile app shell + bottom nav (`components/bottom-nav.tsx`), PWA metadata. `app/manifest.ts` + `public/icons/` make it installable.
+- `app/map` → `components/map/map-view.tsx`: working MapLibre map on **sample data** (`lib/sample-data.ts`) with provider chips and a "between UCL Bloomsbury ↔ East" demo.
+- `lib/filters.ts` (all property filters), `lib/geo.ts` (`propertiesBetween`, `distanceKm`), tests in `lib/filters.test.ts`.
+- `lib/types.ts`: placeholder types until `supabase gen types` replaces them.
+- `lib/supabase/client.ts` (client components) and `server.ts` (server components).
+- Placeholder pages (`components/placeholder-page.tsx`) listing each page's TODOs and owner: `/login`, `/swap`, `/swap/new`, `/messages`, `/houseshare`, `/profile`, `/property/[id]`.
+- `data/properties.csv`: template; **one row per room type** (same hall repeated), lists separated by `;`, put your initial in `added_by`.
+
+### Next.js 16 gotchas (read before coding)
+- `cacheComponents` is on: request-time data (`usePathname`, `useSearchParams`, `cookies()`, `params`) must render inside `<Suspense>`, or the build fails. See `app/property/[id]/page.tsx` and the nav in `app/layout.tsx` for the pattern.
+- Middleware is now called **`proxy.ts`** (project root).
+- shadcn here uses **Base UI**, not Radix: there's no `asChild`. Style a `<Link>` with `buttonVariants()` instead.
+- Run `npm run build` before a PR; it catches the Suspense errors that `npm run dev` doesn't.
 
 ## Context
 London students are stuck with accommodation contracts they no longer want: the wrong campus (e.g. UCL Bloomsbury → UCL East Marshgate), the wrong price, or the wrong room type. They also have no easy way to compare halls across providers (Unite, iQ, Chapter, Scape, Prestige, UCL/KCL/Imperial halls). **alonr** is a verified-student app with three parts:
@@ -153,3 +172,13 @@ Everyone uses shadcn/ui components and one colour theme so the screens match. AI
 - Between two points: pick UCL Bloomsbury and UCL East Marshgate; only properties near the line show, ranked by distance.
 - Swap: two demo users with complementary listings both see the "Mutual match" badge; a message sent by one appears live for the other.
 - Run `python data/enrich.py && python data/seed.py` on a fresh Supabase project to rebuild all the data.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
