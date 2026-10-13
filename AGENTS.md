@@ -30,6 +30,7 @@ Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate`
 - `app/map` → `components/map/map-view.tsx`: working MapLibre map on **sample data** (`lib/sample-data.ts`) with provider chips and a "between UCL Bloomsbury ↔ East" demo.
 - `lib/filters.ts` (all property filters), `lib/geo.ts` (`propertiesBetween`, `distanceKm`), tests in `lib/filters.test.ts`.
 - `lib/types.ts`: placeholder types until `supabase gen types` replaces them.
+- **Supabase is live** (schema v1 in `supabase/migrations/`). `lib/database.types.ts` is generated from it: never edit by hand, Person C regenerates with `npm run db:types`. Use `Database` for typed queries: `createClient<Database>()`. RPC: `supabase.rpc('match_listings', { p_listing_id })`.
 - `lib/supabase/client.ts` (client components) and `server.ts` (server components).
 - Placeholder pages (`components/placeholder-page.tsx`) listing each page's TODOs and owner: `/login`, `/swap`, `/swap/new`, `/messages`, `/houseshare`, `/profile`, `/property/[id]`.
 - `data/properties.csv`: template; **one row per room type** (same hall repeated), lists separated by `;`, put your initial in `added_by`.
