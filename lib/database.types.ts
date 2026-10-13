@@ -259,7 +259,6 @@ export type Database = {
           address: string | null
           affiliated_university_id: string | null
           bike_dock_m: number | null
-          borough: string | null
           catered: boolean
           created_at: string
           facilities: string[]
@@ -283,7 +282,6 @@ export type Database = {
           address?: string | null
           affiliated_university_id?: string | null
           bike_dock_m?: number | null
-          borough?: string | null
           catered?: boolean
           created_at?: string
           facilities?: string[]
@@ -307,7 +305,6 @@ export type Database = {
           address?: string | null
           affiliated_university_id?: string | null
           bike_dock_m?: number | null
-          borough?: string | null
           catered?: boolean
           created_at?: string
           facilities?: string[]
