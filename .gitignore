@@ -36,3 +36,6 @@ Thumbs.db
 
 # data pipeline API cache
 data/.cache/
+
+# copied from node_modules by the postinstall script
+public/maplibre-gl-worker.mjs
