@@ -5,7 +5,7 @@
 
 ## Rules for AI coding agents (and humans)
 1. **Stay in your lane:** only edit folders owned by your person (see *Team split*). Need a change elsewhere? Open an issue / ask the owner.
-2. **Database schema changes only via new files in `supabase/migrations/`, made by Person C.** Never edit an already-merged migration.
+2. **Database schema changes only via new files in `supabase/migrations/`, made by Person C.** Never edit an already-merged migration. **Every new table needs `grant` statements** (see `20261013200000_api_grants.sql`) as well as RLS policies: this project doesn't auto-grant, so a missing grant gives `permission denied` (401/403).
 3. **Never commit secrets:** `.env*` is gitignored (except `.env.example`). The Supabase **service-role key** must never appear in frontend code or git.
 4. Frontend uses only the `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`; security comes from RLS policies.
 5. **Work directly on `main`:** small, frequent commits. Always `git pull --rebase` before `git push`. Never force-push.
