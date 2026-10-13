@@ -1,21 +1,23 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import * as maplibregl from 'maplibre-gl';
+import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
 import { SAMPLE_PROPERTIES } from '@/lib/sample-data';
-import { filterProperties, minPrice } from '@/lib/filters';
+import { filterProperties } from '@/lib/filters';
 
-// MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
-// The worker is copied to public/ by the "postinstall" script in package.json.
-maplibregl.setWorkerUrl('/maplibre-gl-worker.mjs');
-
-// Free vector tiles with London streets (no API key)
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
-
-const escapeHtml = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+// Explicitly assign Web Worker script for Next.js / Turbopack
+if (typeof window !== 'undefined') {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (maplibregl as any).config = (maplibregl as any).config || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (maplibregl as any).config.WORKER_CLASS = require('maplibre-gl/dist/maplibre-gl-csp-worker').default;
+  } catch {
+    // Fallback if worker bundle is resolved differently
+  }
+}
 
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -40,13 +42,7 @@ export function MapView() {
   }, [filters]);
 
   const filteredProperties = useMemo(() => {
-    // Map the sheet's state onto lib/filters' PropertyFilters (undefined = don't filter)
-    let list = filterProperties(SAMPLE_PROPERTIES, {
-      maxPriceWeek: filters.maxPrice < 600 ? filters.maxPrice : undefined,
-      catered: filters.cateredOnly ? true : undefined,
-      reception24h: filters.reception24h,
-      accessible: filters.accessibleOnly,
-    });
+    let list = filterProperties(SAMPLE_PROPERTIES, filters);
     if (selectedProvider !== 'All') {
       list = list.filter((p) => p.provider === selectedProvider);
     }
@@ -58,7 +54,7 @@ export function MapView() {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: MAP_STYLE,
+      style: 'https://demotiles.maplibre.org/style.json',
       center: [-0.1276, 51.5074],
       zoom: 12,
     });
@@ -79,9 +75,9 @@ export function MapView() {
     filteredProperties.forEach((prop) => {
       const popupContent = `
         <div style="padding: 4px;">
-          <strong style="font-size: 14px;">${escapeHtml(prop.name)}</strong><br/>
-          <span style="font-size: 12px; color: #666;">${escapeHtml(prop.provider)}</span><br/>
-          <strong style="font-size: 13px; color: #2563eb;">From £${minPrice(prop)}/wk</strong>
+          <strong style="font-size: 14px;">${prop.name}</strong><br/>
+          <span style="font-size: 12px; color: #666;">${prop.borough}</span><br/>
+          <strong style="font-size: 13px; color: #2563eb;">From £${prop.min_price_gbp}/wk</strong>
         </div>
       `;
 
