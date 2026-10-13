@@ -22,18 +22,14 @@ activeCount: number;
 export function FilterSheet({ filters, onChange, activeCount }: FilterSheetProps) {
 return (
 <Sheet>
-  <SheetTrigger>
-  <Button variant="outline" size="sm" className="gap-2 shadow-sm" asChild>
-    <div>
-      <SlidersHorizontal className="h-4 w-4" />
-      Filters
-      {activeCount > 0 && (
-        <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-          {activeCount}
-        </span>
-      )}
-    </div>
-  </Button>
+ <SheetTrigger className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground gap-2">
+  <SlidersHorizontal className="h-4 w-4" />
+  Filters
+  {activeCount > 0 && (
+    <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+      {activeCount}
+    </span>
+  )}
 </SheetTrigger>
   <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-6 py-4">
     <SheetHeader className="text-left">
