@@ -1,15 +1,15 @@
 # AGENTS.md — alonr
 
 > Single source of truth for the alonr team **and** for any AI coding agent (Claude Code, Codex, Cursor, Copilot…).
-> Read this whole file before writing code. Update it (via PR) when a decision changes.
+> Read this whole file before writing code. Update it (commit to `main`) when a decision changes.
 
 ## Rules for AI coding agents (and humans)
 1. **Stay in your lane:** only edit folders owned by your person (see *Team split*). Need a change elsewhere? Open an issue / ask the owner.
 2. **Database schema changes only via new files in `supabase/migrations/`, made by Person C.** Never edit an already-merged migration.
 3. **Never commit secrets:** `.env*` is gitignored (except `.env.example`). The Supabase **service-role key** must never appear in frontend code or git.
 4. Frontend uses only the `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`; security comes from RLS policies.
-5. **Small PRs**, branch names `a/…`, `b/…`, `c/…`. No direct pushes to `main`.
-6. Before opening a PR: `npm run lint && npm test` (frontend) / `python -m pytest` if touching `data/`. Check the Vercel preview on a phone.
+5. **Work directly on `main`:** small, frequent commits. Always `git pull --rebase` before `git push`. Never force-push.
+6. Before pushing: `npm run lint && npm test && npm run build` (frontend) / `python -m pytest` if touching `data/`. **Never push a broken build**: `main` deploys straight to the live site.
 7. Mobile-first: design for ~390px width first, then desktop.
 8. Use shadcn/ui components + Tailwind; don't add another UI library without team agreement.
 9. Keep TypeScript simple (loose strictness OK). Prefer pure functions in `lib/` for logic so it can be unit-tested.
@@ -39,7 +39,7 @@ Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate`
 - `cacheComponents` is on: request-time data (`usePathname`, `useSearchParams`, `cookies()`, `params`) must render inside `<Suspense>`, or the build fails. See `app/property/[id]/page.tsx` and the nav in `app/layout.tsx` for the pattern.
 - Middleware is now called **`proxy.ts`** (project root).
 - shadcn here uses **Base UI**, not Radix: there's no `asChild`. Style a `<Link>` with `buttonVariants()` instead.
-- Run `npm run build` before a PR; it catches the Suspense errors that `npm run dev` doesn't.
+- Run `npm run build` before pushing; it catches the Suspense errors that `npm run dev` doesn't.
 
 ## Context
 London students are stuck with accommodation contracts they no longer want: the wrong campus (e.g. UCL Bloomsbury → UCL East Marshgate), the wrong price, or the wrong room type. They also have no easy way to compare halls across providers (Unite, iQ, Chapter, Scape, Prestige, UCL/KCL/Imperial halls). **alonr** is a verified-student app with three parts:
@@ -53,7 +53,7 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 | Area | Choice | Why |
 |---|---|---|
 | App | **Next.js (App Router) as a PWA**, TypeScript (loose), Tailwind + shadcn/ui | One codebase gives a phone app (installable) and a website. It's the fastest to ship and the best fit for map libraries. |
-| Hosting | **Vercel** linked to GitHub | Every push gives a live URL, and every PR gets a preview link to test on phones. |
+| Hosting | **Vercel** linked to GitHub | Every push to `main` redeploys the live URL. |
 | Backend | **Supabase** (Postgres + Auth + Storage + Realtime) | SQL handles the many filters easily, it has built-in auth and realtime chat, and it's free. |
 | Map | **MapLibre GL** (`react-map-gl/maplibre`) + free OpenFreeMap/MapTiler tiles | Free, modern look, clustering, can draw lines and buffers. |
 | Geo maths | **turf.js** on the client | With ~150 properties we can load everything once and filter and measure distances in the browser. No PostGIS needed. |
@@ -92,7 +92,7 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 - `conversations(id, listing_id, user_a, user_b)` and `messages(id, conversation_id, sender_id, body, created_at)` with Realtime enabled.
 - P2: `houseshare_posts(id, user_id, budget, areas, move_in, looking_for_n, prefs jsonb)`
 - **RLS**: public read on properties, rooms, campuses and listings; write only your own listings and profile; messages readable only by conversation members.
-- **Domain check**: a `before insert` trigger on `profiles` (or a Supabase *Before User Created* auth hook) rejects emails that don't end in `.ac.uk`. Demo accounts are seeded with `@demo.ac.uk`.
+- **Domain check**: the `on_auth_user_created` trigger on `auth.users` rejects sign-ups whose email doesn't end in `.ac.uk`, and auto-creates the `profiles` row (university matched from the email domain). Demo accounts use `@demo.ac.uk` (`is_demo = true`).
 - **Mutual-match**: the SQL function `match_listings(listing_id)` returns listings where each side's `wants` is satisfied by the other's room. It's called via `supabase.rpc`.
 
 ## Data pipeline (Python, `data/`)
@@ -171,13 +171,15 @@ Most dependencies run through **Person C**, because A and B both need the databa
 1. Agree the data shape first: C posts schema v1 and A and B review it (15 min).
 2. A builds on `lib/sample-data.ts`, which has the same shape as the real data, so switching to Supabase is a one-line change.
 3. B builds forms and pages with hard-coded data first, then wires them to Supabase when the keys arrive.
-4. `lib/types.ts` is the contract: rename a column → update the types in the same PR and tell the team.
+4. `lib/types.ts` is the contract: rename a column → update the types in the same commit and tell the team.
 
 ## GitHub workflow
-- One repo; protect `main` (PR required, 1 approval, or just a "don't push to main" rule).
-- Branches: `a/map-filters`, `b/swap-listings`, `c/schema-v1`… Keep PRs small and merge at least twice a day.
-- Vercel GitHub integration gives every PR a preview URL, so open it on your phone before approving.
-- Secrets: `.env.local` is gitignored; `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` go in Vercel project settings. Only C's local `.env` holds the service-role key, for `seed.py`; it's **never** committed.
+- Everyone commits and pushes **straight to `main`** (hackathon speed). Folder ownership is what prevents conflicts.
+- Loop: `git pull --rebase` → code → lint/test/build → `git add <your files>` → `git commit -m "..."` → `git pull --rebase` → `git push`.
+- Pull conflict? Fix the marked files, `git add` them, then `git rebase --continue`. Never `git push --force`.
+- Commit small and often (at least every couple of hours), so others pick up your work early.
+- Every push to `main` redeploys the live Vercel site: check it on your phone after pushing.
+- Secrets: `.env.local` is gitignored; `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` go in Vercel project settings. Only C's local `.env.local` holds the service-role key, for `seed.py`; it's **never** committed.
 - Schema changes are made only by C, through migration files. A and B request them in the GitHub issue or chat.
 - GitHub Projects board with columns P0/P1/P2, one issue per bullet above.
 
