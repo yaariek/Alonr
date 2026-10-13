@@ -33,7 +33,6 @@ export interface Property extends LatLng {
   affiliatedUniversity?: string;
   address: string;
   postcode: string;
-  borough: string;
   reception24h: boolean;
   accessible: boolean;
   catered: boolean;

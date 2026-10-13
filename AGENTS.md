@@ -63,7 +63,7 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 **P0 (must demo)**
 - Uni-email sign-in (magic link / 6-digit OTP), only allowed for `.ac.uk` domains, plus a **"Demo login" button** for judges, who don't have uni emails.
 - Map of all properties with pins coloured by provider group, a group filter chip bar (Unite / iQ / Chapter / Scape / Prestige / UCL / KCL / Imperial / …), and clustering.
-- Filters: budget (£/week), room type (ensuite/studio/shared bathroom/twin), catered, 24/7 reception, accessibility, bike rental nearby, number of flatmates, contract weeks, max distance to supermarket and station, uni, area (borough).
+- Filters: budget (£/week), room type (ensuite/studio/shared bathroom/twin), catered, 24/7 reception, accessibility, bike rental nearby, number of flatmates, contract weeks, max distance to supermarket and station, and uni.
 - Property detail sheet: prices, room types, facilities, nearest supermarket and station (distance), affiliated uni, link out.
 - **Between two points**: pick 2 campuses (or tap the map), draw the line, and show properties within X km of it, ranked by total distance.
 
@@ -85,10 +85,10 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 - `universities(id, name, email_domains text[], colour)`
 - `campuses(id, university_id, name, lat, lng)`: e.g. UCL Bloomsbury, UCL East Marshgate, KCL Strand/Guy's/Waterloo, Imperial South Ken/White City, QMUL Mile End, LSE…
 - `providers(id, name, kind 'private'|'university', colour)`
-- `properties(id, provider_id, affiliated_university_id?, name, address, postcode, borough, lat, lng, reception_24h bool, accessible bool, catered bool, facilities text[], bike_dock_m int, supermarket_name, supermarket_m int, station_name, station_m int, website, image_url)`
+- `properties(id, provider_id, affiliated_university_id?, name, address, postcode, lat, lng, reception_24h bool, accessible bool, catered bool, facilities text[], bike_dock_m int, supermarket_name, supermarket_m int, station_name, station_m int, website, image_url)`
 - `room_types(id, property_id, kind enum, price_week, flatmates int, contract_weeks int[])`
 - `profiles(id → auth.users, display_name, university_id, course, year, languages text[], lifestyle jsonb, budget_max, bio, avatar_url)`
-- `listings(id, user_id, property_id, kind 'swap'|'release', room_kind, price_week, start_date, end_date, flatmates, wants jsonb {property_ids, boroughs, room_kinds, max_price, campus_id}, description, photos text[], status)`
+- `listings(id, user_id, property_id, kind 'swap'|'release', room_kind, price_week, start_date, end_date, flatmates, wants jsonb {property_ids, room_kinds, max_price, campus_id}, description, photos text[], status)`
 - `conversations(id, listing_id, user_a, user_b)` and `messages(id, conversation_id, sender_id, body, created_at)` with Realtime enabled.
 - P2: `houseshare_posts(id, user_id, budget, areas, move_in, looking_for_n, prefs jsonb)`
 - **RLS**: public read on properties, rooms, campuses and listings; write only your own listings and profile; messages readable only by conversation members.
@@ -96,16 +96,13 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 - **Mutual-match**: the SQL function `match_listings(listing_id)` returns listings where each side's `wants` is satisfied by the other's room. It's called via `supabase.rpc`.
 
 ## Data pipeline (Python, `data/`)
-1. `data/properties.csv`: hand-curated ~80–150 London halls (name, provider, address, postcode, room types and prices, flags). Split the provider lists between all 3 people on Tuesday night for ~1 hour.
-2. `data/enrich.py`:
-   - Geocode the postcode with **postcodes.io** (free, no key) to get lat/lng and borough.
-   - Nearest supermarket (`shop=supermarket`) and station (`railway=station`/`station=subway`) with the **Overpass API**, computing distances with haversine.
-   - Nearest Santander Cycles dock from the **TfL BikePoint API** (free), giving the "bicycle rentals" filter.
-   - Writes `data/properties.enriched.json`.
-3. `data/seed.py` (uses `supabase-py`) upserts universities, campuses, providers, properties, room types, demo users and ~20 demo swap listings designed so a few mutual matches exist on stage.
-
-4. **Run it (Person C):** `python data/enrich.py` → `python data/seed.py --dry-run` → `python data/seed.py`. Both are safe to re-run. API responses are cached in `data/.cache/` (gitignored); use `--refresh` to re-download. Overpass is often overloaded, so the script tries mirror servers automatically. Tests: `python -m pytest data`.
-5. **Demo login (Person B):** seed.py creates `judge@demo.ac.uk` plus 5 demo students (`amira`, `tom`, `mei`, `jonas`, `priya` @demo.ac.uk), all with the password `DEMO_PASSWORD` (ask C). The "Demo login" button calls `supabase.auth.signInWithPassword({ email: "judge@demo.ac.uk", password })`. Demo swap listings are built in pairs that mutually match. They need halls in at least 3 boroughs in the CSV.
+No borough anywhere: location is just postcode + lat/lng.
+1. `data/properties.csv`: one row per room type (the same hall repeats). **A hall with no prices yet is a single row with `room_kind`/`price_week` blank.** It shows on the map; the price filters skip it.
+2. `data/import_osm.py`: adds halls from OpenStreetMap (default 50, spread evenly across London) with only **name, provider (when guessable), postcode, lat, lng** filled in and `added_by=osm`. **The team fills in the rest:** provider where blank, room types and prices, catered, 24/7 reception, accessible, facilities, website. Re-running skips halls already in the CSV (`-n 30` adds 30 more).
+3. `data/enrich.py`: lat/lng from the CSV (postcodes.io only if blank), nearest supermarket and station from an **offline OSM file** (`data/osm.py` downloads the Geofabrik Greater London extract, ~130 MB, once into `data/.cache/`), and the nearest Santander Cycles dock (TfL BikePoint API). No Overpass: it was too unreliable.
+4. `data/seed.py` upserts properties and room types, the 6 demo users, and demo swap listings in pairs that mutually match (person X wants hall Q, person Y wants hall P). It only uses halls with prices.
+5. **Run it (Person C):** `python data/import_osm.py` (once) → fill in the CSV → `python data/enrich.py` → `python data/seed.py --dry-run` → `python data/seed.py`. All are safe to re-run. Tests: `python -m pytest data`.
+6. **Demo login (Person B):** seed.py creates `judge@demo.ac.uk` plus 5 demo students (`amira`, `tom`, `mei`, `jonas`, `priya` @demo.ac.uk), all with the password `DEMO_PASSWORD` (ask C). The "Demo login" button calls `supabase.auth.signInWithPassword({ email: "judge@demo.ac.uk", password })`. Matching demo swaps appear once at least 4 halls have prices.
 
 ## Repo structure
 ```
@@ -194,7 +191,7 @@ Most dependencies run through **Person C**, because A and B both need the databa
 
 ## Risks & mitigations
 - Supabase's built-in email sender is limited to a few emails an hour. Use OTP codes, add free **Resend** SMTP if needed, and rely on the demo login for judges.
-- Overpass API rate limits: run the enrichment once and commit `properties.enriched.json`.
+- Free map APIs are flaky (Overpass was down for hours): enrichment uses a downloaded OSM file instead, and `properties.enriched.json` is committed.
 - Map performance on phones: cluster the pins and load only ~150 rows.
 - Merge conflicts: folder ownership, and only C edits migrations.
 

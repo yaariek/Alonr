@@ -13,7 +13,6 @@ export interface PropertyFilters {
   maxBikeDockM?: number;
   maxFlatmates?: number;
   contractWeeks?: number;
-  boroughs?: string[];
 }
 
 const hasAny = <T,>(xs?: T[]): xs is T[] => !!xs && xs.length > 0;
@@ -35,7 +34,6 @@ const within = (value: number | undefined, max: number | undefined) =>
 export function matchesFilters(p: Property, f: PropertyFilters): boolean {
   return (
     (!hasAny(f.providers) || f.providers.includes(p.provider)) &&
-    (!hasAny(f.boroughs) || f.boroughs.includes(p.borough)) &&
     (f.catered === undefined || p.catered === f.catered) &&
     (!f.reception24h || p.reception24h) &&
     (!f.accessible || p.accessible) &&

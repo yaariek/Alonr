@@ -25,7 +25,7 @@ ENRICHED = DATA / "properties.enriched.json"
 DEFAULT_DEMO_PASSWORD = "alonr-demo-2026"
 
 PROPERTY_COLUMNS = [
-    "slug", "name", "provider_id", "affiliated_university_id", "address", "postcode", "borough",
+    "slug", "name", "provider_id", "affiliated_university_id", "address", "postcode",
     "lat", "lng", "reception_24h", "accessible", "catered", "facilities", "supermarket_name",
     "supermarket_m", "station_name", "station_m", "bike_dock_m", "website",
 ]
@@ -64,12 +64,14 @@ def cheapest(prop: dict) -> dict:
 def build_demo_listings(props: list[dict], people: list[str]) -> list[dict]:
     """Deterministic demo swaps. Pure: no I/O, tested in data/tests.
 
-    For pairs of halls in different boroughs, person X (in hall P) wants Q's borough,
-    and person Y (in hall Q) wants P's borough -> a mutual match. The last person gets
-    a 'release' listing (contract takeover), which never matches swaps.
-    Returns rows with 'person' (key) + 'property_slug' instead of ids.
+    Only halls with prices (room_types) are used. For pairs of halls, person X (in hall P)
+    wants hall Q and person Y (in hall Q) wants hall P -> a mutual match. The last person
+    gets a 'release' listing (contract takeover), which never matches swaps.
+    Returns rows with 'person' + 'property_slug', and wants.property_slugs (seed turns
+    slugs into ids) instead of uuids.
     """
-    located = sorted((p for p in props if p.get("borough") and p.get("room_types")), key=lambda p: p["slug"])
+    located = sorted((p for p in props if p.get("lat") is not None and p.get("room_types")),
+                     key=lambda p: p["slug"])
     listings: list[dict] = []
     used: set[str] = set()
     swappers = people[1:-1] if len(people) > 2 else people  # judge stays free to explore
@@ -77,8 +79,7 @@ def build_demo_listings(props: list[dict], people: list[str]) -> list[dict]:
     for a in located:
         if i + 1 >= len(swappers):
             break
-        b = next((q for q in located if q["slug"] not in used and q["slug"] != a["slug"]
-                  and q["borough"] != a["borough"]), None)
+        b = next((q for q in located if q["slug"] not in used and q["slug"] != a["slug"]), None)
         if a["slug"] in used or b is None:
             continue
         used.update({a["slug"], b["slug"]})
@@ -88,9 +89,9 @@ def build_demo_listings(props: list[dict], people: list[str]) -> list[dict]:
                 "person": person, "property_slug": have["slug"], "kind": "swap",
                 "room_kind": room["kind"], "price_week": room["price_week"],
                 "flatmates": room["flatmates"],
-                "wants": {"boroughs": [want["borough"]], "max_price": cheapest(want)["price_week"] + 50},
+                "wants": {"property_slugs": [want["slug"]], "max_price": cheapest(want)["price_week"] + 50},
                 "description": f"Swapping my {room['kind'].replace('_', ' ')} at {have['name']}: "
-                               f"looking for somewhere in {want['borough']}.",
+                               f"looking for a room at {want['name']}.",
             })
         i += 2
     if located and len(people) > 2:
@@ -102,6 +103,14 @@ def build_demo_listings(props: list[dict], people: list[str]) -> list[dict]:
             "wants": {}, "description": f"Leaving London early: take over my contract at {p['name']}.",
         })
     return listings
+
+
+def to_db_wants(wants: dict, ids: dict[str, str]) -> dict:
+    """Replace property_slugs with the property_ids the matching SQL expects."""
+    out = {k: v for k, v in wants.items() if k != "property_slugs"}
+    if wants.get("property_slugs"):
+        out["property_ids"] = [ids[s] for s in wants["property_slugs"]]
+    return out
 
 
 def load_env() -> dict[str, str]:
@@ -149,7 +158,9 @@ def main() -> int:
     demo = [] if args.skip_demo else build_demo_listings(located, people)
 
     if args.dry_run:
-        print(f"would upsert {len(located)} properties, {sum(len(h['room_types']) for h in located)} room types")
+        priced = sum(1 for h in located if h["room_types"])
+        print(f"would upsert {len(located)} properties ({priced} with prices), "
+              f"{sum(len(h['room_types']) for h in located)} room types")
         if not args.skip_demo:
             print(f"would create {len(DEMO_PEOPLE)} demo users ({', '.join(demo_email(k) for k in people)})")
             for l in demo:
@@ -165,7 +176,8 @@ def main() -> int:
         saved = sb.table("properties").upsert(rows, on_conflict="slug").execute().data
         ids = {r["slug"]: r["id"] for r in saved}
         room_rows = [{"property_id": ids[h["slug"]], **rt} for h in located for rt in h["room_types"]]
-        sb.table("room_types").upsert(room_rows, on_conflict="property_id,kind").execute()
+        if room_rows:
+            sb.table("room_types").upsert(room_rows, on_conflict="property_id,kind").execute()
         print(f"upserted {len(rows)} properties, {len(room_rows)} room types")
     else:
         ids = {}
@@ -185,7 +197,7 @@ def main() -> int:
     listing_rows = [{
         "user_id": user_ids[l["person"]], "property_id": ids[l["property_slug"]], "kind": l["kind"],
         "room_kind": l["room_kind"], "price_week": l["price_week"], "flatmates": l["flatmates"],
-        "wants": l["wants"], "description": l["description"],
+        "wants": to_db_wants(l["wants"], ids), "description": l["description"],
     } for l in demo]
     if listing_rows:
         sb.table("listings").insert(listing_rows).execute()
