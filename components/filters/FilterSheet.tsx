@@ -22,8 +22,9 @@ activeCount: number;
 export function FilterSheet({ filters, onChange, activeCount }: FilterSheetProps) {
 return (
 <Sheet>
-  <SheetTrigger asChild>
-    <Button variant="outline" size="sm" className="gap-2 shadow-sm">
+  <SheetTrigger>
+  <Button variant="outline" size="sm" className="gap-2 shadow-sm" asChild>
+    <div>
       <SlidersHorizontal className="h-4 w-4" />
       Filters
       {activeCount > 0 && (
@@ -31,8 +32,9 @@ return (
           {activeCount}
         </span>
       )}
-    </Button>
-  </SheetTrigger>
+    </div>
+  </Button>
+</SheetTrigger>
   <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-6 py-4">
     <SheetHeader className="text-left">
       <SheetTitle>Filter Halls</SheetTitle>
@@ -43,7 +45,7 @@ return (
       <div>
         <div className="flex justify-between text-sm font-medium">
           <span>Max Budget</span>
-          <span className="font-bold text-primary">£{filters.maxPrice}/wk</span>
+          <span className="font-bold text-primary">Â£{filters.maxPrice}/wk</span>
         </div>
         <Slider
           value={[filters.maxPrice]}
