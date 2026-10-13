@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "chapter-king-s-cross",
+    "name": "Chapter King's Cross",
+    "provider_id": "chapter",
+    "affiliated_university_id": null,
+    "address": "200 Pentonville Rd",
+    "postcode": "N1 9JP",
+    "reception_24h": true,
+    "accessible": true,
+    "catered": false,
+    "facilities": [
+      "gym",
+      "cinema room",
+      "laundry"
+    ],
+    "website": "https://www.chapter-living.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 389.0,
+        "flatmates": 5,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      },
+      {
+        "kind": "studio",
+        "price_week": 489.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
+    "lat": 51.531371,
+    "lng": -0.116825,
+    "borough": "Islington",
+    "supermarket_name": "Healthwise",
+    "supermarket_m": 533,
+    "station_name": "London King's Cross",
+    "station_m": 444,
+    "bike_dock_m": 17
+  }
+]

@@ -33,3 +33,6 @@ Thumbs.db
 # testing
 /coverage
 *.pem
+
+# data pipeline API cache
+data/.cache/

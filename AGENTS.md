@@ -104,6 +104,9 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
    - Writes `data/properties.enriched.json`.
 3. `data/seed.py` (uses `supabase-py`) upserts universities, campuses, providers, properties, room types, demo users and ~20 demo swap listings designed so a few mutual matches exist on stage.
 
+4. **Run it (Person C):** `python data/enrich.py` → `python data/seed.py --dry-run` → `python data/seed.py`. Both are safe to re-run. API responses are cached in `data/.cache/` (gitignored); use `--refresh` to re-download. Overpass is often overloaded, so the script tries mirror servers automatically. Tests: `python -m pytest data`.
+5. **Demo login (Person B):** seed.py creates `judge@demo.ac.uk` plus 5 demo students (`amira`, `tom`, `mei`, `jonas`, `priya` @demo.ac.uk), all with the password `DEMO_PASSWORD` (ask C). The "Demo login" button calls `supabase.auth.signInWithPassword({ email: "judge@demo.ac.uk", password })`. Demo swap listings are built in pairs that mutually match. They need halls in at least 3 boroughs in the CSV.
+
 ## Repo structure
 ```
 alonr/
