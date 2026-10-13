@@ -113,3 +113,21 @@ Alonr is built to make student accommodation in London:
 - More community‑driven
 
 A platform where students can swap, share, and secure housing that fits their lifestyle and academic needs.
+
+---
+
+## For the team
+👉 **Read [AGENTS.md](AGENTS.md) first.** It has the full hackathon plan, team split, schema, timeline and rules for AI coding agents.
+
+### Quick start
+```bash
+npm install
+cp .env.example .env.local   # fill in Supabase keys (ask Person C)
+npm run dev
+```
+Data pipeline (Python):
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r data/requirements.txt
+python data/enrich.py && python data/seed.py
+```
