@@ -145,6 +145,33 @@ alonr/
 
 Everyone uses shadcn/ui components and one colour theme so the screens match. AI help is fine for TS syntax; the logic is the same as in Python.
 
+## Dependencies between teammates
+Most dependencies run through **Person C**, because A and B both need the database. **C ships keys + schema v1 tonight / first thing Wednesday, rough is fine.** Columns can be added later with new migrations.
+
+**Everyone waits on C**
+| C delivers | Needed by | Unblocks |
+|---|---|---|
+| Supabase project + `NEXT_PUBLIC_SUPABASE_URL` / `ANON_KEY` (shared privately) | A, B | B: login. A: real data |
+| Schema v1 (`properties`, `room_types`, `profiles`, `listings`, `conversations`, `messages`) | A, B | B: saving listings, chat |
+| Generated types in `lib/types.ts` | A, B | Agreed field names |
+| Seeded real halls (`data/seed.py`) | A | Swap sample data → real data |
+| `match_listings` RPC | B | "Mutual match" badge |
+| Demo users + listings | B, demo | Testing chat with 2 users; matches on stage |
+
+**A ↔ B**
+- Listings reference `properties.id`: B's "new listing" form picks from properties, and A's map "swap filter" shows halls with active listings. Both use the same table.
+- URLs are agreed: `/property/<id>` (A) shows that hall's active listings and links to `/swap/<id>` (B), and the reverse.
+- `app/layout.tsx` + `components/bottom-nav.tsx` are owned by B; A asks before changing them.
+
+**B → C (later)**
+- House Share (C) reads the profile created by B's onboarding. Agree the `profiles.lifestyle` keys (drinking, parties, smoking, instruments, pets, personality, languages, budget) **before** B builds the form.
+
+**How not to block each other**
+1. Agree the data shape first: C posts schema v1 and A and B review it (15 min).
+2. A builds on `lib/sample-data.ts`, which has the same shape as the real data, so switching to Supabase is a one-line change.
+3. B builds forms and pages with hard-coded data first, then wires them to Supabase when the keys arrive.
+4. `lib/types.ts` is the contract: rename a column → update the types in the same PR and tell the team.
+
 ## GitHub workflow
 - One repo; protect `main` (PR required, 1 approval, or just a "don't push to main" rule).
 - Branches: `a/map-filters`, `b/swap-listings`, `c/schema-v1`… Keep PRs small and merge at least twice a day.
