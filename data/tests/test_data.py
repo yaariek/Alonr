@@ -2,7 +2,7 @@ import pytest
 
 from enrich import CsvError, group_rows, haversine_m, nearest, slugify
 from import_osm import candidate_halls, guess_provider, spread_sample
-from seed import build_demo_listings, cheapest, to_db_wants
+from seed import build_demo_listings, cheapest, plan_prune, to_db_wants
 
 ROW = {"name": "Chapter King's Cross", "provider": "Chapter", "affiliated_university": "",
        "address": "200 Pentonville Rd", "postcode": "n1 9jp", "room_kind": "ensuite", "price_week": "389",
@@ -124,3 +124,23 @@ def test_candidate_halls_drops_junk_duplicates_and_existing():
     raw = [pt("Britannia Student Services", 51.5, -0.1), pt("Clive (T)", 51.5, -0.1),
            pt("Felix House", 51.5, -0.1), pt("Felix House", 51.6, -0.1), pt("Existing Hall", 51.5, -0.1)]
     assert [h["name"] for h in candidate_halls(raw, {"existing-hall"})] == ["Felix House"]
+
+
+# ───────────── seed --prune ─────────────
+
+def test_plan_prune():
+    db_props = [{"id": "1", "slug": "kept", "name": "Kept"}, {"id": "2", "slug": "gone", "name": "Gone"},
+                {"id": "3", "slug": "renamed-old", "name": "Old Name"}, {"id": "4", "slug": "has-listings", "name": "Busy"}]
+    db_rooms = [{"id": "r1", "property_id": "1", "kind": "ensuite"}, {"id": "r2", "property_id": "1", "kind": "studio"},
+                {"id": "r3", "property_id": "2", "kind": "ensuite"}]
+    keep = {"kept": {"ensuite"}, "renamed-new": set()}  # studio removed from Kept in the CSV
+    props, rooms, skipped = plan_prune(db_props, db_rooms, keep, blocked={"4"})
+    assert [p["name"] for p in props] == ["Gone", "Old Name"]
+    assert [r["id"] for r in rooms] == ["r2"]  # r3 goes with its hall via cascade
+    assert [p["name"] for p in skipped] == ["Busy"]
+
+
+def test_plan_prune_hall_without_prices_keeps_nothing_extra():
+    props, rooms, skipped = plan_prune([{"id": "1", "slug": "a", "name": "A"}],
+                                       [{"id": "r1", "property_id": "1", "kind": "studio"}], {"a": set()}, set())
+    assert props == [] and [r["id"] for r in rooms] == ["r1"] and skipped == []

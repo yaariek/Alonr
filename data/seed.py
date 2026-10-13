@@ -3,12 +3,16 @@
     python data/seed.py --dry-run    # show what would be written, no credentials needed
     python data/seed.py              # write (needs .env.local, see below)
     python data/seed.py --skip-demo  # only properties + room types
+    python data/seed.py --prune      # also delete halls/room types no longer in the CSV
+    python data/seed.py --dry-run --prune  # list what --prune would delete (reads Supabase)
 
 Reads from .env.local in the repo root:
     NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY   (service role bypasses RLS: never commit it)
     DEMO_PASSWORD (optional, default below; also used by the frontend "Demo login" button)
 Safe to re-run: properties upsert on slug, room types on (property_id, kind), and
-demo listings are deleted and recreated.
+demo listings are deleted and recreated. Without --prune nothing is ever deleted, so a
+hall removed or renamed in the CSV stays in Supabase until you run with --prune.
+--prune never deletes a hall that real (non-demo) students have listings on.
 """
 
 from __future__ import annotations
@@ -113,6 +117,60 @@ def to_db_wants(wants: dict, ids: dict[str, str]) -> dict:
     return out
 
 
+def plan_prune(db_props: list[dict], db_rooms: list[dict], keep: dict[str, set[str]],
+               blocked: set[str]) -> tuple[list[dict], list[dict], list[dict]]:
+    """What --prune deletes. Pure, tested.
+
+    db_props: [{id, slug, name}], db_rooms: [{id, property_id, kind}],
+    keep: {slug: {room kinds in the CSV}}, blocked: property ids with real students' listings.
+    Returns (properties to delete, room types to delete, properties skipped because blocked).
+    Room types of deleted properties go automatically (on delete cascade).
+    """
+    delete_props, skipped = [], []
+    kinds_by_id: dict[str, set[str]] = {}
+    for p in db_props:
+        if p["slug"] in keep:
+            kinds_by_id[p["id"]] = keep[p["slug"]]
+        elif p["id"] in blocked:
+            skipped.append(p)
+        else:
+            delete_props.append(p)
+    delete_rooms = [r for r in db_rooms
+                    if r["property_id"] in kinds_by_id and r["kind"] not in kinds_by_id[r["property_id"]]]
+    return delete_props, delete_rooms, skipped
+
+
+def prune(sb, halls: list[dict], dry_run: bool) -> None:
+    db_props = sb.table("properties").select("id,slug,name").execute().data
+    db_rooms = sb.table("room_types").select("id,property_id,kind").execute().data
+    demo_ids = {r["id"] for r in sb.table("profiles").select("id").eq("is_demo", True).execute().data}
+    listings = sb.table("listings").select("id,property_id,user_id").execute().data
+    blocked = {l["property_id"] for l in listings if l["user_id"] not in demo_ids}
+    keep = {h["slug"]: {rt["kind"] for rt in h["room_types"]} for h in halls}
+    delete_props, delete_rooms, skipped = plan_prune(db_props, db_rooms, keep, blocked)
+
+    verb = "would delete" if dry_run else "deleting"
+    names = {p["id"]: p["name"] for p in db_props}
+    for p in delete_props:
+        print(f"  {verb} hall: {p['name']}")
+    for r in delete_rooms:
+        print(f"  {verb} room type: {names.get(r['property_id'])} / {r['kind']}")
+    for p in skipped:
+        print(f"  KEPT (students have listings there, remove them first): {p['name']}")
+    print(f"prune: {len(delete_props)} halls, {len(delete_rooms)} room types {'to delete' if dry_run else 'deleted'}"
+          + (f", {len(skipped)} kept" if skipped else ""))
+    if dry_run:
+        return
+    if delete_props:
+        ids = [p["id"] for p in delete_props]
+        # demo listings on these halls would block the delete (foreign key): remove them first
+        if demo_ids:
+            sb.table("listings").delete().in_("property_id", ids).in_("user_id", list(demo_ids)).execute()
+        sb.table("properties").delete().in_("id", ids).execute()
+    if delete_rooms:
+        sb.table("room_types").delete().in_("id", [r["id"] for r in delete_rooms]).execute()
+
+
 def load_env() -> dict[str, str]:
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env.local")
@@ -146,6 +204,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--skip-demo", action="store_true")
+    ap.add_argument("--prune", action="store_true", help="delete halls/room types that are no longer in the CSV")
     args = ap.parse_args()
 
     if not ENRICHED.exists():
@@ -165,11 +224,15 @@ def main() -> int:
             print(f"would create {len(DEMO_PEOPLE)} demo users ({', '.join(demo_email(k) for k in people)})")
             for l in demo:
                 print(f"  {l['person']:>6} {l['kind']:<7} {l['property_slug']} wants {l['wants'] or 'n/a'}")
-        return 0
+        if not args.prune:
+            return 0
 
     from supabase import create_client
     env = load_env()
     sb = create_client(env["url"], env["key"])
+    if args.dry_run:
+        prune(sb, halls, dry_run=True)
+        return 0
 
     rows = [{c: h.get(c) for c in PROPERTY_COLUMNS} for h in located]
     if rows:
@@ -183,8 +246,14 @@ def main() -> int:
         ids = {}
         print("no located halls to upsert")
 
-    if args.skip_demo:
-        return 0
+    if not args.skip_demo:
+        seed_demo(sb, env, ids, demo)
+    if args.prune:
+        prune(sb, halls, dry_run=False)
+    return 0
+
+
+def seed_demo(sb, env: dict, ids: dict[str, str], demo: list[dict]) -> None:
     user_ids = {}
     for person in DEMO_PEOPLE:
         uid = get_or_create_user(sb, demo_email(person["key"]), env["demo_password"])
@@ -202,7 +271,6 @@ def main() -> int:
     if listing_rows:
         sb.table("listings").insert(listing_rows).execute()
     print(f"created {len(listing_rows)} demo listings")
-    return 0
 
 
 if __name__ == "__main__":
