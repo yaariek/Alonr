@@ -66,7 +66,11 @@ export function MapView() {
     map.current.addControl(new maplibregl.NavigationControl(), 'bottom-right');
 
     return () => {
+      // Clear the refs too: React re-runs this effect (dev Strict Mode, and when you come back
+      // to the Map tab), and a stale ref would stop the map being recreated -> blank map.
+      markers.current = [];
       map.current?.remove();
+      map.current = null;
     };
   }, []);
 
