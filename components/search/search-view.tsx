@@ -76,6 +76,7 @@ export function SearchView() {
     setSelectedProvider,
     filters,
     setFilters,
+    priceBounds,
     activeFilterCount,
     filteredProperties,
   } = usePropertyFilters(properties);
@@ -114,7 +115,7 @@ export function SearchView() {
               <Search className="size-4 shrink-0 text-muted-foreground" />
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search halls, areas, stations…" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" aria-label="Search halls, areas, stations" />
             </label>
-            <FilterSheet filters={filters} onChange={setFilters} activeCount={activeFilterCount} />
+            <FilterSheet filters={filters} priceBounds={priceBounds} onChange={setFilters} activeCount={activeFilterCount} />
           </div>
           <div className="mt-3 -mx-2"><GroupChips selected={selectedProvider} onSelect={setSelectedProvider} /></div>
         </div>

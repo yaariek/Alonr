@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Link from 'next/link';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
@@ -30,6 +29,7 @@ export function MapView() {
     setSelectedProvider,
     filters,
     setFilters,
+    priceBounds,
     activeFilterCount,
     filteredProperties,
   } = usePropertyFilters(properties);
@@ -86,14 +86,11 @@ export function MapView() {
   return (
     <div className="relative h-screen w-full">
       <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 rounded-2xl bg-background/90 p-3 shadow-md backdrop-blur-md">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-sm font-semibold">Explore London</span>
-          <Link href="/search" className="rounded-full border px-3 py-1 text-xs font-medium hover:bg-accent">List view</Link>
-        </div>
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} />
           <FilterSheet
             filters={filters}
+            priceBounds={priceBounds}
             onChange={setFilters}
             activeCount={activeFilterCount}
           />

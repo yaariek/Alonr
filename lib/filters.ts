@@ -3,6 +3,7 @@ import type { Property, ProviderGroup, RoomKind } from "@/lib/types";
 // All filters are optional: undefined / empty means "don't filter on this".
 export interface PropertyFilters {
   providers?: ProviderGroup[];
+  minPriceWeek?: number;
   maxPriceWeek?: number;
   roomKinds?: RoomKind[];
   catered?: boolean;
@@ -19,12 +20,13 @@ const hasAny = <T,>(xs?: T[]): xs is T[] => !!xs && xs.length > 0;
 
 // A hall with no prices yet still shows, unless a room filter (price, kind, flatmates, weeks) is set.
 const hasRoomFilter = (f: PropertyFilters) =>
-  f.maxPriceWeek !== undefined || hasAny(f.roomKinds) || f.maxFlatmates !== undefined || f.contractWeeks !== undefined;
+  f.minPriceWeek !== undefined || f.maxPriceWeek !== undefined || hasAny(f.roomKinds) || f.maxFlatmates !== undefined || f.contractWeeks !== undefined;
 
 function roomMatches(p: Property, f: PropertyFilters): boolean {
   if (p.roomTypes.length === 0) return !hasRoomFilter(f);
   return p.roomTypes.some(
     (r) =>
+      (f.minPriceWeek === undefined || r.priceWeek >= f.minPriceWeek) &&
       (f.maxPriceWeek === undefined || r.priceWeek <= f.maxPriceWeek) &&
       (!hasAny(f.roomKinds) || f.roomKinds.includes(r.kind)) &&
       (f.maxFlatmates === undefined || r.flatmates <= f.maxFlatmates) &&

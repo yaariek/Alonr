@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, MessageCircle, Repeat, User, Users } from "lucide-react";
+import { Map, MessageCircle, Repeat, Search, User, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/map", label: "Map", icon: Map },
+  { href: "/search", label: "Search", icon: Search },
   { href: "/swap", label: "Swap", icon: Repeat },
   { href: "/houseshare", label: "Share", icon: Users },
   { href: "/messages", label: "Chats", icon: MessageCircle },
@@ -31,7 +32,7 @@ export function NavBar({ pathname }: { pathname: string }) {
               <Link
                 href={href}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 px-3 py-2 text-xs",
+                  "flex flex-col items-center gap-0.5 px-1 py-2 text-[10px]",
                   active ? "text-primary" : "text-muted-foreground",
                 )}
               >
