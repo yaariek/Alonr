@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MailCheck } from "lucide-react";
+import { KeyRound, Mail, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -67,10 +67,13 @@ export function LoginForm() {
 
   return (
     <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Sign in to alonr</CardTitle>
+      <CardHeader className="text-center">
+        <div className="mx-auto mb-2 inline-flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <ShieldCheck className="size-6" />
+        </div>
+        <CardTitle className="text-2xl font-bold tracking-tight">Welcome to alonr</CardTitle>
         <CardDescription>
-          {step === "email" && "For London university students. Use your .ac.uk email."}
+          {step === "email" && "Verified UK student housing swap & release marketplace. Sign in with your .ac.uk email."}
           {step === "code" && <>Enter the code for <strong>{email}</strong>.</>}
           {step === "sent" && "Check your uni inbox."}
         </CardDescription>
@@ -88,28 +91,38 @@ export function LoginForm() {
             <form onSubmit={submitEmail} className="space-y-3">
               <div className="space-y-1.5">
                 <Label htmlFor="email">University email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="you@ucl.ac.uk"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="relative">
+                  <Mail className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="student@ucl.ac.uk"
+                    className="pl-9"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               </div>
-              <Button type="submit" className="h-10 w-full" disabled={busy}>
+              <Button type="submit" className="h-10 w-full font-semibold" disabled={busy}>
                 {busy ? "Sending…" : "Continue"}
               </Button>
             </form>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="h-px flex-1 bg-border" />
-              judges &amp; testers
+              Hackathon demo access
               <span className="h-px flex-1 bg-border" />
             </div>
-            <Button type="button" variant="outline" className="h-10 w-full" onClick={demoLogin}>
-              Demo login
+            <Button
+              type="button"
+              variant="outline"
+              className="h-10 w-full gap-2 border-primary/30 font-semibold text-primary hover:bg-primary/5"
+              onClick={demoLogin}
+            >
+              <Sparkles className="size-4" />
+              Judge demo login
             </Button>
           </>
         )}
@@ -118,17 +131,21 @@ export function LoginForm() {
           <form onSubmit={submitCode} className="space-y-3">
             <div className="space-y-1.5">
               <Label htmlFor="code">Code</Label>
-              <Input
-                id="code"
-                autoComplete="one-time-code"
-                autoFocus
-                required
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
+              <div className="relative">
+                <KeyRound className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
+                <Input
+                  id="code"
+                  autoComplete="one-time-code"
+                  className="pl-9 tracking-widest"
+                  autoFocus
+                  required
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                />
+              </div>
               <p className="text-xs text-muted-foreground">Testers: use the tester code you were given.</p>
             </div>
-            <Button type="submit" className="h-10 w-full" disabled={busy}>
+            <Button type="submit" className="h-10 w-full font-semibold" disabled={busy}>
               {busy ? "Signing in…" : "Sign in"}
             </Button>
             <Button type="button" variant="ghost" className="w-full" onClick={restart}>
