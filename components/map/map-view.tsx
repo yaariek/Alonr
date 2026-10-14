@@ -38,20 +38,40 @@ function createProviderPinImage(colour: string): ImageData {
   if (!context) throw new Error('Could not create the map pin image.');
 
   context.scale(2, 2);
+
+  // Match MapLibre's built-in Marker silhouette, shadow, outline and white center.
+  const shadowRadii: [number, number][] = [
+    [10.5, 5.25002273], [10.5, 5.25002273], [9.5, 4.77275007], [8.5, 4.29549936],
+    [7.5, 3.81822308], [6.5, 3.34094679], [5.5, 2.86367051], [4.5, 2.38636864],
+  ];
+  shadowRadii.forEach(([radiusX, radiusY]) => {
+    context.beginPath();
+    context.ellipse(13.5, 34.80029008, radiusX, radiusY, 0, 0, Math.PI * 2);
+    context.fillStyle = 'rgb(0 0 0 / 4%)';
+    context.fill();
+  });
+
   context.beginPath();
-  context.moveTo(13.5, 40.5);
-  context.bezierCurveTo(10.5, 31, 4.5, 23, 4.5, 13.5);
-  context.arc(13.5, 13.5, 9, Math.PI, 0);
-  context.bezierCurveTo(22.5, 23, 16.5, 31, 13.5, 40.5);
+  context.moveTo(27, 13.5);
+  context.bezierCurveTo(27, 19.074644, 20.250001, 27.000002, 14.75, 34.500002);
+  context.bezierCurveTo(14.016665, 35.500004, 12.983335, 35.500004, 12.25, 34.500002);
+  context.bezierCurveTo(6.7499993, 27.000002, 0, 19.222562, 0, 13.5);
+  context.bezierCurveTo(0, 6.0441559, 6.0441559, 0, 13.5, 0);
+  context.bezierCurveTo(20.955844, 0, 27, 6.0441559, 27, 13.5);
   context.closePath();
   context.fillStyle = colour;
   context.fill();
-  context.strokeStyle = '#ffffff';
-  context.lineWidth = 1.5;
+  context.strokeStyle = 'rgb(0 0 0 / 25%)';
+  context.lineWidth = 0.75;
   context.stroke();
 
   context.beginPath();
-  context.arc(13.5, 13.5, 3.2, 0, Math.PI * 2);
+  context.arc(13.5, 13.5, 5.4999962, 0, Math.PI * 2);
+  context.fillStyle = 'rgb(0 0 0 / 25%)';
+  context.fill();
+
+  context.beginPath();
+  context.arc(13.5, 13.5, 5.4999962, 0, Math.PI * 2);
   context.fillStyle = '#ffffff';
   context.fill();
 

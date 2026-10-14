@@ -4,7 +4,7 @@ import type { Campus, Property, ProviderGroup } from "@/lib/types";
 // Replaced by real rows from `data/seed.py` (Person C).
 
 export const PROVIDER_COLOURS: Record<ProviderGroup, string> = {
-  Unite: "#F5EBDD", // cream
+  Unite: "#701b7d",
   iQ: "#E3C9A0", // sand
   Chapter: "#8A7E76", // taupe
   Scape: "#413333", // cocoa
