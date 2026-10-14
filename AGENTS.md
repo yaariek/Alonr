@@ -15,6 +15,42 @@
 9. Keep TypeScript simple (loose strictness OK). Prefer pure functions in `lib/` for logic so it can be unit-tested.
 10. Don't add new paid services or API keys without telling the team.
 
+## Status & who does what (updated Wed 14 Oct, evening)
+Tick a box (`[x]`) in the same commit as the work. Pull before editing this section.
+
+### Done (live on https://alonr.vercel.app)
+- **Login** (C, design by B): `.ac.uk` email link, tester code for the `@demo.ac.uk` accounts (judge, amira, tom, mei, jonas, priya), `/auth/callback`, Me tab with sign out.
+- **Map on real data** (A, loader by C): 48 halls from B's CSV, provider-coloured pins, provider chips, price/catered/24-7/accessible filters, nearby search with your location, list view `/search`.
+- **Property page** `/property/[id]` (C): rooms & prices, facilities, nearby walk times, active listings at that hall, website. Map popups link to it.
+- **Data** (C, CSV by B): `check_csv.py` → `enrich.py` → `seed.py`. 48 halls, all priced; 20 provider groups; 6 demo users; 2 mutually-matching swap pairs + 1 contract release.
+
+### To do
+**A: Map**
+- [ ] Cluster pins
+- [ ] Between two points: pick 2 campuses, draw the line, ranked list (`propertiesBetween` in `lib/geo.ts` is ready)
+- [ ] Hide the Prestige chip (0 halls) and tidy the long chip bar
+- [ ] "Has listings" filter on the map (after C's `lib/data/listings.ts`)
+
+**B: Listings** (was "Swap")
+- [ ] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]`
+- [ ] "Create listing" button + form: pick the hall → room type, price, flatmates and contract weeks **auto-fill** from that hall (`prefillFromHall`); the user sets contract dates, description, photos, kind (swap / contract release) and what they want (halls, room types, max price)
+- [ ] Vinted-style feed: photo cards, **like** (heart) on each, tap to open
+- [ ] Listing detail: photos, info, like, **"Message"** button → `startConversation` → `/messages/<id>`
+- [ ] **Quick match** (swaps only), on the listings page: dating-app style cards of listings that fit your wants AND whose wants your hall fits (`quickMatches`), with pass / like
+- [ ] "Mutual match" badge
+- Use the functions in `lib/data/listings.ts` (C) rather than writing your own queries.
+- CSV edits: save as **CSV UTF-8**, use university ids (`kcl`, not "King's College London"), run `python data/check_csv.py` before pushing.
+
+**C: Backend + Chat**
+- [ ] Migration: `listing_likes` (with public like counts), `listing-photos` storage bucket, `start_conversation()` function (C runs `npx supabase db push`)
+- [ ] `lib/data/listings.ts` + tests: `getListings`, `getListing`, `createListing`, `prefillFromHall`, `like` / `unlike` / `myLikes`, `quickMatches`, `startConversation`, `uploadPhoto`
+- [ ] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East)
+- [ ] Chat: `/messages` + `/messages/[id]` with Realtime (C offered to take this from B; B to confirm)
+- [ ] Gmail SMTP so real students also get a 6-digit code
+- [ ] House Share (P2): agree the `profiles.lifestyle` keys first
+
+**Everyone, Fri:** 14:00 feature freeze → bug bash on real phones → reset demo data → slides + backup screen recording.
+
 ## Getting started
 The scaffold is **done** (Next.js 16, React 19, Tailwind 4, shadcn/ui on Base UI, Supabase clients, MapLibre, turf, Vitest). Just:
 ```bash
@@ -27,12 +63,12 @@ Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate`
 
 ### What's already there
 - `app/layout.tsx`: mobile app shell + bottom nav (`components/bottom-nav.tsx`), PWA metadata. `app/manifest.ts` + `public/icons/` make it installable.
-- `app/map` → `components/map/map-view.tsx`: working MapLibre map on **sample data** (`lib/sample-data.ts`) with provider chips and a "between UCL Bloomsbury ↔ East" demo.
+- `app/map` → `components/map/map-view.tsx`: MapLibre map of the **real halls** from Supabase (`useProperties()` in `lib/data/use-properties.ts`; falls back to `lib/sample-data.ts` without keys) with provider chips and filters. `app/search`: the same halls as a list. `app/property/[id]`: hall page.
 - `lib/filters.ts` (all property filters), `lib/geo.ts` (`propertiesBetween`, `distanceKm`), tests in `lib/filters.test.ts`.
 - `lib/types.ts`: placeholder types until `supabase gen types` replaces them.
 - **Supabase is live** (schema v1 in `supabase/migrations/`). `lib/database.types.ts` is generated from it: never edit by hand, Person C regenerates with `npm run db:types`. The clients in `lib/supabase/` are already typed with it, so `.from("listings")` autocompletes columns. RPC: `supabase.rpc('match_listings', { p_listing_id })`.
 - `lib/supabase/client.ts` (client components) and `server.ts` (server components).
-- Placeholder pages (`components/placeholder-page.tsx`) listing each page's TODOs and owner: `/login`, `/swap`, `/swap/new`, `/messages`, `/houseshare`, `/profile`, `/property/[id]`.
+- Placeholder pages still to build (`components/placeholder-page.tsx`): `/swap` and `/swap/new` (becoming `/listings`), `/messages`, `/houseshare`.
 - `data/properties.csv`: template; **one row per room type** (same hall repeated), lists separated by `;`, put your initial in `added_by`.
 
 ### Next.js 16 gotchas (read before coding)
