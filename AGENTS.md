@@ -24,29 +24,34 @@ Tick a box (`[x]`) in the same commit as the work. Pull before editing this sect
 - **Property page** `/property/[id]` (C): rooms & prices, facilities, nearby walk times, active listings at that hall, website. Map popups link to it.
 - **Data** (C, CSV by B): `check_csv.py` → `enrich.py` → `seed.py`. 48 halls, all priced; 20 provider groups; 6 demo users; 2 mutually-matching swap pairs + 1 contract release.
 
-### To do
-**A: Map**
-- [ ] Cluster pins
-- [ ] Hide the Prestige chip (0 halls) and tidy the long chip bar
-- [ ] "Has listings" filter on the map (after C's `lib/data/listings.ts`)
+### To do (in this order)
+Agents: do the tasks under **your person** only, top first. Stay inside the folders that person owns (see *Team split*).
 
-**B: Listings** (was "Swap")
-- [ ] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]`
-- [ ] "Create listing" button + form: pick the hall → room type, price, flatmates and contract weeks **auto-fill** from that hall (`prefillFromHall`); the user sets contract dates, description, photos, kind (swap / contract release) and what they want (halls, room types, max price)
-- [ ] Vinted-style feed: photo cards, **like** (heart) on each, tap to open
-- [ ] Listing detail: photos, info, like, **"Message"** button → `startConversation` → `/messages/<id>`
-- [ ] **Quick match** (swaps only), on the listings page: dating-app style cards of listings that fit your wants AND whose wants your hall fits (`quickMatches`), with pass / like
-- [ ] "Mutual match" badge
-- Use the functions in `lib/data/listings.ts` (C) rather than writing your own queries.
+**A: Map** (owns `app/map`, `app/search`, `app/property`, `components/map`, `components/filters`, `lib/geo.ts`, `lib/filters.ts`)
+1. [ ] `git pull --rebase` first (new provider chips + this file).
+2. [ ] Cluster the pins (MapLibre GeoJSON source with `cluster: true`), so central London isn't a pile of overlapping pins.
+3. [ ] Hide the Prestige chip (0 halls) and tidy the chip bar (20 chips, scrolls sideways).
+4. [ ] After C pushes `lib/data/listings.ts`: a "Has listings" filter on the map, and the listing count on each hall card in `/search`.
+
+**B: Listings** (was "Swap"; owns `app/(auth)`, `app/listings`, `components/listings`, `app/layout.tsx`, `components/bottom-nav.tsx`)
+1. [ ] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]` (delete `app/swap`).
+2. [ ] Build the screens with **placeholder data first** (don't wait for C):
+   - Feed, Vinted-style: photo cards, a **like** (heart) on each, tap to open.
+   - "Create listing" button + form: pick the hall → room type, price, flatmates and contract weeks **auto-fill** from that hall; the user sets contract dates, description, photos, kind (swap / contract release) and what they want (halls, room types, max price).
+   - Listing detail: photos, info, like, and a **"Message"** button.
+   - **Quick match** (swaps only), on the listings page: dating-app style cards of listings that fit your wants AND whose wants your hall fits, with pass / like.
+   - "Mutual match" badge.
+3. [ ] Swap the placeholder data for C's functions in `lib/data/listings.ts` once pushed: `getListings`, `getListing`, `createListing`, `prefillFromHall`, `like` / `unlike` / `myLikes`, `quickMatches`, `uploadPhoto`. Don't write your own Supabase queries for these.
+4. [ ] The "Message" button calls `startConversation(listingId)` and goes to `/messages/<conversation id>`. **Chat itself is C's** (don't build `/messages`).
 - CSV edits: save as **CSV UTF-8**, use university ids (`kcl`, not "King's College London"), run `python data/check_csv.py` before pushing.
 
-**C: Backend + Chat**
-- [ ] Migration: `listing_likes` (with public like counts), `listing-photos` storage bucket, `start_conversation()` function (C runs `npx supabase db push`)
-- [ ] `lib/data/listings.ts` + tests: `getListings`, `getListing`, `createListing`, `prefillFromHall`, `like` / `unlike` / `myLikes`, `quickMatches`, `startConversation`, `uploadPhoto`
-- [ ] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East)
-- [ ] Chat: `/messages` + `/messages/[id]` with Realtime (C offered to take this from B; B to confirm)
-- [ ] Gmail SMTP so real students also get a 6-digit code
-- [ ] House Share (P2): agree the `profiles.lifestyle` keys first
+**C: Backend + Chat** (owns `supabase/`, `data/`, `lib/types.ts`, `lib/data/`, `app/messages`, `components/chat`)
+1. [ ] Migration: `listing_likes` (public like counts, not who liked), `listing-photos` storage bucket, `start_conversation(listing_id)` (get-or-create). C runs `npx supabase db push`.
+2. [ ] `lib/data/listings.ts` + tests: the functions B uses (list above) plus `startConversation`.
+3. [ ] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East) so the feed and Quick match aren't empty.
+4. [ ] **Chat**: `/messages` (my conversations, newest first, with the listing) and `/messages/[id]` (messages, live via Supabase Realtime, send box).
+5. [ ] Gmail SMTP so real students also get a 6-digit code.
+6. [ ] House Share (P2): agree the `profiles.lifestyle` keys first.
 
 **Everyone, Fri:** 14:00 feature freeze → bug bash on real phones → reset demo data → slides + backup screen recording.
 
@@ -145,11 +150,12 @@ alonr/
     (auth)/login/       # email OTP + demo login
     map/                # main map + filters
     property/[id]/
-    swap/  swap/new/  swap/[id]/
+    listings/  listings/new/  listings/[id]/   # was swap/
     messages/  messages/[id]/
     houseshare/         # P2
     manifest.ts         # PWA manifest
-  components/map/  components/filters/  components/swap/  components/ui/ (shadcn)
+  components/map/  components/filters/  components/listings/  components/chat/  components/ui/ (shadcn)
+  lib/data/             # typed data functions (C): properties, listings, likes, conversations
   lib/supabase/ (client.ts, server.ts)  lib/filters.ts  lib/geo.ts (turf helpers)  lib/types.ts (generated)
   supabase/migrations/  supabase/seed.sql
   data/ (csv, enrich.py, seed.py, requirements.txt)
@@ -163,19 +169,20 @@ alonr/
 - Property detail sheet/page.
 - Owns `app/map`, `app/property`, `components/map`, `components/filters`, `lib/geo.ts`.
 
-**Person B: Accounts, Swap & Chat** (frontend + Supabase client)
-- Login (OTP), demo login, onboarding profile form.
-- Swap listing create/browse/detail, "My listings", the mutual-match badge (calls the RPC).
-- Conversations and realtime chat.
+**Person B: Accounts & Listings** (frontend + Supabase client)
+- Login design, onboarding profile form.
+- Listings (was "Swap"): create/browse/detail, likes, Quick match, "My listings", the mutual-match badge.
 - PWA manifest, icons, app shell and bottom nav.
-- Owns `app/(auth)`, `app/swap`, `app/messages`, `components/swap`, `app/layout.tsx`.
+- Owns `app/(auth)`, `app/listings`, `components/listings`, `app/layout.tsx`, `components/bottom-nav.tsx`.
 
 **Person C: Data & Backend** (the Python-strongest teammate)
 - Creates the Supabase project, writes the migrations, RLS and domain-check trigger, and generates TS types (`supabase gen types`) for A and B.
 - `enrich.py` and `seed.py`, and the demo data story.
 - `match_listings` SQL function; later the House Share compatibility score (SQL function or a small Python-written formula ported to TS).
-- From Thursday: builds the House Share page with B's components.
-- Owns `supabase/`, `data/`, `lib/types.ts`.
+- `lib/data/` (typed data functions the pages call: halls, listings, likes, conversations).
+- **Chat** (taken over from B): `/messages`, `/messages/[id]`, Supabase Realtime.
+- Then the House Share page with B's components.
+- Owns `supabase/`, `data/`, `lib/types.ts`, `lib/data/`, `app/messages`, `components/chat`.
 
 Everyone uses shadcn/ui components and one colour theme so the screens match. AI help is fine for TS syntax; the logic is the same as in Python.
 
@@ -194,7 +201,7 @@ Most dependencies run through **Person C**, because A and B both need the databa
 
 **A ↔ B**
 - Listings reference `properties.id`: B's "new listing" form picks from properties, and A's map "swap filter" shows halls with active listings. Both use the same table.
-- URLs are agreed: `/property/<id>` (A) shows that hall's active listings and links to `/swap/<id>` (B), and the reverse.
+- URLs are agreed: `/property/<id>` (A) shows that hall's active listings and links to `/listings/<id>` (B), and the reverse. A listing's "Message" button (B) opens `/messages/<conversation id>` (C).
 - `app/layout.tsx` + `components/bottom-nav.tsx` are owned by B; A asks before changing them.
 
 **B → C (later)**
@@ -219,7 +226,7 @@ Most dependencies run through **Person C**, because A and B both need the databa
 ## Timeline (to Fri 18:20)
 - **Tue 13 Oct (evening)**: C sets up the Supabase project and schema v1. B sets up the Next.js scaffold, Tailwind/shadcn, Vercel deploy, and a **live URL by end of night**. A does the MapLibre spike with hard-coded pins. Everyone: 1 hour filling `properties.csv`.
 - **Wed 14**: C enriches and seeds the data. A builds the real map from Supabase, chips and the first filters. B does auth and demo login, the profile, and listing create/browse. **EOD: P0 map and login working on a phone.**
-- **Thu 15**: A finishes all filters, clustering and map polish. B does chat and the PWA install. C builds the match RPC and demo listings, then House Share (P2). **EOD: P0 + P1 complete, merged and deployed.**
+- **Thu 15**: A finishes all filters, clustering and map polish. B builds Listings (feed, create, likes, Quick match) and the PWA install. C ships the listings backend + demo listings, then chat, then House Share (P2). **EOD: P0 + P1 complete, merged and deployed.**
 - **Fri 16**: until 14:00 finish P2 or polish. **14:00 feature freeze.** 14:00–16:30 bug bash on real phones (iOS Safari plus Android Chrome), reset the demo data. 16:30–18:00 slides, demo script, and a **backup screen recording**. 18:20 submit.
 
 ## Risks & mitigations
