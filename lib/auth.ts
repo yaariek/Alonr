@@ -1,63 +1,78 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+﻿import { SupabaseClient } from '@supabase/supabase-js';
 
-// Sign-in helpers for the login page. Two kinds of account:
-// - Real students (…ac.uk): Supabase emails them a sign-in link (and a code once SMTP is set up).
-// - Testers (…@demo.ac.uk, created by data/seed.py): NO email is sent. They type the shared
-//   tester code (DEMO_PASSWORD, ask Person C), which is really their password.
+export const NOT_A_UNI_EMAIL = "Please use a valid UK university email address ending in .ac.uk";
 
-type Client = SupabaseClient<Database>;
-
-export type StartResult =
-  | { step: "code"; tester: true } // show the code box straight away
-  | { step: "check-email"; tester: false } // tell them to open their uni email
-  | { step: "error"; message: string };
-
-export type VerifyResult = { ok: true } | { ok: false; message: string };
-
-const TESTER_DOMAIN = "@demo.ac.uk";
-export const NOT_A_UNI_EMAIL = "alonr is for university students: sign in with your .ac.uk email.";
-
-const clean = (email: string) => email.trim().toLowerCase();
-
-export function isTesterEmail(email: string): boolean {
-  return clean(email).endsWith(TESTER_DOMAIN);
+/**
+ * Checks if an email is a demo/tester account (@demo.ac.uk)
+ */
+export function isTesterEmail(rawEmail: string): boolean {
+  return rawEmail.trim().toLowerCase().endsWith('@demo.ac.uk');
 }
 
-export function isUniEmail(email: string): boolean {
-  return /^[^@\s]+@[^@\s]+\.ac\.uk$/.test(clean(email));
+/**
+ * Checks if an email is a valid UK university address (.ac.uk)
+ */
+export function isUniEmail(rawEmail: string): boolean {
+  return rawEmail.trim().toLowerCase().endsWith('.ac.uk');
 }
 
-// The database rejects non-.ac.uk sign-ups (supabase/migrations/…schema_v1.sql, handle_new_user).
-// Depending on the endpoint Supabase returns our message or a generic one; show ours either way.
-function friendly(message: string): string {
-  if (/university students|database error saving new user/i.test(message)) return NOT_A_UNI_EMAIL;
-  if (/rate limit/i.test(message)) return "Too many sign-in emails right now. Wait a few minutes and try again.";
-  return message;
-}
+export async function startSignIn(supabase: SupabaseClient, rawEmail: string) {
+  const email = rawEmail.trim().toLowerCase();
 
-export async function startSignIn(supabase: Client, email: string): Promise<StartResult> {
-  const e = clean(email);
-  if (!isUniEmail(e)) return { step: "error", message: NOT_A_UNI_EMAIL };
-  if (isTesterEmail(e)) return { step: "code", tester: true };
+  if (!isUniEmail(email)) {
+    return { step: 'error', message: NOT_A_UNI_EMAIL };
+  }
+
+  // Demo/tester accounts bypass OTP email sending
+  if (isTesterEmail(email)) {
+    return { step: 'code', tester: true };
+  }
+
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
 
   const { error } = await supabase.auth.signInWithOtp({
-    email: e,
-    // Return to wherever they started (localhost or the live site), not always the Site URL
-    options: { emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+    email,
+    options: {
+      emailRedirectTo: redirectTo,
+    },
   });
-  if (error) return { step: "error", message: friendly(error.message) };
-  return { step: "check-email", tester: false };
+
+  if (error) {
+    if (error.message.includes('Database error') || error.message.includes('saving new user')) {
+      return { step: 'error', message: NOT_A_UNI_EMAIL };
+    }
+    return { step: 'error', message: error.message };
+  }
+
+  return { step: 'check-email', tester: false };
 }
 
-export async function verifyCode(supabase: Client, email: string, code: string): Promise<VerifyResult> {
-  const e = clean(email);
-  const c = code.trim();
-  const { error } = isTesterEmail(e)
-    ? await supabase.auth.signInWithPassword({ email: e, password: c })
-    : await supabase.auth.verifyOtp({ email: e, token: c, type: "email" });
-  if (error) {
-    return { ok: false, message: /invalid|expired/i.test(error.message) ? "That code didn't work. Check it and try again." : friendly(error.message) };
+export async function verifyCode(supabase: SupabaseClient, rawEmail: string, rawCode: string) {
+  const email = rawEmail.trim().toLowerCase();
+  const code = rawCode.trim();
+
+  // Demo accounts log in via password authentication
+  if (isTesterEmail(email)) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: code,
+    });
+
+    if (error) {
+      return { ok: false, message: "That code didn't work. Check it and try again." };
+    }
+    return { ok: true };
   }
+
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token: code,
+    type: 'email',
+  });
+
+  if (error) {
+    return { ok: false, message: "That code didn't work. Check it and try again." };
+  }
+
   return { ok: true };
 }
