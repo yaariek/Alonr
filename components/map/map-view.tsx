@@ -73,9 +73,13 @@ export function MapView() {
         </div>
       `;
 
-      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
+      const providerColour = PROVIDER_COLOURS[prop.provider] ?? PROVIDER_COLOURS.Other;
+      const popup = new maplibregl.Popup({ offset: 25, className: 'provider-map-popup' }).setHTML(popupContent);
+      popup.on('open', () => {
+        popup.getElement().style.setProperty('--provider-pastel', providerColour);
+      });
 
-      const marker = new maplibregl.Marker({ color: PROVIDER_COLOURS[prop.provider] ?? '#6b7280' })
+      const marker = new maplibregl.Marker({ color: providerColour })
         .setLngLat([prop.lng, prop.lat])
         .setPopup(popup)
         .addTo(map.current!);

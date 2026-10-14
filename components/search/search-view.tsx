@@ -21,7 +21,7 @@ function PropertyPost({ property }: { property: Property }) {
   return (
     <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       <div className="flex items-center gap-3 px-4 py-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: providerColour }}>
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-slate-800" style={{ backgroundColor: providerColour }}>
           {property.provider.slice(0, 2).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
@@ -31,19 +31,19 @@ function PropertyPost({ property }: { property: Property }) {
         <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">{money(price)}</span>
       </div>
 
-      <div className="relative flex aspect-[1.25/1] items-center justify-center overflow-hidden px-6 text-white" style={{ background: `linear-gradient(145deg, ${providerColour} 0%, #172554 100%)` }}>
-        <div className="absolute -right-10 -top-12 size-56 rounded-full border border-white/15" />
-        <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-white/15" />
+      <div className="relative flex aspect-[1.25/1] items-center justify-center overflow-hidden px-6 text-white" style={{ background: `linear-gradient(145deg, ${providerColour} 0%, #fffaf7 100%)` }}>
+        <div className="absolute -right-10 -top-12 size-56 rounded-full border border-slate-900/10" />
+        <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-slate-900/10" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />
         <div className="relative flex w-full max-w-sm items-end justify-center gap-4">
-          <div className="mb-5 h-28 w-16 rounded-t-md bg-white/15" />
-          <div className="relative flex h-48 w-32 flex-col items-center justify-center rounded-t-lg border border-white/25 bg-white/20 shadow-2xl backdrop-blur-sm">
-            <Building2 aria-hidden="true" className="size-14 text-white/90" strokeWidth={1.1} />
-            <span className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80">London halls</span>
+          <div className="mb-5 h-28 w-16 rounded-t-md bg-slate-900/10" />
+          <div className="relative flex h-48 w-32 flex-col items-center justify-center rounded-t-lg border border-slate-900/10 bg-white/45 shadow-2xl backdrop-blur-sm">
+            <Building2 aria-hidden="true" className="size-14 text-slate-700/80" strokeWidth={1.1} />
+            <span className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-700/70">London halls</span>
           </div>
-          <div className="mb-5 h-36 w-20 rounded-t-md bg-white/15" />
+          <div className="mb-5 h-36 w-20 rounded-t-md bg-slate-900/10" />
         </div>
-        <span className="absolute bottom-4 left-4 rounded-full bg-black/25 px-3 py-1 text-xs font-medium backdrop-blur">{property.postcode || "London"}</span>
+        <span className="absolute bottom-4 left-4 rounded-full bg-white/65 px-3 py-1 text-xs font-medium text-slate-800 backdrop-blur">{property.postcode || "London"}</span>
         {property.catered && <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-foreground">Catered</span>}
       </div>
 

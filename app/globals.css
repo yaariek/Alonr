@@ -127,3 +127,16 @@
     @apply font-sans;
   }
 }
+
+
+.provider-map-popup .maplibregl-popup-content {
+  background: var(--provider-pastel, #dee3e8);
+  color: #1f2937;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 18%);
+}
+
+.provider-map-popup .maplibregl-popup-tip {
+  display: none;
+}
