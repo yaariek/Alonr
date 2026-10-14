@@ -130,7 +130,7 @@
 
 
 .provider-map-popup .maplibregl-popup-content {
-  background: var(--provider-pastel, #dee3e8);
+  background: #ffffff;
   color: #1f2937;
   border-radius: 12px;
   padding: 10px;

@@ -20,13 +20,42 @@ const PROPERTY_SOURCE = 'property-points';
 const CLUSTER_LAYER = 'property-clusters';
 const CLUSTER_COUNT_LAYER = 'property-cluster-count';
 const PROPERTY_LAYER = 'property-points-unclustered';
+const providerPinImageId = (colour: string) => `provider-pin-${colour.slice(1).toLowerCase()}`;
 
 interface PropertyFeatureProperties {
   id: string;
   name: string;
   provider: string;
-  colour: string;
+  iconImage: string;
   priceLabel: string;
+}
+
+function createProviderPinImage(colour: string): ImageData {
+  const canvas = document.createElement('canvas');
+  canvas.width = 54;
+  canvas.height = 82;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Could not create the map pin image.');
+
+  context.scale(2, 2);
+  context.beginPath();
+  context.moveTo(13.5, 40.5);
+  context.bezierCurveTo(10.5, 31, 4.5, 23, 4.5, 13.5);
+  context.arc(13.5, 13.5, 9, Math.PI, 0);
+  context.bezierCurveTo(22.5, 23, 16.5, 31, 13.5, 40.5);
+  context.closePath();
+  context.fillStyle = colour;
+  context.fill();
+  context.strokeStyle = '#ffffff';
+  context.lineWidth = 1.5;
+  context.stroke();
+
+  context.beginPath();
+  context.arc(13.5, 13.5, 3.2, 0, Math.PI * 2);
+  context.fillStyle = '#ffffff';
+  context.fill();
+
+  return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 const escapeHtml = (s: string) =>
@@ -59,7 +88,7 @@ export function MapView() {
           id: property.id,
           name: property.name,
           provider: property.provider,
-          colour: PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other,
+          iconImage: providerPinImageId(PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other),
           priceLabel: price === null ? 'Prices coming soon' : `From £${price}/wk`,
         },
       };
@@ -81,6 +110,13 @@ export function MapView() {
     const addPropertyLayers = () => {
       const activeMap = map.current;
       if (!activeMap || activeMap.getSource(PROPERTY_SOURCE)) return;
+
+      for (const colour of new Set(Object.values(PROVIDER_COLOURS))) {
+        const imageId = providerPinImageId(colour);
+        if (!activeMap.hasImage(imageId)) {
+          activeMap.addImage(imageId, createProviderPinImage(colour), { pixelRatio: 2 });
+        }
+      }
 
       activeMap.addSource(PROPERTY_SOURCE, {
         type: 'geojson',
@@ -118,14 +154,15 @@ export function MapView() {
 
       activeMap.addLayer({
         id: PROPERTY_LAYER,
-        type: 'circle',
+        type: 'symbol',
         source: PROPERTY_SOURCE,
         filter: ['!', ['has', 'point_count']],
-        paint: {
-          'circle-color': ['get', 'colour'],
-          'circle-radius': 8,
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff',
+        layout: {
+          'icon-image': ['get', 'iconImage'],
+          'icon-anchor': 'bottom',
+          'icon-size': 1,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
         },
       });
 
@@ -154,11 +191,10 @@ export function MapView() {
             <a href="/property/${encodeURIComponent(details.id)}" style="display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 600; text-decoration: underline;">View hall →</a>
           </div>
         `;
-        const popup = new maplibregl.Popup({ offset: 12, className: 'provider-map-popup' })
+        new maplibregl.Popup({ offset: 12, className: 'provider-map-popup' })
           .setLngLat(event.lngLat)
           .setHTML(popupContent)
           .addTo(activeMap);
-        popup.getElement().style.setProperty('--provider-pastel', details.colour);
       });
 
       activeMap.on('mouseenter', CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
