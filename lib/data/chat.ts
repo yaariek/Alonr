@@ -134,11 +134,11 @@ export async function getConversation(supabase: Client, id: string): Promise<Con
   return toConversation(data as unknown as ConversationRow, me);
 }
 
-/** Messages in a conversation, oldest first. */
-export async function getMessages(supabase: Client, conversationId: string): Promise<Message[]> {
-  const { data, error } = await supabase
-    .from("messages").select("*").eq("conversation_id", conversationId)
-    .order("created_at", { ascending: true }).limit(500);
+/** Messages in a conversation, oldest first. `after` (an ISO time) fetches only newer ones. */
+export async function getMessages(supabase: Client, conversationId: string, after?: string): Promise<Message[]> {
+  let q = supabase.from("messages").select("*").eq("conversation_id", conversationId);
+  if (after) q = q.gt("created_at", after);
+  const { data, error } = await q.order("created_at", { ascending: true }).limit(500);
   if (error) throw new Error("Couldn't load messages.");
   return data.map(toMessage);
 }
@@ -155,12 +155,14 @@ export async function sendMessage(supabase: Client, conversationId: string, body
 /**
  * Live messages via Supabase Realtime. Only messages you're allowed to read arrive (RLS).
  * Pass a conversation id for one chat, or nothing for all my chats (to refresh the list).
+ * `onLive` runs each time the live connection is (re)established: fetch anything sent meanwhile.
  * Returns a function that stops listening: call it in your effect's cleanup.
  */
 export function subscribeToMessages(
   supabase: Client,
   onMessage: (m: Message) => void,
   conversationId?: string,
+  onLive?: () => void,
 ): () => void {
   const channel = supabase
     .channel(`messages:${conversationId ?? "all"}:${Math.random().toString(36).slice(2)}`)
@@ -172,7 +174,9 @@ export function subscribeToMessages(
       },
       (payload) => onMessage(toMessage(payload.new as Tables<"messages">)),
     )
-    .subscribe();
+    .subscribe((status) => {
+      if (status === "SUBSCRIBED") onLive?.();
+    });
   return () => {
     supabase.removeChannel(channel);
   };

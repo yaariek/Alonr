@@ -28,11 +28,23 @@ export function ChatRoom({ id }: { id: string }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
+  const latest = useRef(""); // created_at of the newest message shown
+
+  useEffect(() => {
+    latest.current = messages.at(-1)?.createdAt ?? "";
+  }, [messages]);
 
   useEffect(() => {
     const supabase = createClient();
     let cancelled = false;
     let stop = () => {};
+    let timer: ReturnType<typeof setInterval> | undefined;
+    // Fetch anything newer than what's shown: when the live connection (re)starts, and every few
+    // seconds as a backup for networks that block Realtime (some uni wifi).
+    const catchUp = async () => {
+      const newer = await getMessages(supabase, id, latest.current || undefined).catch(() => [] as Message[]);
+      if (!cancelled && newer.length) setMessages((list) => newer.reduce(mergeMessage, list));
+    };
     (async () => {
       const { data } = await supabase.auth.getUser();
       const me = data.user?.id;
@@ -41,15 +53,18 @@ export function ChatRoom({ id }: { id: string }) {
       const conversation = await getConversation(supabase, id);
       if (cancelled) return;
       if (!conversation) return setState({ status: "not-found" });
-      // Listen first, then load, so no message slips through in between
-      stop = subscribeToMessages(supabase, (m) => setMessages((list) => mergeMessage(list, m)), id);
+      stop = subscribeToMessages(supabase, (m) => setMessages((list) => mergeMessage(list, m)), id, catchUp);
       const loaded = await getMessages(supabase, id).catch(() => [] as Message[]);
       if (cancelled) return;
       setMessages((list) => loaded.reduce(mergeMessage, list));
       setState({ status: "ready", me, conversation });
+      timer = setInterval(() => {
+        if (document.visibilityState === "visible") catchUp();
+      }, 4000);
     })();
     return () => {
       cancelled = true;
+      clearInterval(timer);
       stop();
     };
   }, [id]);

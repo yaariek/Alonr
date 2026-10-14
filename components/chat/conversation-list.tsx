@@ -33,9 +33,14 @@ export function ConversationList() {
       }
     }
     load();
-    const stop = subscribeToMessages(supabase, () => load());
+    // Live refresh, plus a slow backup poll for networks that block Realtime
+    const stop = subscribeToMessages(supabase, () => load(), undefined, () => load());
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") load();
+    }, 15000);
     return () => {
       cancelled = true;
+      clearInterval(timer);
       stop();
     };
   }, []);
