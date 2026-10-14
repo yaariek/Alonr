@@ -27,7 +27,6 @@ Tick a box (`[x]`) in the same commit as the work. Pull before editing this sect
 ### To do
 **A: Map**
 - [ ] Cluster pins
-- [ ] Between two points: pick 2 campuses, draw the line, ranked list (`propertiesBetween` in `lib/geo.ts` is ready)
 - [ ] Hide the Prestige chip (0 halls) and tidy the long chip bar
 - [ ] "Has listings" filter on the map (after C's `lib/data/listings.ts`)
 
@@ -79,7 +78,7 @@ Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate`
 
 ## Context
 London students are stuck with accommodation contracts they no longer want: the wrong campus (e.g. UCL Bloomsbury → UCL East Marshgate), the wrong price, or the wrong room type. They also have no easy way to compare halls across providers (Unite, iQ, Chapter, Scape, Prestige, UCL/KCL/Imperial halls). **alonr** is a verified-student app with three parts:
-1. A **London accommodation map** with rich filters and a "between two places" search.
+1. A **London accommodation map** with rich filters and a nearby search.
 2. A **swap / contract-release marketplace** where students list their room and find mutual swaps.
 3. **House Share** matching (bonus) and **Summer Storage** (stretch).
 
@@ -101,7 +100,7 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 - Map of all properties with pins coloured by provider group, a group filter chip bar (Unite / iQ / Chapter / Scape / Prestige / UCL / KCL / Imperial / …), and clustering.
 - Filters: budget (£/week), room type (ensuite/studio/shared bathroom/twin), catered, 24/7 reception, accessibility, bike rental nearby, number of flatmates, contract weeks, max distance to supermarket and station, and uni.
 - Property detail sheet: prices, room types, facilities, nearest supermarket and station (distance), affiliated uni, link out.
-- **Between two points**: pick 2 campuses (or tap the map), draw the line, and show properties within X km of it, ranked by total distance.
+- ~~Between two points~~: **dropped** (Wed 14 Oct) to focus on Listings and chat.
 
 **P1 (core differentiator)**
 - Swap marketplace: create a listing ("I have room X, contract dates, price; I want: areas/properties/room types/max price"), with type **Swap** or **Contract release/takeover**.
@@ -115,7 +114,6 @@ Team of 3, mostly Python experience. Deadline **Fri 16 Oct, 18:20** (~3.5 days f
 
 **P3 (stretch)**
 - Summer storage board for international students (offer/need space, dates, price).
-- Real transit times between two points via the TfL Journey Planner API.
 
 ## Data model (Supabase, `supabase/migrations/`)
 - `universities(id, name, email_domains text[], colour)`
@@ -145,7 +143,7 @@ No borough anywhere: location is just postcode + lat/lng.
 alonr/
   app/                  # Next.js routes
     (auth)/login/       # email OTP + demo login
-    map/                # main map + filters + between-two-points
+    map/                # main map + filters
     property/[id]/
     swap/  swap/new/  swap/[id]/
     messages/  messages/[id]/
@@ -163,7 +161,6 @@ alonr/
 - MapLibre map, provider-coloured pins and clustering, group chips.
 - Filter panel (bottom sheet on mobile) plus `lib/filters.ts` (pure functions, easy to test).
 - Property detail sheet/page.
-- Between-two-points: campus pickers, draw the line, `turf.pointToLineDistance` buffer, ranked list.
 - Owns `app/map`, `app/property`, `components/map`, `components/filters`, `lib/geo.ts`.
 
 **Person B: Accounts, Swap & Chat** (frontend + Supabase client)
@@ -222,7 +219,7 @@ Most dependencies run through **Person C**, because A and B both need the databa
 ## Timeline (to Fri 18:20)
 - **Tue 13 Oct (evening)**: C sets up the Supabase project and schema v1. B sets up the Next.js scaffold, Tailwind/shadcn, Vercel deploy, and a **live URL by end of night**. A does the MapLibre spike with hard-coded pins. Everyone: 1 hour filling `properties.csv`.
 - **Wed 14**: C enriches and seeds the data. A builds the real map from Supabase, chips and the first filters. B does auth and demo login, the profile, and listing create/browse. **EOD: P0 map and login working on a phone.**
-- **Thu 15**: A finishes all filters, between-two-points and the property page. B does chat and the PWA install. C builds the match RPC and demo listings, then House Share (P2). **EOD: P0 + P1 complete, merged and deployed.**
+- **Thu 15**: A finishes all filters, clustering and map polish. B does chat and the PWA install. C builds the match RPC and demo listings, then House Share (P2). **EOD: P0 + P1 complete, merged and deployed.**
 - **Fri 16**: until 14:00 finish P2 or polish. **14:00 feature freeze.** 14:00–16:30 bug bash on real phones (iOS Safari plus Android Chrome), reset the demo data. 16:30–18:00 slides, demo script, and a **backup screen recording**. 18:20 submit.
 
 ## Risks & mitigations
@@ -235,7 +232,6 @@ Most dependencies run through **Person C**, because A and B both need the databa
 - Open the Vercel production URL on iOS and Android, use "Add to Home Screen", and check it launches full-screen.
 - Sign in with a `.ac.uk` address (works); a `gmail.com` address is rejected; the demo login works.
 - Map: toggling each group chip and each filter changes the pin count as expected (unit tests in `lib/filters.ts` with Vitest).
-- Between two points: pick UCL Bloomsbury and UCL East Marshgate; only properties near the line show, ranked by distance.
 - Swap: two demo users with complementary listings both see the "Mutual match" badge; a message sent by one appears live for the other.
 - Run `python data/enrich.py && python data/seed.py` on a fresh Supabase project to rebuild all the data.
 
