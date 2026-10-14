@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
 import { useProperties } from '@/lib/data/use-properties';
-import { filterProperties, minPrice } from '@/lib/filters';
+import { minPrice } from '@/lib/filters';
+import { usePropertyFilters } from '@/lib/use-property-filters';
 
 // MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
 // The worker is copied to public/ by the "postinstall" script in package.json.
@@ -23,36 +25,14 @@ export function MapView() {
   const markers = useRef<maplibregl.Marker[]>([]);
 
   const { properties } = useProperties();
-  const [selectedProvider, setSelectedProvider] = useState('All');
-  const [filters, setFilters] = useState({
-    maxPrice: 600,
-    cateredOnly: false,
-    reception24h: false,
-    accessibleOnly: false,
-  });
-
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filters.maxPrice < 600) count++;
-    if (filters.cateredOnly) count++;
-    if (filters.reception24h) count++;
-    if (filters.accessibleOnly) count++;
-    return count;
-  }, [filters]);
-
-  const filteredProperties = useMemo(() => {
-    // Map the sheet's state onto lib/filters' PropertyFilters (undefined = don't filter)
-    let list = filterProperties(properties, {
-      maxPriceWeek: filters.maxPrice < 600 ? filters.maxPrice : undefined,
-      catered: filters.cateredOnly ? true : undefined,
-      reception24h: filters.reception24h,
-      accessible: filters.accessibleOnly,
-    });
-    if (selectedProvider !== 'All') {
-      list = list.filter((p) => p.provider === selectedProvider);
-    }
-    return list;
-  }, [properties, filters, selectedProvider]);
+  const {
+    selectedProvider,
+    setSelectedProvider,
+    filters,
+    setFilters,
+    activeFilterCount,
+    filteredProperties,
+  } = usePropertyFilters(properties);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -105,7 +85,11 @@ export function MapView() {
 
   return (
     <div className="relative h-screen w-full">
-      <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 bg-background/80 p-3 backdrop-blur-md rounded-2xl shadow-md">
+      <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 rounded-2xl bg-background/90 p-3 shadow-md backdrop-blur-md">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-sm font-semibold">Explore London</span>
+          <Link href="/search" className="rounded-full border px-3 py-1 text-xs font-medium hover:bg-accent">List view</Link>
+        </div>
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} />
           <FilterSheet
