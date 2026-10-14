@@ -92,6 +92,39 @@ export type Database = {
           },
         ]
       }
+      listing_likes: {
+        Row: {
+          created_at: string
+          listing_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          listing_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          listing_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_likes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           created_at: string
@@ -419,7 +452,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      listing_like_counts: {
+        Row: {
+          likes: number | null
+          listing_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_likes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       listing_satisfies: {
@@ -451,6 +498,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      start_conversation: { Args: { p_listing_id: string }; Returns: string }
     }
     Enums: {
       listing_kind: "swap" | "release"
