@@ -23,6 +23,7 @@ export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
+  const locationMarker = useRef<maplibregl.Marker | null>(null);
 
   const { properties } = useProperties();
   const {
@@ -51,10 +52,57 @@ export function MapView() {
       // Clear the refs too: React re-runs this effect (dev Strict Mode, and when you come back
       // to the Map tab), and a stale ref would stop the map being recreated -> blank map.
       markers.current = [];
+      locationMarker.current?.remove();
+      locationMarker.current = null;
       map.current?.remove();
       map.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const activeMap = map.current;
+    if (!activeMap) return;
+
+    locationMarker.current?.remove();
+    locationMarker.current = null;
+    if (!filters.currentLocation) return;
+
+    const element = document.createElement("div");
+    element.setAttribute("aria-label", "Current location");
+    element.title = "Current location";
+    Object.assign(element.style, {
+      display: "grid",
+      placeItems: "center",
+      width: "32px",
+      height: "32px",
+      borderRadius: "9999px",
+      background: "white",
+      border: "2px solid #2563eb",
+      boxShadow: "0 0 0 7px rgb(37 99 235 / 20%), 0 2px 8px rgb(15 23 42 / 35%)",
+    });
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("width", "20");
+    icon.setAttribute("height", "20");
+    icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "#2563eb");
+    icon.setAttribute("stroke-width", "2.5");
+    icon.setAttribute("stroke-linecap", "round");
+    icon.setAttribute("stroke-linejoin", "round");
+    const center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    center.setAttribute("cx", "12");
+    center.setAttribute("cy", "12");
+    center.setAttribute("r", "3");
+    const crosshairs = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    crosshairs.setAttribute("d", "M12 2v3m0 14v3M2 12h3m14 0h3");
+    icon.append(center, crosshairs);
+    element.append(icon);
+    locationMarker.current = new maplibregl.Marker({ element, anchor: "center" })
+      .setLngLat([filters.currentLocation.lng, filters.currentLocation.lat])
+      .addTo(activeMap);
+    activeMap.flyTo({ center: [filters.currentLocation.lng, filters.currentLocation.lat], zoom: 13 });
+  }, [filters.currentLocation]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -73,9 +121,13 @@ export function MapView() {
         </div>
       `;
 
-      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
+      const providerColour = PROVIDER_COLOURS[prop.provider] ?? PROVIDER_COLOURS.Other;
+      const popup = new maplibregl.Popup({ offset: 25, className: 'provider-map-popup' }).setHTML(popupContent);
+      popup.on('open', () => {
+        popup.getElement().style.setProperty('--provider-pastel', providerColour);
+      });
 
-      const marker = new maplibregl.Marker({ color: PROVIDER_COLOURS[prop.provider] ?? '#6b7280' })
+      const marker = new maplibregl.Marker({ color: providerColour })
         .setLngLat([prop.lng, prop.lat])
         .setPopup(popup)
         .addTo(map.current!);

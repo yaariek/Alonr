@@ -1,14 +1,18 @@
 import { Slider as SliderPrimitive } from "@base-ui/react/slider"
 import { cn } from "cn"
 
+type SliderProps = SliderPrimitive.Root.Props & { tone?: "blue" | "darkBlue" };
+
 function Slider({
+  tone = "blue",
   className,
   defaultValue,
   value,
   min = 0,
   max = 100,
   ...props
-}: SliderPrimitive.Root.Props) {
+}: SliderProps) {
+  const accentColour = tone === "darkBlue" ? "#1e3a8a" : "#2563eb";
   const _values = Array.isArray(value)
     ? value
     : Array.isArray(defaultValue)
@@ -33,7 +37,7 @@ function Slider({
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            style={{ backgroundColor: "#2563eb" }}
+            style={{ backgroundColor: accentColour }}
             className="bg-blue-600 select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
@@ -41,7 +45,7 @@ function Slider({
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
-            style={{ borderColor: "#2563eb" }}
+            style={{ borderColor: accentColour }}
             className="relative block size-3 shrink-0 rounded-full border border-blue-600 bg-white ring-blue-600/30 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:ring-blue-600 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}

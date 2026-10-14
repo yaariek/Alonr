@@ -3,7 +3,9 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { SlidersHorizontal } from "lucide-react";
+import { LocateFixed, SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
+import type { LatLng } from "@/lib/types";
 
 export interface FilterState {
   minPrice: number | null;
@@ -11,6 +13,8 @@ export interface FilterState {
   cateredOnly: boolean;
   reception24h: boolean;
   accessibleOnly: boolean;
+  currentLocation: LatLng | null;
+  radiusKm: number;
 }
 
 export interface PriceBounds {
@@ -29,6 +33,31 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
   const selectedMin = filters.minPrice ?? priceBounds.min;
   const selectedMax = filters.maxPrice ?? priceBounds.max;
   const hasPrices = priceBounds.max > priceBounds.min;
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const requestCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Location is not available in this browser.");
+      return;
+    }
+
+    setLocationLoading(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        onChange({ ...filters, currentLocation: { lat: coords.latitude, lng: coords.longitude } });
+        setLocationLoading(false);
+      },
+      (error) => {
+        setLocationError(error.code === error.PERMISSION_DENIED
+          ? "Location access is blocked for this site. Allow it in your browser's site settings, then try again."
+          : "Could not get your location. Try again.");
+        setLocationLoading(false);
+      },
+      { enableHighAccuracy: true, maximumAge: 60_000, timeout: 12_000 },
+    );
+  };
 
   return (
     <Sheet>
@@ -73,6 +102,54 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
               <span>Highest £{priceBounds.max}/wk</span>
             </div>
           </div>
+
+          <section className="space-y-3 rounded-xl border p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold">Search near me</h3>
+                <p className="text-xs text-muted-foreground">
+                  {filters.currentLocation
+                    ? `Showing halls within ${filters.radiusKm} km of your location.`
+                    : "Your browser will ask for location permission when you continue."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={requestCurrentLocation}
+                disabled={locationLoading}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 hover:bg-blue-100 disabled:opacity-60"
+              >
+                <LocateFixed className="size-4 text-blue-700" />
+                {locationLoading ? "Locating…" : filters.currentLocation ? "Refresh" : "Allow location"}
+              </button>
+            </div>
+            {locationError && <p role="alert" className="text-xs text-destructive">{locationError}</p>}
+            {filters.currentLocation && (
+              <>
+                <div className="flex items-center justify-between text-sm font-medium">
+                  <span>Radius</span>
+                  <span className="font-bold text-blue-950">{filters.radiusKm} km</span>
+                </div>
+                <Slider
+                  tone="darkBlue"
+                  value={[filters.radiusKm]}
+                  min={1}
+                  max={25}
+                  step={1}
+                  onValueChange={(value) => {
+                    if (Array.isArray(value) && value.length) {
+                      onChange({ ...filters, radiusKm: value[0] });
+                    }
+                  }}
+                  aria-label="Search radius in kilometres"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>1 km</span><span>25 km</span>
+                  <button type="button" className="font-medium text-foreground underline" onClick={() => onChange({ ...filters, currentLocation: null })}>Clear location</button>
+                </div>
+              </>
+            )}
+          </section>
 
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between">
