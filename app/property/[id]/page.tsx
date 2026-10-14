@@ -146,8 +146,7 @@ async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
         <CardContent className="space-y-3">
           {!listings?.length && <p className="text-sm text-muted-foreground">Nobody has listed a room here yet.</p>}
           {listings?.map((l) => (
-            // TODO(B): link each listing to /swap/<id> once that page exists
-            <div key={l.id} className="space-y-1.5 rounded-lg border p-3">
+            <Link key={l.id} href={`/listings/${l.id}`} className="block space-y-1.5 rounded-lg border p-3 transition-colors hover:bg-muted/50">
               <div className="flex items-center justify-between gap-2">
                 <Badge variant={l.kind === "swap" ? "default" : "outline"}>
                   {l.kind === "swap" ? "Swap" : "Contract release"}
@@ -169,9 +168,9 @@ async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
                 )}
               </p>
               {l.description && <p className="text-sm">{l.description}</p>}
-            </div>
+            </Link>
           ))}
-          <Link href="/swap/new" className={buttonVariants({ variant: "outline", className: "w-full" })}>
+          <Link href="/listings/new" className={buttonVariants({ variant: "outline", className: "w-full" })}>
             Live here? List your room
           </Link>
         </CardContent>
