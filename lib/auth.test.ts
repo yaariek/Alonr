@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { isTesterEmail, isUniEmail, NOT_A_UNI_EMAIL, startSignIn, verifyCode } from "@/lib/auth";
+import { isTesterEmail, isUniEmail, NOT_A_UNI_EMAIL, safeNext, startSignIn, verifyCode } from "@/lib/auth";
 
 // Minimal fake of supabase.auth: each method resolves with { error } (null = success)
 function fakeSupabase(errors: Partial<Record<"otp" | "password" | "verify", string>> = {}) {
@@ -67,5 +67,14 @@ describe("verifyCode", () => {
       ok: false,
       message: "That code didn't work. Check it and try again.",
     });
+  });
+});
+
+describe("safeNext", () => {
+  it("only allows paths inside the app", () => {
+    expect(safeNext("/swap")).toBe("/swap");
+    expect(safeNext(null)).toBe("/map");
+    expect(safeNext("https://evil.example")).toBe("/map");
+    expect(safeNext("//evil.example")).toBe("/map");
   });
 });
