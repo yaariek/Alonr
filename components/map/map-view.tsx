@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
-import { useProperties } from '@/lib/data/properties';
+import { useProperties } from '@/lib/data/use-properties';
 import { filterProperties, minPrice } from '@/lib/filters';
 
 // MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
@@ -87,7 +87,8 @@ export function MapView() {
         <div style="padding: 4px;">
           <strong style="font-size: 14px;">${escapeHtml(prop.name)}</strong><br/>
           <span style="font-size: 12px; color: #666;">${escapeHtml(prop.provider)}</span><br/>
-          <strong style="font-size: 13px; color: #2563eb;">${from === null ? 'Prices coming soon' : `From £${from}/wk`}</strong>
+          <strong style="font-size: 13px; color: #2563eb;">${from === null ? 'Prices coming soon' : `From £${from}/wk`}</strong><br/>
+          <a href="/property/${encodeURIComponent(prop.id)}" style="display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 600; text-decoration: underline;">View hall →</a>
         </div>
       `;
 
