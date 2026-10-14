@@ -33,6 +33,7 @@ function Slider({
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
+            style={{ backgroundColor: "#2563eb" }}
             className="bg-blue-600 select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
@@ -40,6 +41,7 @@ function Slider({
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
+            style={{ borderColor: "#2563eb" }}
             className="relative block size-3 shrink-0 rounded-full border border-blue-600 bg-white ring-blue-600/30 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:ring-blue-600 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}
