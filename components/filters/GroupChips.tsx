@@ -1,0 +1,41 @@
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+
+// label shown on the chip -> value matched against Property.provider ('All' = no filter)
+const PROVIDER_GROUPS = [
+{ label: 'All', value: 'All' },
+{ label: 'Unite Students', value: 'Unite' },
+{ label: 'iQ Student', value: 'iQ' },
+{ label: 'Chapter', value: 'Chapter' },
+{ label: 'Scape', value: 'Scape' },
+{ label: 'Prestige', value: 'Prestige' },
+{ label: 'UCL Halls', value: 'UCL' },
+{ label: 'KCL Halls', value: 'KCL' },
+{ label: 'Imperial Halls', value: 'Imperial' },
+];
+
+interface GroupChipsProps {
+selected: string;
+onSelect: (group: string) => void;
+}
+
+export function GroupChips({ selected, onSelect }: GroupChipsProps) {
+return (
+<div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none px-4">
+  {PROVIDER_GROUPS.map(({ label, value }) => {
+    const isSelected = selected === value;
+    return (
+      <Badge
+        key={value}
+        variant={isSelected ? 'default' : 'outline'}
+        className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-colors"
+        onClick={() => onSelect(value)}
+      >
+        {label}
+      </Badge>
+    );
+  })}
+</div>
+);
+}

@@ -38,6 +38,7 @@ export interface Property extends LatLng {
   catered: boolean;
   facilities: string[];
   roomTypes: RoomType[];
+  supermarketName?: string;
   supermarketM?: number; // metres to nearest supermarket
   stationName?: string;
   stationM?: number; // metres to nearest station

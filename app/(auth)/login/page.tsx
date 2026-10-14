@@ -1,14 +1,13 @@
-import { PlaceholderPage } from "@/components/placeholder-page";
+import { Suspense } from "react";
+import { LoginForm } from "./login-form";
 
-export default function Page() {
+// LoginForm reads ?error / ?next (request-time data), so it must render inside <Suspense>.
+export default function LoginPage() {
   return (
-    <PlaceholderPage
-      title="Sign in"
-      owner="Person B"
-      todo={[
-        "Uni email (.ac.uk) + 6-digit OTP via Supabase Auth",
-        "Demo login button for judges",
-      ]}
-    />
+    <div className="flex min-h-full items-center justify-center p-4">
+      <Suspense>
+        <LoginForm />
+      </Suspense>
+    </div>
   );
 }

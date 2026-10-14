@@ -17,7 +17,12 @@ export interface PropertyFilters {
 
 const hasAny = <T,>(xs?: T[]): xs is T[] => !!xs && xs.length > 0;
 
+// A hall with no prices yet still shows, unless a room filter (price, kind, flatmates, weeks) is set.
+const hasRoomFilter = (f: PropertyFilters) =>
+  f.maxPriceWeek !== undefined || hasAny(f.roomKinds) || f.maxFlatmates !== undefined || f.contractWeeks !== undefined;
+
 function roomMatches(p: Property, f: PropertyFilters): boolean {
+  if (p.roomTypes.length === 0) return !hasRoomFilter(f);
   return p.roomTypes.some(
     (r) =>
       (f.maxPriceWeek === undefined || r.priceWeek <= f.maxPriceWeek) &&
@@ -48,6 +53,7 @@ export function filterProperties(properties: Property[], f: PropertyFilters): Pr
   return properties.filter((p) => matchesFilters(p, f));
 }
 
-export function minPrice(p: Property): number {
-  return Math.min(...p.roomTypes.map((r) => r.priceWeek));
+// null = no prices yet
+export function minPrice(p: Property): number | null {
+  return p.roomTypes.length ? Math.min(...p.roomTypes.map((r) => r.priceWeek)) : null;
 }
