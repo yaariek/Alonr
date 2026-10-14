@@ -34,15 +34,15 @@ Agents: do the tasks under **your person** only, top first. Stay inside the fold
 4. [ ] After C pushes `lib/data/listings.ts`: a "Has listings" filter on the map, and the listing count on each hall card in `/search`.
 
 **B: Listings** (was "Swap"; owns `app/(auth)`, `app/listings`, `components/listings`, `app/layout.tsx`, `components/bottom-nav.tsx`)
-1. [ ] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]` (delete `app/swap`).
-2. [ ] Build the screens with **placeholder data first** (don't wait for C):
+1. [x] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]` (delete `app/swap`).
+2. [x] Build the screens with **placeholder data first** (don't wait for C):
    - Feed, Vinted-style: photo cards, a **like** (heart) on each, tap to open.
    - "Create listing" button + form: pick the hall → room type, price, flatmates and contract weeks **auto-fill** from that hall; the user sets contract dates, description, photos, kind (swap / contract release) and what they want (halls, room types, max price).
    - Listing detail: photos, info, like, and a **"Message"** button.
    - **Quick match** (swaps only), on the listings page: dating-app style cards of listings that fit your wants AND whose wants your hall fits, with pass / like.
    - "Mutual match" badge.
-3. [ ] Swap the placeholder data for C's functions in `lib/data/listings.ts` (**ready**, each is documented in the file): `getListings`, `getMyListings`, `getListing`, `createListing` + `validateListing`, `prefillFromHall`, `like` / `unlike` / `myLikes` / `getLikedListings`, `quickMatches` (pass `exclude` = ids the user swiped away), `isMutualMatch`, `uploadPhoto`, `setListingStatus`, `deleteListing`. They throw an `Error` whose message you can show. Don't write your own Supabase queries for these.
-4. [ ] The "Message" button calls `startConversation(listingId)` and goes to `/messages/<conversation id>`. **Chat itself is C's** (don't build `/messages`).
+3. [x] Swap the placeholder data for C's functions in `lib/data/listings.ts` (**ready**, each is documented in the file): `getListings`, `getMyListings`, `getListing`, `createListing` + `validateListing`, `prefillFromHall`, `like` / `unlike` / `myLikes` / `getLikedListings`, `quickMatches` (pass `exclude` = ids the user swiped away), `isMutualMatch`, `uploadPhoto`, `setListingStatus`, `deleteListing`. They throw an `Error` whose message you can show. Don't write your own Supabase queries for these.
+4. [x] The "Message" button calls `startConversation(listingId)` and goes to `/messages/<conversation id>`. **Chat itself is C's** (don't build `/messages`).
 - CSV edits: save as **CSV UTF-8**, use university ids (`kcl`, not "King's College London"), run `python data/check_csv.py` before pushing.
 
 **C: Backend + Chat** (owns `supabase/`, `data/`, `lib/types.ts`, `lib/data/`, `app/messages`, `components/chat`)
@@ -72,7 +72,7 @@ Python (Person C): `python -m venv .venv`, activate it (`.venv\Scripts\activate`
 - `lib/types.ts`: placeholder types until `supabase gen types` replaces them.
 - **Supabase is live** (schema v1 in `supabase/migrations/`). `lib/database.types.ts` is generated from it: never edit by hand, Person C regenerates with `npm run db:types`. The clients in `lib/supabase/` are already typed with it, so `.from("listings")` autocompletes columns. RPC: `supabase.rpc('match_listings', { p_listing_id })`.
 - `lib/supabase/client.ts` (client components) and `server.ts` (server components).
-- Placeholder pages still to build (`components/placeholder-page.tsx`): `/swap` and `/swap/new` (becoming `/listings`), `/messages`, `/houseshare`.
+- Placeholder pages still to build (`components/placeholder-page.tsx`): `/messages` (Person C) and `/houseshare` (P2).
 - `data/properties.csv`: template; **one row per room type** (same hall repeated), lists separated by `;`, put your initial in `added_by`.
 
 ### Next.js 16 gotchas (read before coding)
