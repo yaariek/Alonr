@@ -4,26 +4,26 @@ import type { Campus, Property, ProviderGroup } from "@/lib/types";
 // Replaced by real rows from `data/seed.py` (Person C).
 
 export const PROVIDER_COLOURS: Record<ProviderGroup, string> = {
-  Unite: "#FF6666",
-  iQ: "#FFB266",
-  Chapter: "#FFFF66",
-  Scape: "#B2FF66",
-  Prestige: "#FF6666",
-  UCL: "#FFB266",
-  KCL: "#FFFF66",
-  Imperial: "#B2FF66",
-  QMUL: "#FF6666",
-  LSE: "#FFB266",
-  Goldsmiths: "#FFFF66",
-  UEL: "#B2FF66",
-  Greenwich: "#FF6666",
-  Westminster: "#FFB266",
-  Middlesex: "#FFFF66",
-  "St Mary's": "#B2FF66",
-  Mezzino: "#FF6666",
-  Urbanest: "#FFB266",
-  "Stay Club": "#FFFF66",
-  Other: "#B2FF66",
+  Unite: "#F5EBDD", // cream
+  iQ: "#E3C9A0", // sand
+  Chapter: "#8A7E76", // taupe
+  Scape: "#413333", // cocoa
+  Prestige: "#1f2f4a", // ink navy
+  UCL: "#e5b04b", // mustard
+  KCL: "#f09a3e", // marigold
+  Imperial: "#f2765e", // coral
+  QMUL: "#c55a3b", // terracotta
+  LSE: "#f4b5a8", // blush
+  Goldsmiths: "#d9727f", // rose
+  UEL: "#7a3e5c", // plum
+  Greenwich: "#a88aa6", // mauve
+  Westminster: "#8db3d9", // sky
+  Middlesex: "#315b8c", // denim
+  "St Mary's": "#8cc5b5", // seafoam
+  Mezzino: "#2f7f86", // teal
+  Urbanest: "#9db08a", // sage
+  "Stay Club": "#6b7a3a", // olive
+  Other: "#2e5144", // forest
 };
 
 export const CAMPUSES: Campus[] = [
