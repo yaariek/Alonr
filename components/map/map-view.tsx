@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
 import { useProperties } from '@/lib/data/use-properties';
 import { minPrice } from '@/lib/filters';
+import { PROVIDER_COLOURS } from '@/lib/sample-data';
 import { usePropertyFilters } from '@/lib/use-property-filters';
 
 // MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
@@ -74,7 +75,7 @@ export function MapView() {
 
       const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
 
-      const marker = new maplibregl.Marker({ color: '#2563eb' })
+      const marker = new maplibregl.Marker({ color: PROVIDER_COLOURS[prop.provider] ?? '#6b7280' })
         .setLngLat([prop.lng, prop.lat])
         .setPopup(popup)
         .addTo(map.current!);
