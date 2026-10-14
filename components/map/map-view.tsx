@@ -68,14 +68,36 @@ export function MapView() {
     if (!filters.currentLocation) return;
 
     const element = document.createElement("div");
+    element.setAttribute("aria-label", "Current location");
+    element.title = "Current location";
     Object.assign(element.style, {
-      width: "18px",
-      height: "18px",
+      display: "grid",
+      placeItems: "center",
+      width: "32px",
+      height: "32px",
       borderRadius: "9999px",
-      background: "#1e3a8a",
-      border: "3px solid white",
-      boxShadow: "0 0 0 7px rgb(30 58 138 / 22%), 0 2px 8px rgb(15 23 42 / 35%)",
+      background: "white",
+      border: "2px solid #2563eb",
+      boxShadow: "0 0 0 7px rgb(37 99 235 / 20%), 0 2px 8px rgb(15 23 42 / 35%)",
     });
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("width", "20");
+    icon.setAttribute("height", "20");
+    icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "#2563eb");
+    icon.setAttribute("stroke-width", "2.5");
+    icon.setAttribute("stroke-linecap", "round");
+    icon.setAttribute("stroke-linejoin", "round");
+    const center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    center.setAttribute("cx", "12");
+    center.setAttribute("cy", "12");
+    center.setAttribute("r", "3");
+    const crosshairs = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    crosshairs.setAttribute("d", "M12 2v3m0 14v3M2 12h3m14 0h3");
+    icon.append(center, crosshairs);
+    element.append(icon);
     locationMarker.current = new maplibregl.Marker({ element, anchor: "center" })
       .setLngLat([filters.currentLocation.lng, filters.currentLocation.lat])
       .addTo(activeMap);

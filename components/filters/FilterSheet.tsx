@@ -51,7 +51,7 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
       },
       (error) => {
         setLocationError(error.code === error.PERMISSION_DENIED
-          ? "Location permission was denied. Allow location access in your browser to use this filter."
+          ? "Location access is blocked for this site. Allow it in your browser's site settings, then try again."
           : "Could not get your location. Try again.");
         setLocationLoading(false);
       },
@@ -110,17 +110,17 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
                 <p className="text-xs text-muted-foreground">
                   {filters.currentLocation
                     ? `Showing halls within ${filters.radiusKm} km of your location.`
-                    : "Use your location to find nearby halls."}
+                    : "Your browser will ask for location permission when you continue."}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={requestCurrentLocation}
                 disabled={locationLoading}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium hover:bg-accent disabled:opacity-60"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 hover:bg-blue-100 disabled:opacity-60"
               >
-                <LocateFixed className="size-4" />
-                {locationLoading ? "Locating…" : filters.currentLocation ? "Refresh" : "Use location"}
+                <LocateFixed className="size-4 text-blue-700" />
+                {locationLoading ? "Locating…" : filters.currentLocation ? "Refresh" : "Allow location"}
               </button>
             </div>
             {locationError && <p role="alert" className="text-xs text-destructive">{locationError}</p>}
