@@ -11,6 +11,8 @@ const DEFAULT_FILTERS: FilterState = {
   cateredOnly: false,
   reception24h: false,
   accessibleOnly: false,
+  currentLocation: null,
+  radiusKm: 5,
 };
 
 /** Shared provider, price range, and feature filters for the map and search feed. */
@@ -32,6 +34,7 @@ export function usePropertyFilters(properties: Property[]) {
     if (filters.cateredOnly) count++;
     if (filters.reception24h) count++;
     if (filters.accessibleOnly) count++;
+    if (filters.currentLocation) count++;
     return count;
   }, [filters, priceBounds]);
 
@@ -42,6 +45,8 @@ export function usePropertyFilters(properties: Property[]) {
       catered: filters.cateredOnly ? true : undefined,
       reception24h: filters.reception24h,
       accessible: filters.accessibleOnly,
+      nearLocation: filters.currentLocation ?? undefined,
+      radiusKm: filters.currentLocation ? filters.radiusKm : undefined,
     });
     if (selectedProvider !== "All") {
       list = list.filter((property) => property.provider === selectedProvider);

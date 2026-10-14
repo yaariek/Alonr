@@ -1,10 +1,13 @@
-import type { Property, ProviderGroup, RoomKind } from "@/lib/types";
+import type { LatLng, Property, ProviderGroup, RoomKind } from "@/lib/types";
+import { distanceKm } from "@/lib/geo";
 
 // All filters are optional: undefined / empty means "don't filter on this".
 export interface PropertyFilters {
   providers?: ProviderGroup[];
   minPriceWeek?: number;
   maxPriceWeek?: number;
+  nearLocation?: LatLng;
+  radiusKm?: number;
   roomKinds?: RoomKind[];
   catered?: boolean;
   reception24h?: boolean;
@@ -44,6 +47,7 @@ export function matchesFilters(p: Property, f: PropertyFilters): boolean {
     (f.catered === undefined || p.catered === f.catered) &&
     (!f.reception24h || p.reception24h) &&
     (!f.accessible || p.accessible) &&
+    (!f.nearLocation || f.radiusKm === undefined || distanceKm(p, f.nearLocation) <= f.radiusKm) &&
     within(p.supermarketM, f.maxSupermarketM) &&
     within(p.stationM, f.maxStationM) &&
     within(p.bikeDockM, f.maxBikeDockM) &&

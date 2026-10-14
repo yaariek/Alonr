@@ -23,6 +23,7 @@ export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
+  const locationMarker = useRef<maplibregl.Marker | null>(null);
 
   const { properties } = useProperties();
   const {
@@ -51,10 +52,35 @@ export function MapView() {
       // Clear the refs too: React re-runs this effect (dev Strict Mode, and when you come back
       // to the Map tab), and a stale ref would stop the map being recreated -> blank map.
       markers.current = [];
+      locationMarker.current?.remove();
+      locationMarker.current = null;
       map.current?.remove();
       map.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const activeMap = map.current;
+    if (!activeMap) return;
+
+    locationMarker.current?.remove();
+    locationMarker.current = null;
+    if (!filters.currentLocation) return;
+
+    const element = document.createElement("div");
+    Object.assign(element.style, {
+      width: "18px",
+      height: "18px",
+      borderRadius: "9999px",
+      background: "#1e3a8a",
+      border: "3px solid white",
+      boxShadow: "0 0 0 7px rgb(30 58 138 / 22%), 0 2px 8px rgb(15 23 42 / 35%)",
+    });
+    locationMarker.current = new maplibregl.Marker({ element, anchor: "center" })
+      .setLngLat([filters.currentLocation.lng, filters.currentLocation.lat])
+      .addTo(activeMap);
+    activeMap.flyTo({ center: [filters.currentLocation.lng, filters.currentLocation.lat], zoom: 13 });
+  }, [filters.currentLocation]);
 
   useEffect(() => {
     if (!map.current) return;
