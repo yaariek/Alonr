@@ -20,6 +20,14 @@ describe("filterProperties", () => {
     expect(names(result)).toEqual(["iQ Shoreditch"]);
   });
 
+  it("keeps halls with no prices yet unless a room filter is set", () => {
+    const unpriced = { ...SAMPLE_PROPERTIES[0], id: "x", name: "No prices yet", roomTypes: [] };
+    const all = [...SAMPLE_PROPERTIES, unpriced];
+    expect(names(filterProperties(all, { accessible: true }))).toContain("No prices yet");
+    expect(names(filterProperties(all, { maxPriceWeek: 1000 }))).not.toContain("No prices yet");
+    expect(names(filterProperties(all, { roomKinds: ["studio"] }))).not.toContain("No prices yet");
+  });
+
   it("excludes properties with unknown distance when a distance filter is set", () => {
     const result = filterProperties(SAMPLE_PROPERTIES, { maxBikeDockM: 10_000 });
     expect(names(result)).not.toContain("Woodward Buildings");

@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FilterSheet, GroupChips } from '@/components/filters';
-import { SAMPLE_PROPERTIES } from '@/lib/sample-data';
+import { useProperties } from '@/lib/data/properties';
 import { filterProperties, minPrice } from '@/lib/filters';
 
 // MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
@@ -22,6 +22,7 @@ export function MapView() {
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
 
+  const { properties } = useProperties();
   const [selectedProvider, setSelectedProvider] = useState('All');
   const [filters, setFilters] = useState({
     maxPrice: 600,
@@ -41,7 +42,7 @@ export function MapView() {
 
   const filteredProperties = useMemo(() => {
     // Map the sheet's state onto lib/filters' PropertyFilters (undefined = don't filter)
-    let list = filterProperties(SAMPLE_PROPERTIES, {
+    let list = filterProperties(properties, {
       maxPriceWeek: filters.maxPrice < 600 ? filters.maxPrice : undefined,
       catered: filters.cateredOnly ? true : undefined,
       reception24h: filters.reception24h,
@@ -51,7 +52,7 @@ export function MapView() {
       list = list.filter((p) => p.provider === selectedProvider);
     }
     return list;
-  }, [filters, selectedProvider]);
+  }, [properties, filters, selectedProvider]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -81,11 +82,12 @@ export function MapView() {
     markers.current = [];
 
     filteredProperties.forEach((prop) => {
+      const from = minPrice(prop);
       const popupContent = `
         <div style="padding: 4px;">
           <strong style="font-size: 14px;">${escapeHtml(prop.name)}</strong><br/>
           <span style="font-size: 12px; color: #666;">${escapeHtml(prop.provider)}</span><br/>
-          <strong style="font-size: 13px; color: #2563eb;">From £${minPrice(prop)}/wk</strong>
+          <strong style="font-size: 13px; color: #2563eb;">${from === null ? 'Prices coming soon' : `From £${from}/wk`}</strong>
         </div>
       `;
 
