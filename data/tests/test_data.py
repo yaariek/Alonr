@@ -1,8 +1,10 @@
+import json
+
 import pytest
 
 from enrich import CsvError, group_rows, haversine_m, nearest, slugify
 from import_osm import candidate_halls, guess_provider, spread_sample
-from seed import build_demo_listings, cheapest, plan_prune, to_db_wants
+from seed import DEMO_LISTINGS, DEMO_PEOPLE, ENRICHED, build_demo_listings, plan_prune, to_db_wants
 
 ROW = {"name": "Chapter King's Cross", "provider": "Chapter", "affiliated_university": "",
        "address": "200 Pentonville Rd", "postcode": "n1 9jp", "room_kind": "ensuite", "price_week": "389",
@@ -68,31 +70,35 @@ def satisfies(have: dict, wants: dict) -> bool:
             and (not wants.get("property_ids") or have["property_id"] in wants["property_ids"]))
 
 
-def hall(slug, price, priced=True):
-    return {"slug": slug, "name": slug, "lat": 51.5, "lng": -0.1,
-            "room_types": [{"kind": "ensuite", "price_week": price, "flatmates": 5, "contract_weeks": [51]}] if priced else []}
-
-
-def test_demo_listings_form_mutual_matches():
-    props = [hall("a", 300), hall("b", 250), hall("c", 400), hall("d", 350), hall("unpriced", 0, priced=False)]
+def test_demo_listings_tell_the_story_on_the_real_data():
+    props = json.loads(ENRICHED.read_text(encoding="utf8"))
     ids = {p["slug"]: f"id-{p['slug']}" for p in props}
-    people = ["judge", "amira", "tom", "mei", "jonas", "priya"]
-    listings = build_demo_listings(props, people)
-    assert all(l["property_slug"] != "unpriced" for l in listings)
+    listings, warnings = build_demo_listings(props)
+    assert warnings == [] and len(listings) == len(DEMO_LISTINGS)  # every hall / room type exists
 
-    swaps = [{**l, "property_id": ids[l["property_slug"]], "wants": to_db_wants(l["wants"], ids)}
-             for l in listings if l["kind"] == "swap"]
-    assert len(swaps) == 4 and all(l["person"] != "judge" for l in listings)
-    for x, y in zip(swaps[::2], swaps[1::2]):  # built in pairs
-        assert satisfies(y, x["wants"]) and satisfies(x, y["wants"])
-        assert not satisfies(swaps[2] if x is swaps[0] else swaps[0], x["wants"])  # other pairs don't match
-    release = [l for l in listings if l["kind"] == "release"]
-    assert len(release) == 1 and release[0]["person"] == "priya"
+    people = {p["key"] for p in DEMO_PEOPLE}
+    assert all(l["person"] in people and l["person"] != "judge" for l in listings)
+    assert all(who in people and who != l["person"] for l in listings for who in l["likes"])
+
+    swaps = {l["person"]: {**l, "property_id": ids[l["property_slug"]], "wants": to_db_wants(l["wants"], ids)}
+             for l in listings if l["kind"] == "swap"}
+    def mutual(a, b):
+        return satisfies(swaps[a], swaps[b]["wants"]) and satisfies(swaps[b], swaps[a]["wants"])
+    pairs = {frozenset(p) for p in [("amira", "tom"), ("mei", "jonas"), ("sara", "leo")]}
+    for a in swaps:
+        for b in swaps:
+            if a < b:
+                assert mutual(a, b) == (frozenset((a, b)) in pairs), (a, b)  # only the intended pairs match
+    assert all(l["wants"] == {} for l in listings if l["kind"] == "release")
+    assert all(l["start_date"] < l["end_date"] for l in listings)
 
 
-def test_cheapest():
-    p = {"room_types": [{"price_week": 400}, {"price_week": 300}]}
-    assert cheapest(p)["price_week"] == 300
+def test_demo_listings_skip_missing_halls():
+    props = [{"slug": "wick-park", "name": "Wick Park", "room_types": [
+        {"kind": "ensuite", "price_week": 245, "flatmates": 6, "contract_weeks": [44]}]}]
+    listings, warnings = build_demo_listings(props, DEMO_LISTINGS[:2])
+    assert listings == []  # amira wants a hall that's gone; tom's hall is gone
+    assert len(warnings) == 2 and "james-lighthill-house" in warnings[0]
 
 
 # ───────────── import_osm ─────────────

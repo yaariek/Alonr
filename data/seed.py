@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timedelta, timezone
 import os
 import sys
 from pathlib import Path
@@ -54,6 +55,84 @@ DEMO_PEOPLE = [
     {"key": "priya", "display_name": "Priya", "course": "Law", "year": 2,
      "languages": ["English", "Hindi"], "lifestyle": {"drinking": "never", "parties": False, "smoking": False,
                                                       "instruments": [], "pets": False, "personality": ["organised"]}},
+    {"key": "leo", "display_name": "Leo", "course": "Mechanical Engineering", "year": 2,
+     "languages": ["English", "Italian"], "lifestyle": {"drinking": "sometimes", "parties": True, "smoking": False,
+                                                        "instruments": ["drums"], "pets": False, "personality": ["sporty"]}},
+    {"key": "sara", "display_name": "Sara", "course": "Bioengineering PhD", "year": 1,
+     "languages": ["English", "Swedish"], "lifestyle": {"drinking": "sometimes", "parties": False, "smoking": False,
+                                                        "instruments": [], "pets": True, "personality": ["tidy", "early bird"]}},
+    {"key": "omar", "display_name": "Omar", "course": "Mathematics", "year": 3,
+     "languages": ["English", "Arabic", "French"], "lifestyle": {"drinking": "never", "parties": False, "smoking": False,
+                                                                 "instruments": [], "pets": False, "personality": ["quiet"]}},
+    {"key": "chloe", "display_name": "Chloe", "course": "Fashion Design", "year": 2,
+     "languages": ["English", "French"], "lifestyle": {"drinking": "often", "parties": True, "smoking": False,
+                                                       "instruments": [], "pets": False, "personality": ["creative", "night owl"]}},
+    {"key": "ravi", "display_name": "Ravi", "course": "Nursing", "year": 1,
+     "languages": ["English", "Tamil"], "lifestyle": {"drinking": "sometimes", "parties": False, "smoking": False,
+                                                      "instruments": [], "pets": False, "personality": ["friendly"]}},
+    {"key": "hana", "display_name": "Hana", "course": "History", "year": 2,
+     "languages": ["English", "Japanese"], "lifestyle": {"drinking": "sometimes", "parties": False, "smoking": False,
+                                                         "instruments": ["flute"], "pets": False, "personality": ["organised"]}},
+]
+
+# Hand-picked demo listings that tell the alonr story (hall slugs from properties.csv).
+# Price and flatmates come from the hall's room type. Three pairs match each other both ways
+# (Amira<->Tom, Mei<->Jonas, Sara<->Leo); Omar has no match yet, so on stage the judge can
+# create a listing that matches him (an ensuite under £260 that wants Floyer House).
+# The judge has no listings. likes = demo people who liked it; age_h = posted this many hours ago.
+DEMO_LISTINGS = [
+    {"person": "amira", "kind": "swap", "hall": "wick-park", "room": "ensuite",
+     "start": "2026-09-12", "end": "2027-07-17", "age_h": 30, "likes": ["tom", "mei", "omar"],
+     "wants": {"property_slugs": ["james-lighthill-house"], "max_price": 260},
+     "description": "My Architecture studio moved to UCL Bloomsbury and I'm 50 minutes from class. "
+                    "Ensuite at Wick Park, 6 flatmates, by the canal. Looking for James Lighthill House."},
+    {"person": "tom", "kind": "swap", "hall": "james-lighthill-house", "room": "shared_bathroom",
+     "start": "2026-09-19", "end": "2027-06-26", "age_h": 26, "likes": ["amira", "chloe"],
+     "wants": {"property_slugs": ["wick-park"], "room_kinds": ["ensuite"], "max_price": 260},
+     "description": "My Computer Science modules are at UCL East this year. Room at James Lighthill House, "
+                    "near King's Cross. Would love an ensuite near Stratford."},
+    {"person": "mei", "kind": "swap", "hall": "chapter-king-s-cross", "room": "studio",
+     "start": "2026-09-05", "end": "2027-08-28", "age_h": 20, "likes": ["jonas", "sara", "hana", "ravi"],
+     "wants": {"property_slugs": ["lse-high-holborn-residence"], "max_price": 400},
+     "description": "Lovely studio with a gym and cinema room downstairs, but £489 a week is too much for me "
+                    "this year. Happy to move into an ensuite at LSE High Holborn."},
+    {"person": "jonas", "kind": "swap", "hall": "lse-high-holborn-residence", "room": "ensuite",
+     "start": "2026-09-19", "end": "2027-06-12", "age_h": 18, "likes": ["mei"],
+     "wants": {"property_slugs": ["chapter-king-s-cross"], "room_kinds": ["studio"], "max_price": 500},
+     "description": "Early hospital placements and I'd like my own kitchen. Ensuite at LSE High Holborn, "
+                    "5 flatmates, very central. Swap for a studio at Chapter King's Cross."},
+    {"person": "sara", "kind": "swap", "hall": "willis-jackson-hall", "room": "shared_bathroom",
+     "start": "2026-09-26", "end": "2027-06-26", "age_h": 12, "likes": ["leo", "priya"],
+     "wants": {"property_slugs": ["gradpad-wood-lane-studios"], "room_kinds": ["studio"], "max_price": 380},
+     "description": "My PhD lab moved to Imperial's White City campus. Room at Willis Jackson Hall in "
+                    "South Kensington. Looking for a studio at Wood Lane."},
+    {"person": "leo", "kind": "swap", "hall": "gradpad-wood-lane-studios", "room": "studio",
+     "start": "2026-09-05", "end": "2027-08-28", "age_h": 10, "likes": ["sara"],
+     "wants": {"property_slugs": ["willis-jackson-hall", "goldsmid-house"], "max_price": 250},
+     "description": "Studio at Wood Lane, 3 minutes from White City. All my lectures are in South Kensington "
+                    "now: I'd swap for an Imperial hall there and save over £150 a week."},
+    {"person": "omar", "kind": "swap", "hall": "floyer-house", "room": "shared_bathroom",
+     "start": "2026-09-19", "end": "2027-06-12", "age_h": 6, "likes": [],
+     "wants": {"room_kinds": ["ensuite"], "max_price": 260},
+     "description": "Final-year QMUL student at Floyer House in Mile End, 6 flatmates. I'd like my own "
+                    "bathroom: any ensuite under £260, anywhere in London."},
+    {"person": "chloe", "kind": "swap", "hall": "urbanest-hoxton", "room": "studio",
+     "start": "2026-09-05", "end": "2027-08-28", "age_h": 40, "likes": ["tom", "omar"],
+     "wants": {"room_kinds": ["studio"], "max_price": 340},
+     "description": "Studio at Urbanest Hoxton, 10 minutes to my UAL campus. Looking for a cheaper studio "
+                    "under £340 a week."},
+    {"person": "priya", "kind": "release", "hall": "yara-central-holland-park", "room": "studio",
+     "start": "2026-11-01", "end": "2027-08-28", "age_h": 48, "likes": ["chloe", "leo", "mei"],
+     "description": "Leaving London early for a job in Manchester. Take over my studio contract from "
+                    "1 November and I'll help with the transfer."},
+    {"person": "hana", "kind": "release", "hall": "scape-shoreditch", "room": "studio",
+     "start": "2027-01-09", "end": "2027-08-28", "age_h": 4, "likes": ["chloe", "amira"],
+     "description": "Erasmus in Barcelona for the spring term. My Scape Shoreditch studio is free from "
+                    "January to the end of August."},
+    {"person": "ravi", "kind": "release", "hall": "stamford-street-apartments", "room": "ensuite",
+     "start": "2027-01-04", "end": "2027-06-26", "age_h": 2, "likes": ["omar", "jonas", "tom"],
+     "description": "Moving in with my brother in January. KCL ensuite at Stamford Street, 6 flatmates, "
+                    "5 minutes from Waterloo."},
 ]
 
 
@@ -61,52 +140,31 @@ def demo_email(key: str) -> str:
     return f"{key}@demo.ac.uk"
 
 
-def cheapest(prop: dict) -> dict:
-    return min(prop["room_types"], key=lambda r: r["price_week"])
+def build_demo_listings(props: list[dict], spec: list[dict] = DEMO_LISTINGS) -> tuple[list[dict], list[str]]:
+    """DEMO_LISTINGS -> listing rows. Pure: no I/O, tested in data/tests.
 
-
-def build_demo_listings(props: list[dict], people: list[str]) -> list[dict]:
-    """Deterministic demo swaps. Pure: no I/O, tested in data/tests.
-
-    Only halls with prices (room_types) are used. For pairs of halls, person X (in hall P)
-    wants hall Q and person Y (in hall Q) wants hall P -> a mutual match. The last person
-    gets a 'release' listing (contract takeover), which never matches swaps.
-    Returns rows with 'person' + 'property_slug', and wants.property_slugs (seed turns
-    slugs into ids) instead of uuids.
+    Price and flatmates come from the hall's room type. A listing whose hall or room type isn't
+    in the data (CSV changed) is skipped with a warning. Rows keep 'person' + 'property_slug',
+    and wants.property_slugs (seed turns slugs into ids).
     """
-    located = sorted((p for p in props if p.get("lat") is not None and p.get("room_types")),
-                     key=lambda p: p["slug"])
+    halls = {p["slug"]: p for p in props}
     listings: list[dict] = []
-    used: set[str] = set()
-    swappers = people[1:-1] if len(people) > 2 else people  # judge stays free to explore
-    i = 0
-    for a in located:
-        if i + 1 >= len(swappers):
-            break
-        b = next((q for q in located if q["slug"] not in used and q["slug"] != a["slug"]), None)
-        if a["slug"] in used or b is None:
+    warnings: list[str] = []
+    for s in spec:
+        hall = halls.get(s["hall"])
+        room = next((r for r in (hall or {}).get("room_types", []) if r["kind"] == s["room"]), None)
+        missing = [w for w in s.get("wants", {}).get("property_slugs", []) if w not in halls]
+        if room is None or missing:
+            what = f"wanted hall(s) {missing}" if room else f"{s['hall']} / {s['room']}"
+            warnings.append(f"skipping {s['person']}'s demo listing: {what} not in the data")
             continue
-        used.update({a["slug"], b["slug"]})
-        for person, have, want in ((swappers[i], a, b), (swappers[i + 1], b, a)):
-            room = cheapest(have)
-            listings.append({
-                "person": person, "property_slug": have["slug"], "kind": "swap",
-                "room_kind": room["kind"], "price_week": room["price_week"],
-                "flatmates": room["flatmates"],
-                "wants": {"property_slugs": [want["slug"]], "max_price": cheapest(want)["price_week"] + 50},
-                "description": f"Swapping my {room['kind'].replace('_', ' ')} at {have['name']}: "
-                               f"looking for a room at {want['name']}.",
-            })
-        i += 2
-    if located and len(people) > 2:
-        p = located[-1]
-        room = cheapest(p)
         listings.append({
-            "person": people[-1], "property_slug": p["slug"], "kind": "release",
+            "person": s["person"], "property_slug": hall["slug"], "kind": s["kind"],
             "room_kind": room["kind"], "price_week": room["price_week"], "flatmates": room["flatmates"],
-            "wants": {}, "description": f"Leaving London early: take over my contract at {p['name']}.",
+            "start_date": s["start"], "end_date": s["end"], "age_h": s["age_h"], "likes": s["likes"],
+            "wants": s.get("wants", {}) if s["kind"] == "swap" else {}, "description": s["description"],
         })
-    return listings
+    return listings, warnings
 
 
 def to_db_wants(wants: dict, ids: dict[str, str]) -> dict:
@@ -214,7 +272,9 @@ def main() -> int:
     if len(located) < len(halls):
         print(f"skipping {len(halls) - len(located)} halls with no location (bad postcode)")
     people = [p["key"] for p in DEMO_PEOPLE]
-    demo = [] if args.skip_demo else build_demo_listings(located, people)
+    demo, demo_warnings = ([], []) if args.skip_demo else build_demo_listings(located)
+    for w in demo_warnings:
+        print("warning:", w)
 
     if args.dry_run:
         priced = sum(1 for h in located if h["room_types"])
@@ -223,7 +283,8 @@ def main() -> int:
         if not args.skip_demo:
             print(f"would create {len(DEMO_PEOPLE)} demo users ({', '.join(demo_email(k) for k in people)})")
             for l in demo:
-                print(f"  {l['person']:>6} {l['kind']:<7} {l['property_slug']} wants {l['wants'] or 'n/a'}")
+                print(f"  {l['person']:>6} {l['kind']:<7} {l['property_slug']} {l['price_week']:.0f}/wk "
+                      f"wants {l['wants'] or 'n/a'} ({len(l['likes'])} likes)")
         if not args.prune:
             return 0
 
@@ -262,16 +323,22 @@ def seed_demo(sb, env: dict, ids: dict[str, str], demo: list[dict]) -> None:
             .eq("id", uid).execute()
     print(f"demo users ready: {', '.join(demo_email(k) for k in user_ids)}")
 
+    # Recreate demo listings (their likes go with them; old demo chats lose their listing link)
     sb.table("listings").delete().in_("user_id", list(user_ids.values())).execute()
+    now = datetime.now(timezone.utc)
     listing_rows = [{
         "user_id": user_ids[l["person"]], "property_id": ids[l["property_slug"]], "kind": l["kind"],
         "room_kind": l["room_kind"], "price_week": l["price_week"], "flatmates": l["flatmates"],
+        "start_date": l["start_date"], "end_date": l["end_date"],
+        "created_at": (now - timedelta(hours=l["age_h"])).isoformat(),
         "wants": to_db_wants(l["wants"], ids), "description": l["description"],
     } for l in demo]
-    if listing_rows:
-        sb.table("listings").insert(listing_rows).execute()
-    print(f"created {len(listing_rows)} demo listings")
-
+    saved = sb.table("listings").insert(listing_rows).execute().data if listing_rows else []
+    likes = [{"user_id": user_ids[who], "listing_id": row["id"]}
+             for l, row in zip(demo, saved) for who in l["likes"] if who != l["person"]]
+    if likes:
+        sb.table("listing_likes").insert(likes).execute()
+    print(f"created {len(saved)} demo listings, {len(likes)} likes")
 
 if __name__ == "__main__":
     sys.exit(main())

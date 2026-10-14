@@ -19,10 +19,10 @@
 Tick a box (`[x]`) in the same commit as the work. Pull before editing this section.
 
 ### Done (live on https://alonr.vercel.app)
-- **Login** (C, design by B): `.ac.uk` email link, tester code for the `@demo.ac.uk` accounts (judge, amira, tom, mei, jonas, priya), `/auth/callback`, Me tab with sign out.
+- **Login** (C, design by B): `.ac.uk` email link, tester code for the 12 `@demo.ac.uk` demo accounts, `/auth/callback`, Me tab with sign out.
 - **Map on real data** (A, loader by C): 48 halls from B's CSV, provider-coloured pins, provider chips, price/catered/24-7/accessible filters, nearby search with your location, list view `/search`.
 - **Property page** `/property/[id]` (C): rooms & prices, facilities, nearby walk times, active listings at that hall, website. Map popups link to it.
-- **Data** (C, CSV by B): `check_csv.py` → `enrich.py` → `seed.py`. 48 halls, all priced; 20 provider groups; 6 demo users; 2 mutually-matching swap pairs + 1 contract release.
+- **Data** (C, CSV by B): `check_csv.py` → `enrich.py` → `seed.py`. 48 halls, all priced; 20 provider groups; 12 demo users; 11 demo listings with 23 likes (see *Demo story*).
 
 ### To do (in this order)
 Agents: do the tasks under **your person** only, top first. Stay inside the folders that person owns (see *Team split*).
@@ -48,7 +48,7 @@ Agents: do the tasks under **your person** only, top first. Stay inside the fold
 **C: Backend + Chat** (owns `supabase/`, `data/`, `lib/types.ts`, `lib/data/`, `app/messages`, `components/chat`)
 1. [x] Migration: `listing_likes` (public like counts, not who liked), `listing-photos` storage bucket, `start_conversation(listing_id)` (get-or-create). C runs `npx supabase db push`.
 2. [x] `lib/data/listings.ts` + tests: the functions B uses (list above) plus `startConversation`.
-3. [ ] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East) so the feed and Quick match aren't empty.
+3. [x] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East) so the feed and Quick match aren't empty.
 4. [ ] **Chat**: `/messages` (my conversations, newest first, with the listing) and `/messages/[id]` (messages, live via Supabase Realtime, send box).
 5. [ ] Gmail SMTP so real students also get a 6-digit code.
 6. [ ] House Share (P2): agree the `profiles.lifestyle` keys first.
@@ -141,7 +141,11 @@ No borough anywhere: location is just postcode + lat/lng.
 3. `data/enrich.py`: lat/lng from the CSV (postcodes.io only if blank), nearest supermarket and station from an **offline OSM file** (`data/osm.py` downloads the Geofabrik Greater London extract, ~130 MB, once into `data/.cache/`), and the nearest Santander Cycles dock (TfL BikePoint API). No Overpass: it was too unreliable.
 4. `data/seed.py` upserts properties and room types, the 6 demo users, and demo swap listings in pairs that mutually match (person X wants hall Q, person Y wants hall P). It only uses halls with prices.
 5. **Run it (Person C):** `python data/import_osm.py` (once) → fill in the CSV → `python data/check_csv.py` (lists every problem at once; fix the ERRORs) → `python data/enrich.py` → `python data/seed.py --dry-run` → `python data/seed.py`. All are safe to re-run. **The CSV is the master copy:** don't edit halls in the Supabase dashboard (seed overwrites them). seed only adds and updates; after removing or renaming halls in the CSV, run `python data/seed.py --dry-run --prune` then `python data/seed.py --prune` to delete the leftovers (halls with real students' listings are never deleted). Tests: `python -m pytest data`.
-6. **Login + tester code:** use `lib/auth.ts` on the login page: `startSignIn(supabase, email)` then `verifyCode(supabase, email, code)`. Real `.ac.uk` students get a sign-in email (link; a code too once SMTP is set up). **Testers use the 6 `@demo.ac.uk` accounts** created by seed.py (`judge` for judges, plus `amira`, `tom`, `mei`, `jonas`, `priya`): **no email is sent**, they type the shared tester code (`DEMO_PASSWORD`, ask C, never commit it). Matching demo swaps appear once at least 4 halls have prices.
+6. **Login + tester code:** use `lib/auth.ts` on the login page: `startSignIn(supabase, email)` then `verifyCode(supabase, email, code)`. Real `.ac.uk` students get a sign-in email (link; a code too once SMTP is set up). **Testers use the 12 `@demo.ac.uk` accounts** created by seed.py (`judge` for judges, plus `amira`, `tom`, `mei`, `jonas`, `priya`, `leo`, `sara`, `omar`, `chloe`, `ravi`, `hana`): **no email is sent**, they type the shared tester code (`DEMO_PASSWORD`, ask C, never commit it).
+7. **Demo story** (`DEMO_LISTINGS` in `data/seed.py`; re-running seed.py resets it):
+   - Mutual swap pairs, each sees the other in Quick match: **Amira ↔ Tom** (UCL: Wick Park near UCL East ↔ James Lighthill House in Bloomsbury), **Mei ↔ Jonas** (Chapter King's Cross studio too pricey ↔ LSE High Holborn), **Sara ↔ Leo** (Imperial: South Kensington ↔ White City).
+   - **Omar** (Floyer House, wants any ensuite under £260) has no match yet. **On stage:** log in as `judge`, create a swap at Templars House (ensuite £205) that wants Floyer House → Omar appears in Quick match with the mutual-match badge.
+   - Chloe: swap with no match. Priya, Hana, Ravi: contract releases. The judge has no listings.
 
 ## Repo structure
 ```
