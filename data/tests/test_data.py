@@ -4,7 +4,7 @@ import pytest
 
 from enrich import CsvError, group_rows, haversine_m, nearest, slugify
 from import_osm import candidate_halls, guess_provider, spread_sample
-from seed import DEMO_LISTINGS, DEMO_PEOPLE, ENRICHED, build_demo_listings, plan_prune, to_db_wants
+from seed import DEMO_CHATS, DEMO_LISTINGS, DEMO_PEOPLE, ENRICHED, build_demo_listings, plan_prune, to_db_wants
 
 ROW = {"name": "Chapter King's Cross", "provider": "Chapter", "affiliated_university": "",
        "address": "200 Pentonville Rd", "postcode": "n1 9jp", "room_kind": "ensuite", "price_week": "389",
@@ -91,6 +91,17 @@ def test_demo_listings_tell_the_story_on_the_real_data():
                 assert mutual(a, b) == (frozenset((a, b)) in pairs), (a, b)  # only the intended pairs match
     assert all(l["wants"] == {} for l in listings if l["kind"] == "release")
     assert all(l["start_date"] < l["end_date"] for l in listings)
+
+
+def test_demo_chats_are_about_real_listings():
+    people = {p["key"] for p in DEMO_PEOPLE}
+    listers = {l["person"] for l in DEMO_LISTINGS}
+    for chat in DEMO_CHATS:
+        assert chat["about"] in listers and chat["from"] in people and chat["from"] != chat["about"]
+        assert {who for who, _, _ in chat["messages"]} <= {chat["from"], chat["about"]}
+        hours = [h for _, _, h in chat["messages"]]
+        assert hours == sorted(hours, reverse=True)  # oldest message first
+    assert any(chat["from"] == "judge" for chat in DEMO_CHATS)
 
 
 def test_demo_listings_skip_missing_halls():

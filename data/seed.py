@@ -136,6 +136,25 @@ DEMO_LISTINGS = [
 ]
 
 
+# Demo chats about the listings above: "from" messaged the owner of "about"'s listing.
+# Each message: (sender, text, hours ago). The judge has one, so their Chats tab isn't empty.
+DEMO_CHATS = [
+    {"from": "amira", "about": "tom", "messages": [
+        ("amira", "Hi Tom! Looks like we're a perfect match: my Wick Park ensuite for your room at James Lighthill?", 20),
+        ("tom", "Yes! Wick Park is so close to UCL East, that would save me over an hour a day.", 19.5),
+        ("amira", "Amazing. Want to see each other's rooms this weekend?", 19),
+        ("tom", "Saturday at 11 works for me.", 18.5),
+    ]},
+    {"from": "judge", "about": "priya", "messages": [
+        ("judge", "Hi Priya, is your studio still available from November?", 3),
+        ("priya", "Hi! Yes it is. The contract runs to the end of August, and I can show you around any evening this week.", 2.5),
+    ]},
+    {"from": "chloe", "about": "hana", "messages": [
+        ("chloe", "Is the Scape Shoreditch studio quiet? I'd need it from January.", 3.5),
+        ("hana", "Very quiet, it faces the courtyard. January is perfect!", 3),
+    ]},
+]
+
 def demo_email(key: str) -> str:
     return f"{key}@demo.ac.uk"
 
@@ -339,6 +358,25 @@ def seed_demo(sb, env: dict, ids: dict[str, str], demo: list[dict]) -> None:
     if likes:
         sb.table("listing_likes").insert(likes).execute()
     print(f"created {len(saved)} demo listings, {len(likes)} likes")
+
+    # Demo chats: replace the ones between two demo users (chats with real students are kept)
+    demo_ids = list(user_ids.values())
+    sb.table("conversations").delete().in_("user_a", demo_ids).in_("user_b", demo_ids).execute()
+    listing_of = {l["person"]: row["id"] for l, row in zip(demo, saved)}
+    messages = []
+    for chat in DEMO_CHATS:
+        if chat["about"] not in listing_of:
+            print(f"warning: skipping demo chat {chat['from']} -> {chat['about']}: no listing")
+            continue
+        conv = sb.table("conversations").insert({
+            "listing_id": listing_of[chat["about"]], "user_a": user_ids[chat["from"]], "user_b": user_ids[chat["about"]],
+            "created_at": (now - timedelta(hours=chat["messages"][0][2])).isoformat(),
+        }).execute().data[0]
+        messages += [{"conversation_id": conv["id"], "sender_id": user_ids[who], "body": text,
+                      "created_at": (now - timedelta(hours=h)).isoformat()} for who, text, h in chat["messages"]]
+    if messages:
+        sb.table("messages").insert(messages).execute()
+    print(f"created {len(DEMO_CHATS)} demo chats, {len(messages)} messages")
 
 if __name__ == "__main__":
     sys.exit(main())

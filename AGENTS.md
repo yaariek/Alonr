@@ -49,7 +49,7 @@ Agents: do the tasks under **your person** only, top first. Stay inside the fold
 1. [x] Migration: `listing_likes` (public like counts, not who liked), `listing-photos` storage bucket, `start_conversation(listing_id)` (get-or-create). C runs `npx supabase db push`.
 2. [x] `lib/data/listings.ts` + tests: the functions B uses (list above) plus `startConversation`.
 3. [x] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East) so the feed and Quick match aren't empty.
-4. [ ] **Chat**: `/messages` (my conversations, newest first, with the listing) and `/messages/[id]` (messages, live via Supabase Realtime, send box).
+4. [x] **Chat**: `/messages` (my conversations, newest first, with the listing) and `/messages/[id]` (messages, live via Supabase Realtime, send box).
 5. [ ] Gmail SMTP so real students also get a 6-digit code.
 6. [ ] House Share (P2): agree the `profiles.lifestyle` keys first.
 

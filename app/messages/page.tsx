@@ -1,13 +1,10 @@
-import { PlaceholderPage } from "@/components/placeholder-page";
+import { ConversationList } from "@/components/chat/conversation-list";
 
-export default function Page() {
+export default function MessagesPage() {
   return (
-    <PlaceholderPage
-      title="Chats"
-      owner="Person B"
-      todo={[
-        "Conversation list + realtime chat (Supabase Realtime)",
-      ]}
-    />
+    <div className="mx-auto max-w-lg px-4 pt-4 pb-8">
+      <h1 className="mb-2 text-2xl font-bold tracking-tight">Chats</h1>
+      <ConversationList />
+    </div>
   );
 }
