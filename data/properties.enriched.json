@@ -6,8 +6,8 @@
     "affiliated_university_id": null,
     "address": "200 Pentonville Rd",
     "postcode": "N1 9JP",
-    "lat": 51.531371,
-    "lng": -0.116825,
+    "lat": 51.5313304,
+    "lng": -0.1174067,
     "reception_24h": true,
     "accessible": true,
     "catered": false,
@@ -37,26 +37,39 @@
       }
     ],
     "supermarket_name": "Healthwise",
-    "supermarket_m": 533,
+    "supermarket_m": 571,
     "station_name": "London King's Cross",
-    "station_m": 444,
-    "bike_dock_m": 17
+    "station_m": 406,
+    "bike_dock_m": 24
   },
   {
     "slug": "lse-high-holborn-residence",
     "name": "LSE High Holborn Residence",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "lse",
+    "address": "178 High Holborn",
     "postcode": "WC1V 7AA",
     "lat": 51.515912,
     "lng": -0.124739,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "laundry",
+      "common room",
+      "study spaces"
+    ],
+    "website": "https://www.lse.ac.uk/student-life/accommodation/halls/high-holborn-residence",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 390.6,
+        "flatmates": 5,
+        "contract_weeks": [
+          38
+        ]
+      }
+    ],
     "supermarket_name": "M&S Food",
     "supermarket_m": 571,
     "station_name": "Covent Garden",
@@ -68,16 +81,36 @@
     "name": "Pavilion House Student lets",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "20 First Way, Wembley",
     "postcode": "DA15 7JR",
     "lat": 51.428702,
     "lng": 0.100756,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema room",
+      "study spaces",
+      "games area",
+      "laundry",
+      "bike storage",
+      "social lounges",
+      "private dining",
+      "courtyard"
+    ],
+    "website": "https://www.pavilioncourt.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 430.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Morrisons",
     "supermarket_m": 454,
     "station_name": "Sidcup",
@@ -85,20 +118,34 @@
     "bike_dock_m": 10002
   },
   {
-    "slug": "cachin",
-    "name": "Cachin",
+    "slug": "cashin",
+    "name": "Cashin",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "19 Waldegrave Park",
     "postcode": "TW1 4TL",
     "lat": 51.434047,
     "lng": -0.334869,
     "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "shared kitchen",
+      "laundry",
+      "common room",
+      "WiFi"
+    ],
+    "website": "https://www.stmarys.ac.uk/student-accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 165.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          38
+        ]
+      }
+    ],
     "supermarket_name": "M&S Simply Food",
     "supermarket_m": 815,
     "station_name": "Strawberry Hill",
@@ -110,16 +157,32 @@
     "name": "The Stay Club",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "16-18 Charcot Road",
     "postcode": "NW9 5WU",
     "lat": 51.595475,
     "lng": -0.250747,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "café",
+      "study rooms",
+      "laundry",
+      "social spaces"
+    ],
+    "website": "https://www.thestayclub.com/colindale",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 335.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's Local",
     "supermarket_m": 11,
     "station_name": "Colindale",
@@ -127,41 +190,34 @@
     "bike_dock_m": 8622
   },
   {
-    "slug": "alice-billings-house",
-    "name": "Alice Billings House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
-    "postcode": "E15 4SF",
-    "lat": 51.540061,
-    "lng": 0.0018,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
-    "supermarket_name": "Lidl",
-    "supermarket_m": 270,
-    "station_name": "Stratford High Street",
-    "station_m": 300,
-    "bike_dock_m": 496
-  },
-  {
     "slug": "wood-green-hall",
     "name": "Wood Green Hall",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "soas",
+    "address": "Brabant Road, Wood Green",
     "postcode": "N22 6UZ",
     "lat": 51.596515,
     "lng": -0.112435,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "garden",
+      "shared kitchens",
+      "WiFi"
+    ],
+    "website": "https://www.soas.ac.uk/accommodation/wood-green-hall",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 185.0,
+        "flatmates": 4,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Mleczko",
     "supermarket_m": 66,
     "station_name": "Wood Green",
@@ -173,16 +229,31 @@
     "name": "Central Studios Ealing",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "1 The Grove, Ealing",
     "postcode": "W5 5BL",
     "lat": 51.510547,
     "lng": -0.304934,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "lounge",
+      "games area",
+      "study spaces",
+      "laundry",
+      "CCTV"
+    ],
+    "website": "https://www.centralstudios.co.uk",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 355.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Planet Organic",
     "supermarket_m": 145,
     "station_name": "Ealing Broadway",
@@ -193,17 +264,31 @@
     "slug": "loring-hall",
     "name": "Loring Hall",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "gold",
+    "address": "St Jame's/New Cross",
     "postcode": "SE14 6AD",
     "lat": 51.474117,
     "lng": -0.039421,
     "reception_24h": false,
-    "accessible": false,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "shared kitchens",
+      "bike storage",
+      "laundry"
+    ],
+    "website": "https://www.gold.ac.uk/accommodation/loring-hall",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 179.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's",
     "supermarket_m": 395,
     "station_name": "New Cross Gate",
@@ -211,41 +296,34 @@
     "bike_dock_m": 1949
   },
   {
-    "slug": "wesley-court",
-    "name": "Wesley Court",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
-    "postcode": "SW15 5SE",
-    "lat": 51.459887,
-    "lng": -0.244556,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
-    "supermarket_name": "St. Marcus",
-    "supermarket_m": 535,
-    "station_name": "Barnes",
-    "station_m": 802,
-    "bike_dock_m": 1944
-  },
-  {
     "slug": "templars-house",
     "name": "Templars House",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "uel",
+    "address": "East Student Village, Docklands Campus",
     "postcode": "E16 2GA",
     "lat": 51.506774,
     "lng": 0.070603,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry",
+      "social spaces"
+    ],
+    "website": "https://www.uel.ac.uk/student-life/accommodation",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 205.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Co-op Food",
     "supermarket_m": 230,
     "station_name": "Gallions Reach",
@@ -257,16 +335,31 @@
     "name": "Garrow House",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "190 Kensal Road",
     "postcode": "W10 5DD",
     "lat": 51.525871,
     "lng": -0.207711,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "common room",
+      "bike storage",
+      "laundry"
+    ],
+    "website": "https://www.studentcastle.co.uk/garrow-house",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 360.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Costcutter",
     "supermarket_m": 287,
     "station_name": "Westbourne Park",
@@ -276,18 +369,31 @@
   {
     "slug": "willis-jackson-hall",
     "name": "Willis Jackson Hall",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "imperial",
+    "affiliated_university_id": "imperial",
+    "address": "64-66 Evelyn Gardens, South Kensington",
     "postcode": "SW7 3BQ",
     "lat": 51.487929,
     "lng": -0.178845,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "common room",
+      "shared kitchens",
+      "laundry"
+    ],
+    "website": "https://www.imperial.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 215.0,
+        "flatmates": 12,
+        "contract_weeks": [
+          39
+        ]
+      }
+    ],
     "supermarket_name": "Chelsea farm",
     "supermarket_m": 432,
     "station_name": "South Kensington",
@@ -298,17 +404,31 @@
     "slug": "floyer-house",
     "name": "Floyer House",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "qmul",
+    "address": "Stepney Way, Whitechapel",
     "postcode": "E1 2DP",
     "lat": 51.516999,
     "lng": -0.05867,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room",
+      "bike storage"
+    ],
+    "website": "https://www.qmul.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 175.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          38
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's",
     "supermarket_m": 462,
     "station_name": "Whitechapel",
@@ -320,16 +440,31 @@
     "name": "Grand Felda House",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "Empire Way, Wembley, London",
     "postcode": "HA9 0EF",
     "lat": 51.560291,
     "lng": -0.283083,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "swimming pool",
+      "cinema",
+      "study rooms",
+      "laundry"
+    ],
+    "website": "https://www.crm-students.com/grand-felda-house",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 265.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Tian Tian Market",
     "supermarket_m": 156,
     "station_name": "Wembley Park",
@@ -341,16 +476,31 @@
     "name": "Halsmere Studios",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "10 Halsmere Road, Camberwell",
     "postcode": "SE5 9LN",
     "lat": 51.475437,
     "lng": -0.102598,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "courtyard",
+      "study spaces",
+      "laundry",
+      "bike storage",
+      "social lounge"
+    ],
+    "website": "https://www.hellostudent.co.uk/halsmere-studios",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 330.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Co-op Food",
     "supermarket_m": 314,
     "station_name": "Oval",
@@ -362,16 +512,30 @@
     "name": "Chapter Highbury",
     "provider_id": "chapter",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "309 Holloway Road",
     "postcode": "N7 9ES",
     "lat": 51.553404,
     "lng": -0.113993,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema room",
+      "laundry"
+    ],
+    "website": "https://www.chapter-living.com/properties/north/highbury",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 383.0,
+        "flatmates": 4,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Arsenal Mini Mart",
     "supermarket_m": 211,
     "station_name": "Holloway Road",
@@ -383,16 +547,31 @@
     "name": "Ravenscourt House",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "11 Paddenswick Road",
     "postcode": "W6 0BY",
     "lat": 51.496544,
     "lng": -0.23558,
     "reception_24h": false,
-    "accessible": false,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room",
+      "study spaces",
+      "WiFi"
+    ],
+    "website": "https://www.ravenscourthouse.co.uk",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 265.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Saffron",
     "supermarket_m": 379,
     "station_name": "Ravenscourt Park",
@@ -403,17 +582,30 @@
     "slug": "ivy-hall-middlesex-university",
     "name": "Ivy Hall (Middlesex University)",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "mdx",
+    "address": "Greyhound Hill",
     "postcode": "NW2 2DQ",
     "lat": 51.559014,
     "lng": -0.210618,
     "reception_24h": false,
-    "accessible": false,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "laundry",
+      "bike storage"
+    ],
+    "website": "https://www.mdx.ac.uk/student-life/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 185.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          38
+        ]
+      }
+    ],
     "supermarket_name": "Co-op Food",
     "supermarket_m": 369,
     "station_name": "Cricklewood",
@@ -425,16 +617,30 @@
     "name": "Station Court - Unite Students",
     "provider_id": "unite",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "158 High Road",
     "postcode": "N15 4NU",
     "lat": 51.580784,
     "lng": -0.070955,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "laundry",
+      "study spaces"
+    ],
+    "website": "https://www.unitestudents.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 255.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Tesco",
     "supermarket_m": 439,
     "station_name": "South Tottenham",
@@ -446,16 +652,31 @@
     "name": "Holbrook House",
     "provider_id": "chapter",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "65–69 Shepherd’s Bush Green",
     "postcode": "W3 6UN",
     "lat": 51.522895,
     "lng": -0.258712,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "study spaces",
+      "laundry"
+    ],
+    "website": "https://www.chapter-living.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 345.0,
+        "flatmates": 4,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Jaz Food & Wine",
     "supermarket_m": 38,
     "station_name": "North Acton",
@@ -466,17 +687,30 @@
     "slug": "wilson-house",
     "name": "Wilson House",
     "provider_id": "imperial",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "imperial",
+    "address": "38–76 Sussex Gardens",
     "postcode": "W2 1UF",
     "lat": 51.517259,
     "lng": -0.169845,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "common room",
+      "laundry",
+      "garden"
+    ],
+    "website": "https://www.imperial.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 215.0,
+        "flatmates": 12,
+        "contract_weeks": [
+          39
+        ]
+      }
+    ],
     "supermarket_name": "Noor",
     "supermarket_m": 207,
     "station_name": "Edgware Road",
@@ -488,16 +722,30 @@
     "name": "urbanest Battersea",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "3 Electric Boulevard",
     "postcode": "SW8 4AG",
     "lat": 51.478036,
     "lng": -0.144454,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "rooftop",
+      "laundry"
+    ],
+    "website": "https://www.urbanest.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 389.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Oseyo",
     "supermarket_m": 259,
     "station_name": "Battersea Power Station",
@@ -509,16 +757,30 @@
     "name": "Stay Club",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "Harcourt Road",
     "postcode": "NW1 8AJ",
     "lat": 51.542816,
     "lng": -0.147646,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "café",
+      "study rooms"
+    ],
+    "website": "https://www.thestayclub.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 335.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Morrisons",
     "supermarket_m": 157,
     "station_name": "Chalk Farm",
@@ -526,41 +788,68 @@
     "bike_dock_m": 173
   },
   {
-    "slug": "boleyn",
-    "name": "Boleyn",
-    "provider_id": "other",
+    "slug": "scape-greenwich",
+    "name": "Scape Greenwich",
+    "provider_id": "scape",
     "affiliated_university_id": null,
-    "address": null,
-    "postcode": "SE9 2EW",
-    "lat": 51.446847,
-    "lng": 0.078312,
-    "reception_24h": false,
-    "accessible": false,
+    "address": "25–27 Borthwick Street",
+    "postcode": "SE8 3GH",
+    "lat": 51.481,
+    "lng": -0.02,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
-    "supermarket_name": "Co-op Food",
-    "supermarket_m": 1069,
-    "station_name": "New Eltham",
-    "station_m": 1107,
-    "bike_dock_m": 7526
+    "facilities": [
+      "gym",
+      "cinema",
+      "study spaces",
+      "laundry"
+    ],
+    "website": "https://www.scape.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 350.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
+    "supermarket_name": "Waitrose",
+    "supermarket_m": 340,
+    "station_name": "Greenwich",
+    "station_m": 452,
+    "bike_dock_m": 751
   },
   {
     "slug": "wolfson-house",
     "name": "Wolfson House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "kcl",
+    "affiliated_university_id": "kcl",
+    "address": "Weston Street",
     "postcode": "SE1 3RB",
     "lat": 51.502776,
     "lng": -0.085905,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.kcl.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 205.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "The Savanna",
     "supermarket_m": 170,
     "station_name": "London Bridge",
@@ -572,16 +861,29 @@
     "name": "Scape Shoreditch",
     "provider_id": "scape",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "100 East Road",
     "postcode": "N1 6DX",
     "lat": 51.52736,
     "lng": -0.086865,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "study spaces"
+    ],
+    "website": "https://www.scape.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 399.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Aldi",
     "supermarket_m": 245,
     "station_name": "Old Street",
@@ -593,16 +895,30 @@
     "name": "Chapter Westminster London",
     "provider_id": "chapter",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "34 Marsham Street",
     "postcode": "SE1 7LR",
     "lat": 51.49582,
     "lng": -0.116095,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "study rooms"
+    ],
+    "website": "https://www.chapter-living.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 375.0,
+        "flatmates": 4,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Spar",
     "supermarket_m": 429,
     "station_name": "Lambeth North",
@@ -613,17 +929,30 @@
     "slug": "cutty-sark-halls-of-residence",
     "name": "Cutty Sark Halls of Residence",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "greenwich",
+    "address": "Creek Road",
     "postcode": "SE10 9ED",
     "lat": 51.481788,
     "lng": -0.01118,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.gre.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 210.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Aldi",
     "supermarket_m": 289,
     "station_name": "Cutty Sark for Maritime Greenwich",
@@ -635,16 +964,29 @@
     "name": "Yara Central Holland Park",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "27 St Ann’s Road",
     "postcode": "W11 4ST",
     "lat": 51.508601,
     "lng": -0.216047,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry"
+    ],
+    "website": "https://yarastudents.com/",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 360.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Marks & Spencer",
     "supermarket_m": 296,
     "station_name": "Shepherd's Bush",
@@ -654,18 +996,31 @@
   {
     "slug": "james-lighthill-house",
     "name": "James Lighthill House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "ucl",
+    "affiliated_university_id": "ucl",
+    "address": "Penton Rise",
     "postcode": "WC1X 9EN",
     "lat": 51.530784,
     "lng": -0.1144,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.ucl.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 225.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Healthwise",
     "supermarket_m": 435,
     "station_name": "Angel",
@@ -677,16 +1032,29 @@
     "name": "Town Hall Camberwell (Mezzino Student Accommodation)",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "31 Peckham Road",
     "postcode": "SE5 8UB",
     "lat": 51.474435,
     "lng": -0.077108,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry"
+    ],
+    "website": "https://www.mezzino.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 330.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Hao Wah Chinese Supermarket",
     "supermarket_m": 321,
     "station_name": "Peckham Rye",
@@ -698,16 +1066,29 @@
     "name": "Wick Park",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "1-2 Wick Lane",
     "postcode": "E3 2NT",
     "lat": 51.538859,
     "lng": -0.023209,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "laundry",
+      "study spaces"
+    ],
+    "website": "https://www.mezzino.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 245.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44
+        ]
+      }
+    ],
     "supermarket_name": "Welcome",
     "supermarket_m": 75,
     "station_name": "Hackney Wick",
@@ -717,18 +1098,31 @@
   {
     "slug": "goldsmid-house",
     "name": "Goldsmid House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "imperial",
+    "affiliated_university_id": "imperial",
+    "address": "36-43 Cromwell Road",
     "postcode": "SW1V 1HU",
     "lat": 51.493566,
     "lng": -0.142618,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "common room",
+      "laundry",
+      "garden"
+    ],
+    "website": "https://www.imperial.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 215.0,
+        "flatmates": 10,
+        "contract_weeks": [
+          39
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's",
     "supermarket_m": 127,
     "station_name": "London Victoria",
@@ -738,18 +1132,31 @@
   {
     "slug": "lodge-house",
     "name": "Lodge House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "imperial",
+    "affiliated_university_id": "imperial",
+    "address": "8 Logan Place",
     "postcode": "E1 4PD",
     "lat": 51.525517,
     "lng": -0.038771,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.imperial.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 210.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          39
+        ]
+      }
+    ],
     "supermarket_name": "China Ark",
     "supermarket_m": 1116,
     "station_name": "Mile End",
@@ -761,16 +1168,29 @@
     "name": "Victoria League Student House",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "55 Gillingham Street",
     "postcode": "W2 4PW",
     "lat": 51.513568,
     "lng": -0.193218,
     "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "dining hall",
+      "common room",
+      "laundry"
+    ],
+    "website": "https://www.victorialeague.co.uk",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 230.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Prezzemolo & Vitale",
     "supermarket_m": 188,
     "station_name": "Bayswater",
@@ -778,20 +1198,34 @@
     "bike_dock_m": 26
   },
   {
-    "slug": "new-orient-house",
-    "name": "New Orient House",
-    "provider_id": "other",
+    "slug": "iq-tufnell-house",
+    "name": "iQ Tufnell House",
+    "provider_id": "iq",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "Huddleston Road",
     "postcode": "SW6 2EP",
     "lat": 51.474272,
     "lng": -0.184323,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "study rooms"
+    ],
+    "website": "https://www.iqstudentaccommodation.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 299.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Sainsburys",
     "supermarket_m": 526,
     "station_name": "Imperial Wharf",
@@ -803,16 +1237,30 @@
     "name": "Vega",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "11 Miles Street",
     "postcode": "SW8 1RZ",
     "lat": 51.483173,
     "lng": -0.124378,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "rooftop",
+      "cinema",
+      "study rooms"
+    ],
+    "website": "https://www.downingstudents.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 385.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's",
     "supermarket_m": 393,
     "station_name": "Vauxhall",
@@ -822,18 +1270,31 @@
   {
     "slug": "prankerd-house",
     "name": "Prankerd House",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "provider_id": "imperial",
+    "affiliated_university_id": "imperial",
+    "address": "6 Logan Place",
     "postcode": "NW1 2NJ",
     "lat": 51.526491,
     "lng": -0.137255,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.imperial.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 210.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          39
+        ]
+      }
+    ],
     "supermarket_name": "Mestizo Mexican Market",
     "supermarket_m": 157,
     "station_name": "Euston Square",
@@ -844,17 +1305,30 @@
     "slug": "champion-hill-residence",
     "name": "Champion Hill Residence",
     "provider_id": "kcl",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "kcl",
+    "address": "Dog Kennel Hill",
     "postcode": "SE5 8AN",
     "lat": 51.463698,
     "lng": -0.088183,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "laundry",
+      "study spaces"
+    ],
+    "website": "https://www.kcl.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 245.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Sainsbury's",
     "supermarket_m": 294,
     "station_name": "Denmark Hill",
@@ -866,16 +1340,30 @@
     "name": "Queen Alexandra’s House",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "Kensington Gore",
     "postcode": "SW7 2ES",
     "lat": 51.500598,
     "lng": -0.178801,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "reception_24h": true,
+    "accessible": true,
+    "catered": true,
+    "facilities": [
+      "common room",
+      "laundry",
+      "study spaces",
+      "dining hall"
+    ],
+    "website": "https://www.mezzino.com/property/queen-alexandras-house/?utm_source=google_ads&utm_property_id=14326&gad_source=1&gad_campaignid=23069478467&gbraid=0AAAAADoZ5uA5gO-1kZQwgHVi73bu6fwy1&gclid=CjwKCAjw0LzWBhBOEiwAKQd0cNDpQzRTA4iZ_PoduMUXyOCrVSwTPaqARwGPSAtkDBn-2QOAYz_67BoCbe4QAvD_BwE",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 230.0,
+        "flatmates": 10,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Partridges",
     "supermarket_m": 413,
     "station_name": "Gloucester Road",
@@ -883,20 +1371,35 @@
     "bike_dock_m": 93
   },
   {
-    "slug": "walpole-sutherland",
-    "name": "Walpole, Sutherland",
-    "provider_id": "other",
+    "slug": "unite-students-battersea",
+    "name": "Unite Students - Battersea",
+    "provider_id": "unite",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "5-7 Lombard Road",
     "postcode": "SW15 4JD",
     "lat": 51.448178,
     "lng": -0.241763,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry",
+      "social spaces"
+    ],
+    "website": "https://www.unitestudents.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 259.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Asda",
     "supermarket_m": 1007,
     "station_name": "Barnes",
@@ -908,16 +1411,30 @@
     "name": "Chapter White City",
     "provider_id": "chapter",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "10 Westway",
     "postcode": "W12 0DD",
     "lat": 51.513554,
     "lng": -0.248316,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "cinema",
+      "study rooms"
+    ],
+    "website": "https://www.chapter-living.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 365.0,
+        "flatmates": 4,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Lidl",
     "supermarket_m": 78,
     "station_name": "East Acton",
@@ -929,16 +1446,30 @@
     "name": "Urbanest City",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "9-13 Minories",
     "postcode": "EC3N 2PX",
     "lat": 51.51214,
     "lng": -0.076404,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "rooftop",
+      "laundry"
+    ],
+    "website": "https://www.urbanest.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 399.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Tian Tian Market",
     "supermarket_m": 569,
     "station_name": "London Fenchurch Street",
@@ -946,41 +1477,68 @@
     "bike_dock_m": 78
   },
   {
-    "slug": "william-temple-house",
-    "name": "William Temple House",
+    "slug": "urbanest-hoxton",
+    "name": "Urbanest Hoxton",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
-    "postcode": "SW5 9NQ",
-    "lat": 51.49168,
-    "lng": -0.195399,
-    "reception_24h": false,
-    "accessible": false,
+    "address": "100 East Road",
+    "postcode": "N1 6AA",
+    "lat": 51.527,
+    "lng": -0.086,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
-    "supermarket_name": "M&S Simply Food",
-    "supermarket_m": 203,
-    "station_name": "Earl's Court",
-    "station_m": 104,
-    "bike_dock_m": 106
+    "facilities": [
+      "gym",
+      "cinema",
+      "study rooms"
+    ],
+    "website": "https://www.urbanest.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 385.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
+    "supermarket_name": "Aldi",
+    "supermarket_m": 268,
+    "station_name": "Old Street",
+    "station_m": 189,
+    "bike_dock_m": 176
   },
   {
     "slug": "axo-camden",
     "name": "AXO Camden",
     "provider_id": "other",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "1-6 St Pancras Way",
     "postcode": "NW5 2BJ",
     "lat": 51.550004,
     "lng": -0.134421,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry"
+    ],
+    "website": "https://www.axostudent.co.uk",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 299.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Buy Wise",
     "supermarket_m": 246,
     "station_name": "Kentish Town",
@@ -992,16 +1550,31 @@
     "name": "Unite Students - St Pancras Way",
     "provider_id": "unite",
     "affiliated_university_id": null,
-    "address": null,
+    "address": "11 St Pancras Way",
     "postcode": "NW1 0PT",
     "lat": 51.537209,
     "lng": -0.13316,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "courtyard",
+      "laundry"
+    ],
+    "website": "https://www.unitestudents.com",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 309.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          44,
+          51
+        ]
+      }
+    ],
     "supermarket_name": "M&S Foodhall",
     "supermarket_m": 618,
     "station_name": "Mornington Crescent",
@@ -1012,17 +1585,30 @@
     "slug": "marylebone-hall",
     "name": "Marylebone Hall",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "westminster",
+    "address": "35 Marylebone Road",
     "postcode": "W1U 5BN",
     "lat": 51.521727,
     "lng": -0.154953,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "shared kitchens",
+      "laundry",
+      "common room"
+    ],
+    "website": "https://www.westminster.ac.uk/study/accommodation/marylebone-hall",
+    "room_types": [
+      {
+        "kind": "shared_bathroom",
+        "price_week": 225.0,
+        "flatmates": 8,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "The Fruit Garden",
     "supermarket_m": 324,
     "station_name": "Baker Street",
@@ -1033,17 +1619,30 @@
     "slug": "stamford-street-apartments",
     "name": "Stamford Street Apartments",
     "provider_id": "kcl",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "kcl",
+    "address": "127 Stamford Street",
     "postcode": "SE1 9NQ",
     "lat": 51.505365,
     "lng": -0.111653,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "common room",
+      "laundry",
+      "study spaces"
+    ],
+    "website": "https://www.kcl.ac.uk/accommodation",
+    "room_types": [
+      {
+        "kind": "ensuite",
+        "price_week": 245.0,
+        "flatmates": 6,
+        "contract_weeks": [
+          40
+        ]
+      }
+    ],
     "supermarket_name": "Oseyo",
     "supermarket_m": 350,
     "station_name": "Waterloo East",
@@ -1054,42 +1653,34 @@
     "slug": "gradpad-wood-lane-studios",
     "name": "Gradpad, Wood Lane Studios",
     "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
+    "affiliated_university_id": "imperial",
+    "address": "80 Wood Lane",
     "postcode": "W12 0HN",
     "lat": 51.516663,
     "lng": -0.225357,
-    "reception_24h": false,
-    "accessible": false,
+    "reception_24h": true,
+    "accessible": true,
     "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
+    "facilities": [
+      "gym",
+      "study rooms",
+      "laundry"
+    ],
+    "website": "https://www.gradpadlondon.com",
+    "room_types": [
+      {
+        "kind": "studio",
+        "price_week": 375.0,
+        "flatmates": 0,
+        "contract_weeks": [
+          51
+        ]
+      }
+    ],
     "supermarket_name": "Costcutter",
     "supermarket_m": 589,
     "station_name": "White City",
     "station_m": 531,
     "bike_dock_m": 213
-  },
-  {
-    "slug": "dawson-hall",
-    "name": "Dawson Hall",
-    "provider_id": "other",
-    "affiliated_university_id": null,
-    "address": null,
-    "postcode": "EC1A 4JW",
-    "lat": 51.522068,
-    "lng": -0.098577,
-    "reception_24h": false,
-    "accessible": false,
-    "catered": false,
-    "facilities": [],
-    "website": null,
-    "room_types": [],
-    "supermarket_name": "Geranium",
-    "supermarket_m": 282,
-    "station_name": "Barbican",
-    "station_m": 210,
-    "bike_dock_m": 131
   }
 ]

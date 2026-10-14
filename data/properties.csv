@@ -1,50 +1,50 @@
 name,provider,affiliated_university,address,postcode,lat,lng,room_kind,price_week,flatmates,contract_weeks,catered,reception_24h,accessible,facilities,website,added_by
-Chapter King's Cross,Chapter,All,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,ensuite,389,5,44;51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
-Chapter King's Cross,Chapter,All,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,studio,489,0,51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
-LSE High Holborn Residence,LSE,LSE,178 High Holborn,WC1V 7AA,51.515912,-0.124739,ensuite,390.6,5,38,FALSE,TRUE,TRUE,laundry;common room;study spaces,https://www.lse.ac.uk/student-life/accommodation/halls/high-holborn-residence,B
-Pavilion House Student lets,Pavillion House,All,"20 First Way, Wembley",DA15 7JR,51.428702,0.100756,studio,430,0,44;51,FALSE,TRUE,TRUE,gym; cinema room; study spaces; games area; laundry; bike storage; social lounges; private dining; courtyard,https://www.pavilioncourt.com,B
-Cashin,St Mary's University,St Mary's University,19 Waldegrave Park,TW1 4TL,51.434047,-0.334869,single,165,8,38,TRUE,FALSE,TRUE,shared kitchen; laundry; common room; WiFi,https://www.stmarys.ac.uk/student-accommodation,B
-The Stay Club ,The Stay Club,All,16-18 Charcot Road,NW9 5WU,51.595475,-0.250747,studio,335,0,51,FALSE,TRUE,TRUE,gym; cinema; café; study rooms; laundry; social spaces,https://www.thestayclub.com/colindale,B
-Wood Green Hall,Mezzino,SOAS,"Brabant Road, Wood Green",N22 6UZ,51.596515,-0.112435,single,185,4,40,FALSE,TRUE,TRUE,common room; garden; shared kitchens; WiFi; ,https://www.soas.ac.uk/accommodation/wood-green-hall,B
-Central Studios Ealing,Mezzino,All,"1 The Grove, Ealing",W5 5BL,51.510547,-0.304934,studio,355,0,51,FALSE,TRUE,TRUE,lounge; games area; study spaces; laundry; CCTV,https://www.centralstudios.co.uk,B
-Loring Hall,Goldsmiths,Goldsmiths,St Jame's/New Cross,SE14 6AD,51.474117,-0.039421,single,179,8,40,FALSE,FALSE,TRUE,common room; shared kitchens; bike storage; laundry,https://www.gold.ac.uk/accommodation/loring-hall,B
-Templars House,UEL,UEL,"East Student Village, Docklands Campus",E16 2GA,51.506774,0.070603,ensuite,205,6,40,FALSE,TRUE,TRUE,gym; study rooms; laundry; social spaces; ,https://www.uel.ac.uk/student-life/accommodation,B
-Garrow House,Student Castle,All,190 Kensal Road,W10 5DD,51.525871,-0.207711,studio,360,0,51,FALSE,TRUE,TRUE,gym; study rooms; common room; bike storage; laundry,https://www.studentcastle.co.uk/garrow-house,B
-Willis Jackson Hall,Imperial College London,Imperial College London,"64-66 Evelyn Gardens, South Kensington",SW7 3BQ,51.487929,-0.178845,single,215,12,39,TRUE,TRUE,TRUE,common room; shared kitchens; laundry,https://www.imperial.ac.uk/accommodation,B
-Floyer House,QMUL,QMUL,"Stepney Way, Whitechapel",E1 2DP,51.516999,-0.05867,single,175,6,38,FALSE,TRUE,TRUE,shared kitchens; laundry; common room; bike storage,https://www.qmul.ac.uk/accommodation,B
-Grand Felda House,CRM Students,All,"Empire Way, Wembley, London",HA9 0EF,51.560291,-0.283083,ensuite,265,6,51,FALSE,TRUE,TRUE,gym; swimming pool; cinema; study rooms; laundry,https://www.crm-students.com/grand-felda-house,B
-Halsmere Studios,Hello Student,All,"10 Halsmere Road, Camberwell",SE5 9LN,51.475437,-0.102598,studio,330,0,51,FALSE,TRUE,TRUE,courtyard; study spaces; laundry; bike storage; social lounge,https://www.hellostudent.co.uk/halsmere-studios,B
-Chapter Highbury,Chapter,All,309 Holloway Road,N7 9ES,51.553404,-0.113993,ensuite,383,4,44;51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com/properties/north/highbury,B
-Ravenscourt House,Student Living,All,11 Paddenswick Road,W6 0BY,51.496544,-0.23558,single,265,8,40,FALSE,FALSE,TRUE,shared kitchens; laundry; common room; study spaces; WiFi,https://www.ravenscourthouse.co.uk,B
-Ivy Hall (Middlesex University),Middlesex University,Middlesex University,Greyhound Hill,NW2 2DQ,51.559014,-0.210618,single,185,8,38,FALSE,FALSE,TRUE,common room; laundry; bike storage,https://www.mdx.ac.uk/student-life/accommodation,B
-Station Court - Unite Students,Unite,All,158 High Road,N15 4NU,51.580784,-0.070955,ensuite,255,6,44;51,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.unitestudents.com,B
-Holbrook House,Chapter,All,65–69 Shepherd’s Bush Green,W3 6UN,51.522895,-0.258712,ensuite,345,4,44;51,FALSE,TRUE,TRUE,gym; cinema; study spaces; laundry,https://www.chapter-living.com,B
-Wilson House,Imperial,Imperial,38–76 Sussex Gardens,W2 1UF,51.517259,-0.169845,single,215,12,39,TRUE,TRUE,TRUE,common room; laundry; garden,https://www.imperial.ac.uk/accommodation,B
-urbanest Battersea,Urbanest,All,3 Electric Boulevard,SW8 4AG,51.478036,-0.144454,studio,389,0,51,FALSE,TRUE,TRUE,gym; study rooms; rooftop; laundry,https://www.urbanest.com,B
-Stay Club,Stay Club,All,Harcourt Road,NW1 8AJ,51.542816,-0.147646,studio,335,0,51,FALSE,TRUE,TRUE,gym; cinema; café; study rooms,https://www.thestayclub.com,B
-Scape Greenwich,Scape,All,25–27 Borthwick Street,SE8 3GH,51.481,-0.02,studio,350,0,51,FALSE,TRUE,TRUE,gym; cinema; study spaces; laundry,https://www.scape.com,B
-Wolfson House,KCL,KCL,Weston Street,SE1 3RB,51.502776,-0.085905,single,205,6,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.kcl.ac.uk/accommodation,B
-Scape Shoreditch,Scape,All,100 East Road,N1 6DX,51.52736,-0.086865,studio,399,0,51,FALSE,TRUE,TRUE,gym; cinema; study spaces,https://www.scape.com,B
-Chapter Westminster London,Chapter,All,34 Marsham Street,SE1 7LR,51.49582,-0.116095,ensuite,375,4,44;51,FALSE,TRUE,TRUE,gym;cinema;study rooms,https://www.chapter-living.com,B
-Cutty Sark Halls of Residence,University of Greenwich,University of Greenwich,Creek Road,SE10 9ED,51.481788,-0.01118,single,210,6,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.gre.ac.uk/accommodation,B
-Yara Central Holland Park,Yara,All,27 St Ann’s Road,W11 4ST,51.508601,-0.216047,studio,360,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://yarastudents.com/,B
-James Lighthill House,UCL,UCL,Penton Rise,WC1X 9EN,51.530784,-0.1144,single,225,8,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.ucl.ac.uk/accommodation,B
-Town Hall Camberwell (Mezzino Student Accommodation),Mezzino,All,31 Peckham Road,SE5 8UB,51.474435,-0.077108,studio,330,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.mezzino.com,B
-Wick Park,Mezzino,All,1-2 Wick Lane,E3 2NT,51.538859,-0.023209,ensuite ,245,6,44,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.mezzino.com,B
-Goldsmid House,Imperial,Imperial,36-43 Cromwell Road,SW1V 1HU,51.493566,-0.142618,single,215,10,39,TRUE,TRUE,TRUE,common room; laundry; garden,https://www.imperial.ac.uk/accommodation,B
-Lodge House,Imperial,Imperial,8 Logan Place,E1 4PD,51.525517,-0.038771,single,210,8,39,TRUE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.imperial.ac.uk/accommodation,B
-Victoria League Student House,Victoria League Student House,All,55 Gillingham Street,W2 4PW,51.513568,-0.193218,single,230,6,40,TRUE,FALSE,TRUE,dining hall;common room;laundry,https://www.victorialeague.co.uk,B
-iQ Tufnell House,iQ,All,Huddleston Road,SW6 2EP,51.474272,-0.184323,ensuite,299,6,44;51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.iqstudentaccommodation.com,B
-Vega,Downing,All,11 Miles Street,SW8 1RZ,51.483173,-0.124378,studio,385,0,51,FALSE,TRUE,TRUE,gym; rooftop; cinema; study rooms,https://www.downingstudents.com,B
-Prankerd House,Imperial,Imperial,6 Logan Place,NW1 2NJ,51.526491,-0.137255,single,210,8,39,TRUE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.imperial.ac.uk/accommodation,B
-Champion Hill Residence,KCL,KCL,Dog Kennel Hill,SE5 8AN,51.463698,-0.088183,ensuite,245,6,40,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.kcl.ac.uk/accommodation,B
-Queen Alexandra’s House,Mezzino,All,Kensington Gore,SW7 2ES,51.500598,-0.178801,single,230,10,40,TRUE,TRUE,TRUE,common room; laundry; study spaces; dining hall,https://www.mezzino.com/property/queen-alexandras-house/?utm_source=google_ads&utm_property_id=14326&gad_source=1&gad_campaignid=23069478467&gbraid=0AAAAADoZ5uA5gO-1kZQwgHVi73bu6fwy1&gclid=CjwKCAjw0LzWBhBOEiwAKQd0cNDpQzRTA4iZ_PoduMUXyOCrVSwTPaqARwGPSAtkDBn-2QOAYz_67BoCbe4QAvD_BwE,B
-Unite Students - Battersea,Unite,All,5-7 Lombard Road,SW15 4JD,51.448178,-0.241763,ensuite,259,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; laundry; social spaces,https://www.unitestudents.com,B
-Chapter White City,Chapter,All,10 Westway,W12 0DD,51.513554,-0.248316,ensuite,365,4,44;51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.chapter-living.com,B
-Urbanest City,Urbanest,All,9-13 Minories,EC3N 2PX,51.51214,-0.076404,studio,399,0,51,FALSE,TRUE,TRUE,gym; study rooms; rooftop; laundry,https://www.urbanest.com,B
-Urbanest Hoxton,Urbanest,All,100 East Road,N1 6AA,51.527,-0.086,studio,385,0,51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.urbanest.com,B
-AXO Camden,AXO,All,1-6 St Pancras Way,NW5 2BJ,51.550004,-0.134421,ensuite,299,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.axostudent.co.uk,B
-Unite Students - St Pancras Way,Unite,All,11 St Pancras Way,NW1 0PT,51.537209,-0.13316,ensuite,309,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; courtyard; laundry,https://www.unitestudents.com,B
-Marylebone Hall,University of Westminster,University of Westminster,35 Marylebone Road,W1U 5BN,51.521727,-0.154953,single,225,8,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.westminster.ac.uk/study/accommodation/marylebone-hall,B
-Stamford Street Apartments,KCL,KCL,127 Stamford Street,SE1 9NQ,51.505365,-0.111653,ensuite,245,6,40,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.kcl.ac.uk/accommodation,B
-"Gradpad, Wood Lane Studios",Gradpad,Imperial,80 Wood Lane ,W12 0HN,51.516663,-0.225357,studio,375,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.gradpadlondon.com,B
+Chapter King's Cross,Chapter,,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,ensuite,389,5,44;51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
+Chapter King's Cross,Chapter,,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,studio,489,0,51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
+LSE High Holborn Residence,LSE,lse,178 High Holborn,WC1V 7AA,51.515912,-0.124739,ensuite,390.6,5,38,FALSE,TRUE,TRUE,laundry;common room;study spaces,https://www.lse.ac.uk/student-life/accommodation/halls/high-holborn-residence,B
+Pavilion House Student lets,Pavillion House,,"20 First Way, Wembley",DA15 7JR,51.428702,0.100756,studio,430,0,44;51,FALSE,TRUE,TRUE,gym; cinema room; study spaces; games area; laundry; bike storage; social lounges; private dining; courtyard,https://www.pavilioncourt.com,B
+Cashin,St Mary's University,,19 Waldegrave Park,TW1 4TL,51.434047,-0.334869,shared_bathroom,165,8,38,TRUE,FALSE,TRUE,shared kitchen; laundry; common room; WiFi,https://www.stmarys.ac.uk/student-accommodation,B
+The Stay Club,Stay Club,,16-18 Charcot Road,NW9 5WU,51.595475,-0.250747,studio,335,0,51,FALSE,TRUE,TRUE,gym; cinema; cafÃ©; study rooms; laundry; social spaces,https://www.thestayclub.com/colindale,B
+Wood Green Hall,Mezzino,soas,"Brabant Road, Wood Green",N22 6UZ,51.596515,-0.112435,shared_bathroom,185,4,40,FALSE,TRUE,TRUE,common room; garden; shared kitchens; WiFi;,https://www.soas.ac.uk/accommodation/wood-green-hall,B
+Central Studios Ealing,Mezzino,,"1 The Grove, Ealing",W5 5BL,51.510547,-0.304934,studio,355,0,51,FALSE,TRUE,TRUE,lounge; games area; study spaces; laundry; CCTV,https://www.centralstudios.co.uk,B
+Loring Hall,Goldsmiths,gold,St Jame's/New Cross,SE14 6AD,51.474117,-0.039421,shared_bathroom,179,8,40,FALSE,FALSE,TRUE,common room; shared kitchens; bike storage; laundry,https://www.gold.ac.uk/accommodation/loring-hall,B
+Templars House,UEL,uel,"East Student Village, Docklands Campus",E16 2GA,51.506774,0.070603,ensuite,205,6,40,FALSE,TRUE,TRUE,gym; study rooms; laundry; social spaces;,https://www.uel.ac.uk/student-life/accommodation,B
+Garrow House,Student Castle,,190 Kensal Road,W10 5DD,51.525871,-0.207711,studio,360,0,51,FALSE,TRUE,TRUE,gym; study rooms; common room; bike storage; laundry,https://www.studentcastle.co.uk/garrow-house,B
+Willis Jackson Hall,Imperial,imperial,"64-66 Evelyn Gardens, South Kensington",SW7 3BQ,51.487929,-0.178845,shared_bathroom,215,12,39,TRUE,TRUE,TRUE,common room; shared kitchens; laundry,https://www.imperial.ac.uk/accommodation,B
+Floyer House,QMUL,qmul,"Stepney Way, Whitechapel",E1 2DP,51.516999,-0.05867,shared_bathroom,175,6,38,FALSE,TRUE,TRUE,shared kitchens; laundry; common room; bike storage,https://www.qmul.ac.uk/accommodation,B
+Grand Felda House,CRM Students,,"Empire Way, Wembley, London",HA9 0EF,51.560291,-0.283083,ensuite,265,6,51,FALSE,TRUE,TRUE,gym; swimming pool; cinema; study rooms; laundry,https://www.crm-students.com/grand-felda-house,B
+Halsmere Studios,Hello Student,,"10 Halsmere Road, Camberwell",SE5 9LN,51.475437,-0.102598,studio,330,0,51,FALSE,TRUE,TRUE,courtyard; study spaces; laundry; bike storage; social lounge,https://www.hellostudent.co.uk/halsmere-studios,B
+Chapter Highbury,Chapter,,309 Holloway Road,N7 9ES,51.553404,-0.113993,ensuite,383,4,44;51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com/properties/north/highbury,B
+Ravenscourt House,Student Living,,11 Paddenswick Road,W6 0BY,51.496544,-0.23558,shared_bathroom,265,8,40,FALSE,FALSE,TRUE,shared kitchens; laundry; common room; study spaces; WiFi,https://www.ravenscourthouse.co.uk,B
+Ivy Hall (Middlesex University),Middlesex University,mdx,Greyhound Hill,NW2 2DQ,51.559014,-0.210618,shared_bathroom,185,8,38,FALSE,FALSE,TRUE,common room; laundry; bike storage,https://www.mdx.ac.uk/student-life/accommodation,B
+Station Court - Unite Students,Unite,,158 High Road,N15 4NU,51.580784,-0.070955,ensuite,255,6,44;51,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.unitestudents.com,B
+Holbrook House,Chapter,,65â€“69 Shepherdâ€™s Bush Green,W3 6UN,51.522895,-0.258712,ensuite,345,4,44;51,FALSE,TRUE,TRUE,gym; cinema; study spaces; laundry,https://www.chapter-living.com,B
+Wilson House,Imperial,imperial,38â€“76 Sussex Gardens,W2 1UF,51.517259,-0.169845,shared_bathroom,215,12,39,TRUE,TRUE,TRUE,common room; laundry; garden,https://www.imperial.ac.uk/accommodation,B
+urbanest Battersea,Urbanest,,3 Electric Boulevard,SW8 4AG,51.478036,-0.144454,studio,389,0,51,FALSE,TRUE,TRUE,gym; study rooms; rooftop; laundry,https://www.urbanest.com,B
+Stay Club,Stay Club,,Harcourt Road,NW1 8AJ,51.542816,-0.147646,studio,335,0,51,FALSE,TRUE,TRUE,gym; cinema; cafÃ©; study rooms,https://www.thestayclub.com,B
+Scape Greenwich,Scape,,25â€“27 Borthwick Street,SE8 3GH,51.481,-0.02,studio,350,0,51,FALSE,TRUE,TRUE,gym; cinema; study spaces; laundry,https://www.scape.com,B
+Wolfson House,KCL,kcl,Weston Street,SE1 3RB,51.502776,-0.085905,shared_bathroom,205,6,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.kcl.ac.uk/accommodation,B
+Scape Shoreditch,Scape,,100 East Road,N1 6DX,51.52736,-0.086865,studio,399,0,51,FALSE,TRUE,TRUE,gym; cinema; study spaces,https://www.scape.com,B
+Chapter Westminster London,Chapter,,34 Marsham Street,SE1 7LR,51.49582,-0.116095,ensuite,375,4,44;51,FALSE,TRUE,TRUE,gym;cinema;study rooms,https://www.chapter-living.com,B
+Cutty Sark Halls of Residence,University of Greenwich,greenwich,Creek Road,SE10 9ED,51.481788,-0.01118,shared_bathroom,210,6,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.gre.ac.uk/accommodation,B
+Yara Central Holland Park,Yara,,27 St Annâ€™s Road,W11 4ST,51.508601,-0.216047,studio,360,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://yarastudents.com/,B
+James Lighthill House,UCL,ucl,Penton Rise,WC1X 9EN,51.530784,-0.1144,shared_bathroom,225,8,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.ucl.ac.uk/accommodation,B
+Town Hall Camberwell (Mezzino Student Accommodation),Mezzino,,31 Peckham Road,SE5 8UB,51.474435,-0.077108,studio,330,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.mezzino.com,B
+Wick Park,Mezzino,,1-2 Wick Lane,E3 2NT,51.538859,-0.023209,ensuite,245,6,44,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.mezzino.com,B
+Goldsmid House,Imperial,imperial,36-43 Cromwell Road,SW1V 1HU,51.493566,-0.142618,shared_bathroom,215,10,39,TRUE,TRUE,TRUE,common room; laundry; garden,https://www.imperial.ac.uk/accommodation,B
+Lodge House,Imperial,imperial,8 Logan Place,E1 4PD,51.525517,-0.038771,shared_bathroom,210,8,39,TRUE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.imperial.ac.uk/accommodation,B
+Victoria League Student House,Victoria League Student House,,55 Gillingham Street,W2 4PW,51.513568,-0.193218,shared_bathroom,230,6,40,TRUE,FALSE,TRUE,dining hall;common room;laundry,https://www.victorialeague.co.uk,B
+iQ Tufnell House,iQ,,Huddleston Road,SW6 2EP,51.474272,-0.184323,ensuite,299,6,44;51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.iqstudentaccommodation.com,B
+Vega,Downing,,11 Miles Street,SW8 1RZ,51.483173,-0.124378,studio,385,0,51,FALSE,TRUE,TRUE,gym; rooftop; cinema; study rooms,https://www.downingstudents.com,B
+Prankerd House,Imperial,imperial,6 Logan Place,NW1 2NJ,51.526491,-0.137255,shared_bathroom,210,8,39,TRUE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.imperial.ac.uk/accommodation,B
+Champion Hill Residence,KCL,kcl,Dog Kennel Hill,SE5 8AN,51.463698,-0.088183,ensuite,245,6,40,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.kcl.ac.uk/accommodation,B
+Queen Alexandraâ€™s House,Mezzino,,Kensington Gore,SW7 2ES,51.500598,-0.178801,shared_bathroom,230,10,40,TRUE,TRUE,TRUE,common room; laundry; study spaces; dining hall,https://www.mezzino.com/property/queen-alexandras-house/?utm_source=google_ads&utm_property_id=14326&gad_source=1&gad_campaignid=23069478467&gbraid=0AAAAADoZ5uA5gO-1kZQwgHVi73bu6fwy1&gclid=CjwKCAjw0LzWBhBOEiwAKQd0cNDpQzRTA4iZ_PoduMUXyOCrVSwTPaqARwGPSAtkDBn-2QOAYz_67BoCbe4QAvD_BwE,B
+Unite Students - Battersea,Unite,,5-7 Lombard Road,SW15 4JD,51.448178,-0.241763,ensuite,259,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; laundry; social spaces,https://www.unitestudents.com,B
+Chapter White City,Chapter,,10 Westway,W12 0DD,51.513554,-0.248316,ensuite,365,4,44;51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.chapter-living.com,B
+Urbanest City,Urbanest,,9-13 Minories,EC3N 2PX,51.51214,-0.076404,studio,399,0,51,FALSE,TRUE,TRUE,gym; study rooms; rooftop; laundry,https://www.urbanest.com,B
+Urbanest Hoxton,Urbanest,,100 East Road,N1 6AA,51.527,-0.086,studio,385,0,51,FALSE,TRUE,TRUE,gym; cinema; study rooms,https://www.urbanest.com,B
+AXO Camden,AXO,,1-6 St Pancras Way,NW5 2BJ,51.550004,-0.134421,ensuite,299,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.axostudent.co.uk,B
+Unite Students - St Pancras Way,Unite,,11 St Pancras Way,NW1 0PT,51.537209,-0.13316,ensuite,309,6,44;51,FALSE,TRUE,TRUE,gym; study rooms; courtyard; laundry,https://www.unitestudents.com,B
+Marylebone Hall,University of Westminster,westminster,35 Marylebone Road,W1U 5BN,51.521727,-0.154953,shared_bathroom,225,8,40,FALSE,TRUE,TRUE,shared kitchens; laundry; common room,https://www.westminster.ac.uk/study/accommodation/marylebone-hall,B
+Stamford Street Apartments,KCL,kcl,127 Stamford Street,SE1 9NQ,51.505365,-0.111653,ensuite,245,6,40,FALSE,TRUE,TRUE,common room; laundry; study spaces,https://www.kcl.ac.uk/accommodation,B
+"Gradpad, Wood Lane Studios",Gradpad,imperial,80 Wood Lane,W12 0HN,51.516663,-0.225357,studio,375,0,51,FALSE,TRUE,TRUE,gym; study rooms; laundry,https://www.gradpadlondon.com,B
