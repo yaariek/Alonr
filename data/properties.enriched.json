@@ -45,7 +45,7 @@
   {
     "slug": "lse-high-holborn-residence",
     "name": "LSE High Holborn Residence",
-    "provider_id": "other",
+    "provider_id": "lse",
     "affiliated_university_id": "lse",
     "address": "178 High Holborn",
     "postcode": "WC1V 7AA",
@@ -120,8 +120,8 @@
   {
     "slug": "cashin",
     "name": "Cashin",
-    "provider_id": "other",
-    "affiliated_university_id": null,
+    "provider_id": "stmarys",
+    "affiliated_university_id": "stmarys",
     "address": "19 Waldegrave Park",
     "postcode": "TW1 4TL",
     "lat": 51.434047,
@@ -155,7 +155,7 @@
   {
     "slug": "the-stay-club",
     "name": "The Stay Club",
-    "provider_id": "other",
+    "provider_id": "stayclub",
     "affiliated_university_id": null,
     "address": "16-18 Charcot Road",
     "postcode": "NW9 5WU",
@@ -192,7 +192,7 @@
   {
     "slug": "wood-green-hall",
     "name": "Wood Green Hall",
-    "provider_id": "other",
+    "provider_id": "mezzino",
     "affiliated_university_id": "soas",
     "address": "Brabant Road, Wood Green",
     "postcode": "N22 6UZ",
@@ -227,7 +227,7 @@
   {
     "slug": "central-studios-ealing",
     "name": "Central Studios Ealing",
-    "provider_id": "other",
+    "provider_id": "mezzino",
     "affiliated_university_id": null,
     "address": "1 The Grove, Ealing",
     "postcode": "W5 5BL",
@@ -263,7 +263,7 @@
   {
     "slug": "loring-hall",
     "name": "Loring Hall",
-    "provider_id": "other",
+    "provider_id": "gold",
     "affiliated_university_id": "gold",
     "address": "St Jame's/New Cross",
     "postcode": "SE14 6AD",
@@ -298,7 +298,7 @@
   {
     "slug": "templars-house",
     "name": "Templars House",
-    "provider_id": "other",
+    "provider_id": "uel",
     "affiliated_university_id": "uel",
     "address": "East Student Village, Docklands Campus",
     "postcode": "E16 2GA",
@@ -403,7 +403,7 @@
   {
     "slug": "floyer-house",
     "name": "Floyer House",
-    "provider_id": "other",
+    "provider_id": "qmul",
     "affiliated_university_id": "qmul",
     "address": "Stepney Way, Whitechapel",
     "postcode": "E1 2DP",
@@ -581,7 +581,7 @@
   {
     "slug": "ivy-hall-middlesex-university",
     "name": "Ivy Hall (Middlesex University)",
-    "provider_id": "other",
+    "provider_id": "mdx",
     "affiliated_university_id": "mdx",
     "address": "Greyhound Hill",
     "postcode": "NW2 2DQ",
@@ -720,7 +720,7 @@
   {
     "slug": "urbanest-battersea",
     "name": "urbanest Battersea",
-    "provider_id": "other",
+    "provider_id": "urbanest",
     "affiliated_university_id": null,
     "address": "3 Electric Boulevard",
     "postcode": "SW8 4AG",
@@ -755,7 +755,7 @@
   {
     "slug": "stay-club",
     "name": "Stay Club",
-    "provider_id": "other",
+    "provider_id": "stayclub",
     "affiliated_university_id": null,
     "address": "Harcourt Road",
     "postcode": "NW1 8AJ",
@@ -928,7 +928,7 @@
   {
     "slug": "cutty-sark-halls-of-residence",
     "name": "Cutty Sark Halls of Residence",
-    "provider_id": "other",
+    "provider_id": "greenwich",
     "affiliated_university_id": "greenwich",
     "address": "Creek Road",
     "postcode": "SE10 9ED",
@@ -1030,7 +1030,7 @@
   {
     "slug": "town-hall-camberwell-mezzino-student-accommodation",
     "name": "Town Hall Camberwell (Mezzino Student Accommodation)",
-    "provider_id": "other",
+    "provider_id": "mezzino",
     "affiliated_university_id": null,
     "address": "31 Peckham Road",
     "postcode": "SE5 8UB",
@@ -1064,7 +1064,7 @@
   {
     "slug": "wick-park",
     "name": "Wick Park",
-    "provider_id": "other",
+    "provider_id": "mezzino",
     "affiliated_university_id": null,
     "address": "1-2 Wick Lane",
     "postcode": "E3 2NT",
@@ -1338,7 +1338,7 @@
   {
     "slug": "queen-alexandra-s-house",
     "name": "Queen Alexandra’s House",
-    "provider_id": "other",
+    "provider_id": "mezzino",
     "affiliated_university_id": null,
     "address": "Kensington Gore",
     "postcode": "SW7 2ES",
@@ -1444,7 +1444,7 @@
   {
     "slug": "urbanest-city",
     "name": "Urbanest City",
-    "provider_id": "other",
+    "provider_id": "urbanest",
     "affiliated_university_id": null,
     "address": "9-13 Minories",
     "postcode": "EC3N 2PX",
@@ -1479,7 +1479,7 @@
   {
     "slug": "urbanest-hoxton",
     "name": "Urbanest Hoxton",
-    "provider_id": "other",
+    "provider_id": "urbanest",
     "affiliated_university_id": null,
     "address": "100 East Road",
     "postcode": "N1 6AA",
@@ -1584,7 +1584,7 @@
   {
     "slug": "marylebone-hall",
     "name": "Marylebone Hall",
-    "provider_id": "other",
+    "provider_id": "westminster",
     "affiliated_university_id": "westminster",
     "address": "35 Marylebone Road",
     "postcode": "W1U 5BN",

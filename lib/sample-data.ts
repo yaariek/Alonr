@@ -12,6 +12,17 @@ export const PROVIDER_COLOURS: Record<ProviderGroup, string> = {
   UCL: "#4f46e5",
   KCL: "#dc2626",
   Imperial: "#0369a1",
+  QMUL: "#1d4ed8",
+  LSE: "#be123c",
+  Goldsmiths: "#0f766e",
+  UEL: "#0e7490",
+  Greenwich: "#a16207",
+  Westminster: "#7c2d12",
+  Middlesex: "#be185d",
+  "St Mary's": "#1e3a8a",
+  Mezzino: "#16a34a",
+  Urbanest: "#1f2937",
+  "Stay Club": "#c026d3",
   Other: "#6b7280",
 };
 

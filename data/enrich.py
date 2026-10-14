@@ -33,7 +33,14 @@ HEADERS = {"User-Agent": "alonr-hackathon/0.1 (student project)"}
 ROOM_KINDS = {"ensuite", "studio", "shared_bathroom", "twin", "non_ensuite"}
 # CSV provider name (case-insensitive) -> providers.id in Supabase. Anything else -> 'other'.
 PROVIDERS = {"unite": "unite", "iq": "iq", "chapter": "chapter", "scape": "scape",
-             "prestige": "prestige", "ucl": "ucl", "kcl": "kcl", "imperial": "imperial"}
+             "prestige": "prestige", "ucl": "ucl", "kcl": "kcl", "imperial": "imperial",
+             "imperial college london": "imperial", "qmul": "qmul", "queen mary": "qmul", "lse": "lse",
+             "goldsmiths": "gold", "uel": "uel", "university of east london": "uel",
+             "greenwich": "greenwich", "university of greenwich": "greenwich",
+             "westminster": "westminster", "university of westminster": "westminster",
+             "middlesex": "mdx", "middlesex university": "mdx", "st mary's": "stmarys",
+             "st mary's university": "stmarys", "mezzino": "mezzino", "urbanest": "urbanest",
+             "stay club": "stayclub", "the stay club": "stayclub"}
 
 
 class CsvError(ValueError):

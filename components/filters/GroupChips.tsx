@@ -13,6 +13,18 @@ const PROVIDER_GROUPS = [
 { label: 'UCL Halls', value: 'UCL' },
 { label: 'KCL Halls', value: 'KCL' },
 { label: 'Imperial Halls', value: 'Imperial' },
+{ label: 'QMUL Halls', value: 'QMUL' },
+{ label: 'LSE Halls', value: 'LSE' },
+{ label: 'Goldsmiths Halls', value: 'Goldsmiths' },
+{ label: 'UEL Halls', value: 'UEL' },
+{ label: 'Greenwich Halls', value: 'Greenwich' },
+{ label: 'Westminster Halls', value: 'Westminster' },
+{ label: 'Middlesex Halls', value: 'Middlesex' },
+{ label: "St Mary's Halls", value: "St Mary's" },
+{ label: 'Mezzino', value: 'Mezzino' },
+{ label: 'Urbanest', value: 'Urbanest' },
+{ label: 'Stay Club', value: 'Stay Club' },
+{ label: 'Other', value: 'Other' },
 ];
 
 interface GroupChipsProps {

@@ -12,6 +12,17 @@ export type ProviderGroup =
   | "UCL"
   | "KCL"
   | "Imperial"
+  | "QMUL"
+  | "LSE"
+  | "Goldsmiths"
+  | "UEL"
+  | "Greenwich"
+  | "Westminster"
+  | "Middlesex"
+  | "St Mary's"
+  | "Mezzino"
+  | "Urbanest"
+  | "Stay Club"
   | "Other";
 
 export interface LatLng {

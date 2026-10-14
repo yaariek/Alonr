@@ -56,9 +56,9 @@ def test_room_kind_without_price_is_an_error():
 
 
 def test_unknown_providers_summarised_in_one_warning():
-    halls, warnings = group_rows([{**ROW, "provider": "Urbanest"}, {**ROW, "name": "X", "provider": "Urbanest"}])
+    halls, warnings = group_rows([{**ROW, "provider": "Yara"}, {**ROW, "name": "X", "provider": "Yara"}])
     assert all(h["provider_id"] == "other" for h in halls)
-    assert warnings == ["providers stored as 'other' (not in Supabase providers table): Urbanest (2)"]
+    assert warnings == ["providers stored as 'other' (not in Supabase providers table): Yara (2)"]
 
 
 # Same rules as public.listing_satisfies (after the drop_borough migration)

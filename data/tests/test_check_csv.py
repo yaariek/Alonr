@@ -57,10 +57,10 @@ def test_duplicate_room_kind_warns():
 def test_unknown_providers_are_grouped_per_provider():
     rows = [{**ROW, "name": "A", "provider": ""}, {**ROW, "name": "B", "provider": ""},
             {**ROW, "name": "B", "provider": "", "room_kind": "studio"},   # same hall: counted once
-            {**ROW, "name": "C", "provider": "Urbanest"}]
+            {**ROW, "name": "C", "provider": "Yara"}]
     warnings = messages(rows, "WARNING")
     assert "provider is blank, so 2 hall(s) show as 'Other': A, B" in warnings
-    assert any(w.startswith("provider 'Urbanest'") for w in warnings)
+    assert any(w.startswith("provider 'Yara'") for w in warnings)
 
 
 def test_summary_counts_priced_halls():

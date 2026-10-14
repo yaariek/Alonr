@@ -8,7 +8,9 @@ import type { Property, ProviderGroup } from "@/lib/types";
 // providers.id -> the group name used by the chips and colours
 export const PROVIDER_GROUPS: Record<string, ProviderGroup> = {
   unite: "Unite", iq: "iQ", chapter: "Chapter", scape: "Scape", prestige: "Prestige",
-  ucl: "UCL", kcl: "KCL", imperial: "Imperial",
+  ucl: "UCL", kcl: "KCL", imperial: "Imperial", qmul: "QMUL", lse: "LSE", gold: "Goldsmiths",
+  uel: "UEL", greenwich: "Greenwich", westminster: "Westminster", mdx: "Middlesex", stmarys: "St Mary's",
+  mezzino: "Mezzino", urbanest: "Urbanest", stayclub: "Stay Club",
 };
 
 export const PROPERTY_SELECT = "*, room_types(*)";

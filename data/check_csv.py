@@ -24,7 +24,7 @@ COLUMNS = ["name", "provider", "affiliated_university", "address", "postcode", "
            "accessible", "facilities", "website", "added_by"]
 # universities.id in supabase/migrations/20261013180100_reference_data.sql (affiliated_university must be one)
 UNIVERSITIES = {"ucl", "kcl", "imperial", "qmul", "lse", "city", "soas", "gold", "bbk", "ual",
-                "westminster", "uel", "lsbu", "greenwich", "mdx", "roehampton", "brunel", "rhul"}
+                "westminster", "uel", "lsbu", "greenwich", "mdx", "roehampton", "brunel", "rhul", "stmarys"}
 # Columns describing the hall (not the room): every row of the same hall should agree on them
 HALL_COLUMNS = ["provider", "affiliated_university", "address", "postcode", "lat", "lng",
                 "catered", "reception_24h", "accessible", "facilities", "website"]
@@ -173,7 +173,7 @@ def check_rows(rows: list[dict], header: list[str] | None = None) -> list[Proble
         label = f"provider {provider!r} isn't a known group" if provider else "provider is blank"
         warn(0, f"{label}, so {len(names)} hall(s) show as 'Other': {', '.join(names)}")
     if other_providers:
-        warn(0, f"known provider groups: {', '.join(sorted(PROVIDERS))} (ask C to add more)")
+        warn(0, f"known provider groups: {', '.join(sorted(set(PROVIDERS.values())))} (ask C to add more)")
 
     return problems
 
