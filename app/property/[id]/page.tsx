@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  Accessibility, ArrowLeft, Bike, Calendar, Clock, ExternalLink, GraduationCap, MapPin, Repeat,
+  Accessibility, ArrowLeft, Bike, Building2, Calendar, Clock, ExternalLink, GraduationCap, MapPin, Repeat,
   ShoppingCart, TrainFront, Users, Utensils,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { PROPERTY_SELECT, toProperty, type PropertyRow } from "@/lib/data/proper
 import { formatDate, formatDistance, formatWeeks, roomKindLabel, walkTime } from "@/lib/format";
 import { PROVIDER_COLOURS } from "@/lib/sample-data";
 import { createClient } from "@/lib/supabase/server";
+import { HallImage } from "@/components/property/HallImage";
 
 // params is request-time data: with cacheComponents it must be read inside <Suspense>.
 async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -64,6 +65,14 @@ async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
           </p>
         )}
       </header>
+
+      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted">
+        <HallImage propertyName={p.name} alt={`${p.name} hall`} className="z-10 object-cover" sizes="(max-width: 640px) 100vw, 512px" />
+        <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+          <Building2 aria-hidden="true" className="size-12" strokeWidth={1.25} />
+          <span className="text-xs">Hall photo</span>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>

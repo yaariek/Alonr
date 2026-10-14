@@ -7,6 +7,7 @@ import type { FeatureCollection, Point } from 'geojson';
 import { FilterSheet, GroupChips } from '@/components/filters';
 import { useProperties } from '@/lib/data/use-properties';
 import { minPrice } from '@/lib/filters';
+import { propertyImagePath } from '@/lib/property-images';
 import { PROVIDER_COLOURS } from '@/lib/sample-data';
 import { usePropertyFilters } from '@/lib/use-property-filters';
 
@@ -25,6 +26,7 @@ const providerPinImageId = (colour: string) => `provider-pin-${colour.slice(1).t
 interface PropertyFeatureProperties {
   id: string;
   name: string;
+  imagePath: string;
   provider: string;
   iconImage: string;
   priceLabel: string;
@@ -107,6 +109,7 @@ export function MapView() {
         properties: {
           id: property.id,
           name: property.name,
+          imagePath: propertyImagePath(property.name),
           provider: property.provider,
           iconImage: providerPinImageId(PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other),
           priceLabel: price === null ? 'Prices coming soon' : `From £${price}/wk`,
@@ -205,6 +208,7 @@ export function MapView() {
 
         const popupContent = `
           <div style="padding: 4px;">
+            <img src="${details.imagePath}" alt="${escapeHtml(details.name)}" onerror="this.style.display='none'" style="display:block;width:220px;height:132px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />
             <strong style="font-size: 14px;">${escapeHtml(details.name)}</strong><br/>
             <span style="font-size: 12px; color: #666;">${escapeHtml(details.provider)}</span><br/>
             <strong style="font-size: 13px; color: #2563eb;">${escapeHtml(details.priceLabel)}</strong><br/>

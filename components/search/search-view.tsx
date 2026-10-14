@@ -9,6 +9,7 @@ import { minPrice } from "@/lib/filters";
 import { PROVIDER_COLOURS } from "@/lib/sample-data";
 import { usePropertyFilters } from "@/lib/use-property-filters";
 import type { Property } from "@/lib/types";
+import { HallImage } from "@/components/property/HallImage";
 
 const money = (price: number | null) => price === null ? "Prices coming soon" : `From £${price}/wk`;
 const titleCase = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -32,6 +33,7 @@ function PropertyPost({ property }: { property: Property }) {
       </div>
 
       <div className="relative flex aspect-[1.25/1] items-center justify-center overflow-hidden px-6 text-white" style={{ background: `linear-gradient(145deg, ${providerColour} 0%, #fffaf7 100%)` }}>
+        <HallImage propertyName={property.name} alt={`${property.name} hall`} className="z-10 object-cover" sizes="(max-width: 768px) 100vw, 640px" />
         <div className="absolute -right-10 -top-12 size-56 rounded-full border border-slate-900/10" />
         <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-slate-900/10" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />
@@ -43,8 +45,8 @@ function PropertyPost({ property }: { property: Property }) {
           </div>
           <div className="mb-5 h-36 w-20 rounded-t-md bg-slate-900/10" />
         </div>
-        <span className="absolute bottom-4 left-4 rounded-full bg-white/65 px-3 py-1 text-xs font-medium text-slate-800 backdrop-blur">{property.postcode || "London"}</span>
-        {property.catered && <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-foreground">Catered</span>}
+        <span className="absolute bottom-4 left-4 z-20 rounded-full bg-white/85 px-3 py-1 text-xs font-medium text-slate-800 backdrop-blur">{property.postcode || "London"}</span>
+        {property.catered && <span className="absolute right-4 top-4 z-20 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-foreground">Catered</span>}
       </div>
 
       <div className="space-y-3 p-4">
