@@ -41,13 +41,13 @@ Agents: do the tasks under **your person** only, top first. Stay inside the fold
    - Listing detail: photos, info, like, and a **"Message"** button.
    - **Quick match** (swaps only), on the listings page: dating-app style cards of listings that fit your wants AND whose wants your hall fits, with pass / like.
    - "Mutual match" badge.
-3. [ ] Swap the placeholder data for C's functions in `lib/data/listings.ts` once pushed: `getListings`, `getListing`, `createListing`, `prefillFromHall`, `like` / `unlike` / `myLikes`, `quickMatches`, `uploadPhoto`. Don't write your own Supabase queries for these.
+3. [ ] Swap the placeholder data for C's functions in `lib/data/listings.ts` (**ready**, each is documented in the file): `getListings`, `getMyListings`, `getListing`, `createListing` + `validateListing`, `prefillFromHall`, `like` / `unlike` / `myLikes` / `getLikedListings`, `quickMatches` (pass `exclude` = ids the user swiped away), `isMutualMatch`, `uploadPhoto`, `setListingStatus`, `deleteListing`. They throw an `Error` whose message you can show. Don't write your own Supabase queries for these.
 4. [ ] The "Message" button calls `startConversation(listingId)` and goes to `/messages/<conversation id>`. **Chat itself is C's** (don't build `/messages`).
 - CSV edits: save as **CSV UTF-8**, use university ids (`kcl`, not "King's College London"), run `python data/check_csv.py` before pushing.
 
 **C: Backend + Chat** (owns `supabase/`, `data/`, `lib/types.ts`, `lib/data/`, `app/messages`, `components/chat`)
 1. [x] Migration: `listing_likes` (public like counts, not who liked), `listing-photos` storage bucket, `start_conversation(listing_id)` (get-or-create). C runs `npx supabase db push`.
-2. [ ] `lib/data/listings.ts` + tests: the functions B uses (list above) plus `startConversation`.
+2. [x] `lib/data/listings.ts` + tests: the functions B uses (list above) plus `startConversation`.
 3. [ ] Seed ~10–12 demo listings with good matching pairs (e.g. near UCL Bloomsbury ↔ near UCL East) so the feed and Quick match aren't empty.
 4. [ ] **Chat**: `/messages` (my conversations, newest first, with the listing) and `/messages/[id]` (messages, live via Supabase Realtime, send box).
 5. [ ] Gmail SMTP so real students also get a 6-digit code.
