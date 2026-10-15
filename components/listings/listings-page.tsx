@@ -123,7 +123,7 @@ export function ListingsPage() {
       <header className="mb-5 flex items-end justify-between gap-3">
         <div>
           <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            <Image src="/alonr-logo.svg" alt="alonr" width={78} height={46} className="h-9 w-[4.8rem] object-contain object-left" />
+            <Image src="/alonr-logo.jpeg" alt="alonr" width={691} height={691} className="h-12 w-[5.2rem] object-cover object-center" />
             <Sparkles className="size-3.5" /> Student-to-student
           </p>
           <h1 className="text-2xl font-bold tracking-tight">Room offers</h1>
