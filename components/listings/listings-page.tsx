@@ -183,7 +183,8 @@ export function ListingsPage() {
           {view === "explore" ? <span>{shownListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
           {view === "explore" && <span className="ml-3 inline-flex items-center gap-1"><Heart className="size-3.5" /> Like a room to save it</span>}
         </div>
-        <div className="flex items-center gap-2">
+        {/* Grid and list look the same on phones, so the layout controls only show from sm up. */}
+        <div className="hidden items-center gap-2 sm:flex">
           <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="Listing layout">
             <button type="button" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "grid" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
               <LayoutGrid className="size-3.5" /> Grid
