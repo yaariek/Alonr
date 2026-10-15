@@ -114,16 +114,11 @@ export interface HouseSharePost {
   prefs: HouseSharePreferences;
 }
 
-export interface HouseShareMatchProfile {
-  move_in: string;
-  areas: string[];
-  prefs: HouseSharePreferences;
-}
-
 export interface HouseShareCompatibilityScore {
   points: number;
-  maxPoints: 100;
+  maxPoints: number;
   percentage: number;
+  hasCriteria: boolean;
   breakdown: {
     moveIn: number;
     location: number;

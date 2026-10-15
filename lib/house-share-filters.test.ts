@@ -81,4 +81,14 @@ describe("filterHouseShare", () => {
     expect(filterHouseShare(posts, { query: "camden", maxBudget: 250, pets: true, smoking: false }).map((post) => post.id)).toEqual(["share-a"]);
     expect(filterHouseShare(posts, { query: "camden", pets: false })).toEqual([]);
   });
+
+  it("filters move-in dates within the matching window and nearby areas", () => {
+    expect(filterHouseShare(posts, { moveIn: "2026-09-01" }).map((post) => post.id)).toEqual(["share-a"]);
+    expect(filterHouseShare(posts, { area: "Camden" }).map((post) => post.id)).toEqual(["share-a", "share-b"]);
+    expect(filterHouseShare(posts, { area: "Not a London area" })).toEqual([]);
+  });
+
+  it("matches selected facilities and party preference", () => {
+    expect(filterHouseShare(posts, { facilities: ["wifi"], parties: false }).map((post) => post.id)).toEqual(["share-a"]);
+  });
 });

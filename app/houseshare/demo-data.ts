@@ -1,4 +1,4 @@
-import type { HouseShareMatchProfile, HouseSharePost } from "@/lib/types";
+import type { HouseSharePost } from "@/lib/types";
 
 const LONDON_AREAS = [
   "Acton", "Balham", "Bermondsey", "Bethnal Green", "Brixton", "Brockley",
@@ -62,21 +62,3 @@ export const DEMO_HOUSESHARE_POSTS: HouseSharePost[] = LONDON_AREAS.map((area, i
     },
   };
 });
-
-// Example seeker profile used by the local Match view until profile data is connected.
-export const DEMO_HOUSESHARE_MATCH_PROFILE: HouseShareMatchProfile = {
-  move_in: "2026-12-01",
-  areas: ["Camden", "Islington", "Finsbury Park"],
-  prefs: {
-    study_level: "postgrad",
-    gender: "mixed",
-    pets: false,
-    smoking: false,
-    drinking: "sometimes",
-    parties: false,
-    instruments: false,
-    personality: ["steadiness", "conscientiousness"],
-    languages: ["English"],
-    facilities: ["wifi", "laundry", "bike_storage", "shared_lounge"],
-  },
-};
