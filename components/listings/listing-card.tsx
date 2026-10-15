@@ -13,7 +13,7 @@ import type { RoomListing } from "./types";
 export const listingPlace = (listing: RoomListing) =>
   [listing.university === "Other" ? "" : listing.university, listing.postcode].filter(Boolean).join(" · ") || "London";
 
-export function ListingPhoto({ listing, className = "" }: { listing: RoomListing; className?: string }) {
+export function ListingPhoto({ listing, className = "", eager }: { listing: RoomListing; className?: string; eager?: boolean }) {
   const photo = listing.photos[0];
   return (
     <div
@@ -34,6 +34,7 @@ export function ListingPhoto({ listing, className = "" }: { listing: RoomListing
           alt={`${listing.propertyName} hall`}
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 640px"
+          eager={eager}
         />
       )}
       {photo && <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />}
@@ -47,12 +48,14 @@ export function ListingCard({
   liked,
   onLike,
   mutualMatch = false,
+  eager,
 }: {
   listing: RoomListing;
   allListings: RoomListing[];
   liked: boolean;
   onLike: () => void;
   mutualMatch?: boolean;
+  eager?: boolean;
 }) {
   const hasMutualMatch = mutualMatch || allListings.some((other) => listingsAreMutualMatches(listing, other));
 
@@ -60,7 +63,7 @@ export function ListingCard({
     <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       <div className="relative">
         <Link href={`/listings/${listing.id}`} aria-label={`View ${listing.propertyName} listing`}>
-          <ListingPhoto listing={listing} className="aspect-[1.45] w-full" />
+          <ListingPhoto listing={listing} className="aspect-[1.45] w-full" eager={eager} />
         </Link>
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           <Badge className="border-white/30 bg-white/90 text-foreground shadow-sm hover:bg-white/90">

@@ -81,7 +81,7 @@ export function ListingDetail({ id }: { id: string }) {
       </Link>
 
       <div className="relative overflow-hidden rounded-2xl">
-        <ListingPhoto listing={{ ...listing, photos: currentPhoto ? [currentPhoto] : [] }} className="aspect-[1.08] w-full sm:aspect-[1.35]" />
+        <ListingPhoto listing={{ ...listing, photos: currentPhoto ? [currentPhoto] : [] }} className="aspect-[1.08] w-full sm:aspect-[1.35]" eager />
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           <Badge className="border-white/30 bg-white/90 text-foreground shadow-sm hover:bg-white/90">{listing.kind === "swap" ? "Room swap" : "Contract release"}</Badge>
           {hasMutualMatch && <Badge className="bg-emerald-500 text-white shadow-sm hover:bg-emerald-500">Mutual match</Badge>}

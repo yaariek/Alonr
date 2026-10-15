@@ -243,7 +243,7 @@ export function ListingsPage() {
         <div className={listingGridClass}>{[0, 1].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
       ) : shownListings.length ? (
         <div className={listingGridClass}>
-          {shownListings.map((listing) => (
+          {shownListings.map((listing, index) => (
             <div key={`${view}-${listing.id}`} className="space-y-2">
               <QuickMatchCard
                 listing={listing}
@@ -251,6 +251,7 @@ export function ListingsPage() {
                 onLike={() => void likeListing(listing.id)}
                 onPass={() => void passMatch(listing.id)}
                 quick={view === "quick"}
+                eager={index < 3}
                 mutualMatch={view === "quick" || myListings.some((mine) => mine.kind === "swap" && (mine.status ?? "active") === "active" && listingsAreMutualMatches(mine, listing))}
               />
               {view === "mine" && (
@@ -290,13 +291,13 @@ export function ListingsPage() {
 }
 
 function QuickMatchCard({
-  listing, liked, onLike, onPass, quick, mutualMatch,
+  listing, liked, onLike, onPass, quick, mutualMatch, eager,
 }: {
-  listing: RoomListing; liked: boolean; onLike: () => void; onPass: () => void; quick: boolean; mutualMatch: boolean;
+  listing: RoomListing; liked: boolean; onLike: () => void; onPass: () => void; quick: boolean; mutualMatch: boolean; eager?: boolean;
 }) {
   return (
     <div className="space-y-2">
-      <ListingCard listing={listing} allListings={[]} liked={liked} onLike={onLike} mutualMatch={mutualMatch} />
+      <ListingCard listing={listing} allListings={[]} liked={liked} onLike={onLike} mutualMatch={mutualMatch} eager={eager} />
       {quick && (
         <div className="grid grid-cols-2 gap-2">
           <Button type="button" variant="outline" className="h-10" onClick={onPass}>Pass</Button>

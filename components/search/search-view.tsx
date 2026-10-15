@@ -15,7 +15,7 @@ import { HallImage } from "@/components/property/HallImage";
 const money = (price: number | null) => price === null ? "Prices coming soon" : `From £${price}/wk`;
 const titleCase = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
-function PropertyPost({ property, listingCount }: { property: Property; listingCount: number }) {
+function PropertyPost({ property, listingCount, eager }: { property: Property; listingCount: number; eager?: boolean }) {
   const price = minPrice(property);
   const providerColour = PROVIDER_COLOURS[property.provider];
   const roomKinds = [...new Set(property.roomTypes.map((room) => titleCase(room.kind)))];
@@ -34,7 +34,7 @@ function PropertyPost({ property, listingCount }: { property: Property; listingC
       </div>
 
       <div className="relative flex aspect-[1.25/1] items-center justify-center overflow-hidden px-6 text-white" style={{ background: `linear-gradient(145deg, ${providerColour} 0%, #fffaf7 100%)` }}>
-        <HallImage propertyName={property.name} alt={`${property.name} hall`} className="z-10 bg-white object-contain" sizes="(max-width: 768px) 100vw, 640px" />
+        <HallImage propertyName={property.name} alt={`${property.name} hall`} className="z-10 bg-white object-contain" sizes="(max-width: 768px) 100vw, 640px" eager={eager} />
         <div className="absolute -right-10 -top-12 size-56 rounded-full border border-slate-900/10" />
         <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-slate-900/10" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />
@@ -133,7 +133,7 @@ export function SearchView({ embedded = false }: { embedded?: boolean } = {}) {
         {error ? (
           <div className="rounded-2xl border bg-card p-6 text-center text-sm text-muted-foreground">{error}</div>
         ) : results.length ? (
-          <div className="space-y-4">{results.map((property) => <PropertyPost key={property.id} property={property} listingCount={listingCounts.get(property.id) ?? 0} />)}</div>
+          <div className="space-y-4">{results.map((property, index) => <PropertyPost key={property.id} property={property} listingCount={listingCounts.get(property.id) ?? 0} eager={index < 2} />)}</div>
         ) : (
           <div className="rounded-2xl border bg-card px-6 py-12 text-center">
             <Search className="mx-auto size-8 text-muted-foreground" />
