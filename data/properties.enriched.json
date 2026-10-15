@@ -63,7 +63,7 @@
     "room_types": [
       {
         "kind": "ensuite",
-        "price_week": 390.6,
+        "price_week": 391.0,
         "flatmates": 5,
         "contract_weeks": [
           38
@@ -1400,11 +1400,11 @@
         ]
       }
     ],
-    "supermarket_name": null,
-    "supermarket_m": null,
-    "station_name": null,
-    "station_m": null,
-    "bike_dock_m": null
+    "supermarket_name": "Waitrose",
+    "supermarket_m": 180,
+    "station_name": "Stratford International",
+    "station_m": 223,
+    "bike_dock_m": 265
   },
   {
     "slug": "chapter-white-city",

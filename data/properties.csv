@@ -1,7 +1,7 @@
 name,provider,affiliated_university,address,postcode,lat,lng,room_kind,price_week,flatmates,contract_weeks,catered,reception_24h,accessible,facilities,website,added_by
 Chapter King's Cross,Chapter,,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,ensuite,389,5,44;51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
 Chapter King's Cross,Chapter,,200 Pentonville Rd,N1 9JP,51.5313304,-0.1174067,studio,489,0,51,FALSE,TRUE,TRUE,gym;cinema room;laundry,https://www.chapter-living.com,C
-LSE High Holborn Residence,LSE,lse,178 High Holborn,WC1V 7AA,51.515912,-0.124739,ensuite,390.6,5,38,FALSE,TRUE,TRUE,laundry;common room;study spaces,https://www.lse.ac.uk/student-life/accommodation/halls/high-holborn-residence,B
+LSE High Holborn Residence,LSE,lse,178 High Holborn,WC1V 7AA,51.515912,-0.124739,ensuite,391,5,38,FALSE,TRUE,TRUE,laundry;common room;study spaces,https://www.lse.ac.uk/student-life/accommodation/halls/high-holborn-residence,B
 Pavilion House Student lets,Pavillion House,,"20 First Way, Wembley",DA15 7JR,51.428702,0.100756,studio,430,0,44;51,FALSE,TRUE,TRUE,gym; cinema room; study spaces; games area; laundry; bike storage; social lounges; private dining; courtyard,https://www.pavilioncourt.com,B
 Cashin,St Mary's University,stmarys,19 Waldegrave Park,TW1 4TL,51.434047,-0.334869,shared_bathroom,165,8,38,TRUE,FALSE,TRUE,shared kitchen; laundry; common room; WiFi,https://www.stmarys.ac.uk/student-accommodation,B
 The Stay Club,Stay Club,,16-18 Charcot Road,NW9 5WU,51.595475,-0.250747,studio,335,0,51,FALSE,TRUE,TRUE,gym; cinema; café; study rooms; laundry; social spaces,https://www.thestayclub.com/colindale,B
