@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { LayoutGrid, List, MapPin, MessageCircle, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -8,19 +8,18 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
-import type { HouseShareCompatibilityScore, HouseShareFacilityTag, HouseSharePersonalityTag, HouseSharePost } from "@/lib/types";
+import type { HouseShareCompatibilityScore, HouseShareFacilityTag, HouseSharePost } from "@/lib/types";
 import { filterHouseShare, type HouseShareFilters } from "@/lib/house-share-filters";
 import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
 import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "./demo-storage";
+import { createClient } from "@/lib/supabase/client";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "./age-groups";
 
 type Layout = "grid" | "list";
 type View = "explore" | "match";
-type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string; parties: string; moveIn: string; area: string; personality: HouseSharePersonalityTag | ""; language: string; facilities: HouseShareFacilityTag[] };
+type Filters = { maxBudget: string; studyLevel: string; ageGroup: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string; parties: string; moveIn: string; area: string; languages: string[]; facilities: HouseShareFacilityTag[] };
 
-const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", gender: "", pets: "", smoking: "", drinking: "", instruments: "", parties: "", moveIn: "", area: "", personality: "", language: "", facilities: [] };
-const PERSONALITY_LABELS: Record<HouseSharePersonalityTag, string> = {
-  dominance: "Dominance (D)", influence: "Influence (I)", steadiness: "Steadiness (S)", conscientiousness: "Conscientiousness (C)",
-};
+const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", ageGroup: "", gender: "", pets: "", smoking: "", drinking: "", instruments: "", parties: "", moveIn: "", area: "", languages: [], facilities: [] };
 const FACILITY_OPTIONS: { value: HouseShareFacilityTag; label: string }[] = [
   { value: "wifi", label: "Wi-Fi" }, { value: "laundry", label: "Laundry" }, { value: "garden", label: "Garden" },
   { value: "bike_storage", label: "Bike storage" }, { value: "dishwasher", label: "Dishwasher" },
@@ -36,6 +35,24 @@ export default function Page() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [layout, setLayout] = useState<Layout>("grid");
   const [columns, setColumns] = useState<2 | 3 | 4>(3);
+  const [profileLanguages, setProfileLanguages] = useState<string[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProfileLanguages() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase.from("profiles").select("languages").eq("id", user.id).maybeSingle();
+        if (!cancelled) setProfileLanguages(data?.languages ?? []);
+      } catch {
+        if (!cancelled) setProfileLanguages([]);
+      }
+    }
+    loadProfileLanguages();
+    return () => { cancelled = true; };
+  }, []);
 
   const activeFilterCount = Object.values(filters).reduce((count, value) => count + (Array.isArray(value) ? Number(value.length > 0) : Number(Boolean(value))), 0);
   const selectedFilters = useMemo<HouseShareFilters>(() => {
@@ -44,14 +61,14 @@ export default function Page() {
       query: search,
       maxBudget: maxBudget !== undefined && Number.isFinite(maxBudget) ? maxBudget : undefined,
       studyLevel: filters.studyLevel ? filters.studyLevel as "undergrad" | "postgrad" : undefined,
+      ageGroup: filters.ageGroup ? filters.ageGroup as HouseShareAgeGroup : undefined,
       gender: filters.gender ? filters.gender as "women" | "men" | "mixed" : undefined,
       pets: filters.pets ? filters.pets === "true" : undefined,
       smoking: filters.smoking ? filters.smoking === "true" : undefined,
       drinking: filters.drinking ? filters.drinking as "none" | "sometimes" | "often" : undefined,
       instruments: filters.instruments ? filters.instruments === "true" : undefined,
       parties: filters.parties ? filters.parties === "true" : undefined,
-      personality: filters.personality || undefined,
-      language: filters.language || undefined,
+      languages: filters.languages.length ? filters.languages : undefined,
       moveIn: filters.moveIn || undefined,
       area: filters.area || undefined,
       facilities: filters.facilities.length ? filters.facilities : undefined,
@@ -59,7 +76,7 @@ export default function Page() {
   }, [search, filters]);
 
   const filteredPosts = useMemo(() => filterHouseShare(posts, selectedFilters), [posts, selectedFilters]);
-  const hasMatchCriteria = Boolean(selectedFilters.maxBudget !== undefined || selectedFilters.studyLevel || selectedFilters.gender || selectedFilters.pets !== undefined || selectedFilters.smoking !== undefined || selectedFilters.drinking || selectedFilters.instruments !== undefined || selectedFilters.parties !== undefined || selectedFilters.personality || selectedFilters.language || selectedFilters.moveIn || selectedFilters.area || selectedFilters.facilities?.length);
+  const hasMatchCriteria = Boolean(selectedFilters.maxBudget !== undefined || selectedFilters.studyLevel || selectedFilters.ageGroup || selectedFilters.gender || selectedFilters.pets !== undefined || selectedFilters.smoking !== undefined || selectedFilters.drinking || selectedFilters.instruments !== undefined || selectedFilters.parties !== undefined || selectedFilters.languages?.length || selectedFilters.moveIn || selectedFilters.area || selectedFilters.facilities?.length);
   const rankedMatches = useMemo(() => filteredPosts
     .map((post) => ({ post, score: scoreHouseShareCompatibility(selectedFilters, post) }))
     .sort((a, b) => b.score.points - a.score.points), [filteredPosts, selectedFilters]);
@@ -70,8 +87,17 @@ export default function Page() {
     ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
     : `grid gap-4 ${columns === 2 ? "grid-cols-1 sm:grid-cols-2" : columns === 3 ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4"}`;
 
-  function updateFilter(key: Exclude<keyof Filters, "facilities">, value: string) {
+  function updateFilter(key: Exclude<keyof Filters, "facilities" | "languages">, value: string) {
     setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function toggleLanguage(language: string) {
+    setFilters((current) => ({
+      ...current,
+      languages: current.languages.includes(language)
+        ? current.languages.filter((item) => item !== language)
+        : [...current.languages, language],
+    }));
   }
 
   function toggleFacility(facility: HouseShareFacilityTag) {
@@ -117,14 +143,14 @@ export default function Page() {
             <label className="space-y-1 text-xs font-medium">Move-in date<input type="date" value={filters.moveIn} onChange={(event) => updateFilter("moveIn", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal" /><span className="block text-[10px] text-muted-foreground">Matches within 90 days, ranked by closeness</span></label>
             <label className="space-y-1 text-xs font-medium">Preferred area<select value={filters.area} onChange={(event) => updateFilter("area", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any area</option>{Array.from(new Set(posts.flatMap((post) => post.areas))).sort().map((area) => <option key={area} value={area}>{area}</option>)}</select><span className="block text-[10px] text-muted-foreground">Nearby areas within 25 km are included</span></label>
             <label className="space-y-1 text-xs font-medium">Study level<select value={filters.studyLevel} onChange={(event) => updateFilter("studyLevel", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="undergrad">Undergraduate</option><option value="postgrad">Postgraduate</option></select></label>
+            <label className="space-y-1 text-xs font-medium">Age group<select value={filters.ageGroup} onChange={(event) => updateFilter("ageGroup", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option>{HOUSE_SHARE_AGE_GROUPS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}</select></label>
             <label className="space-y-1 text-xs font-medium">Gender preference<select value={filters.gender} onChange={(event) => updateFilter("gender", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="women">Women</option><option value="men">Men</option><option value="mixed">Mixed</option></select></label>
             <label className="space-y-1 text-xs font-medium">Pets<select value={filters.pets} onChange={(event) => updateFilter("pets", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Allowed</option><option value="false">Not allowed</option></select></label>
             <label className="space-y-1 text-xs font-medium">Smoking<select value={filters.smoking} onChange={(event) => updateFilter("smoking", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Allowed</option><option value="false">Not allowed</option></select></label>
             <label className="space-y-1 text-xs font-medium">Drinking preference<select value={filters.drinking} onChange={(event) => updateFilter("drinking", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="none">No drinking</option><option value="sometimes">Sometimes</option><option value="often">Often</option></select></label>
             <label className="space-y-1 text-xs font-medium">Musical instruments<select value={filters.instruments} onChange={(event) => updateFilter("instruments", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Allowed</option><option value="false">Not allowed</option></select></label>
             <label className="space-y-1 text-xs font-medium">Parties<select value={filters.parties} onChange={(event) => updateFilter("parties", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Welcome</option><option value="false">Quiet home</option></select></label>
-            <label className="space-y-1 text-xs font-medium">DISC-inspired personality<select value={filters.personality} onChange={(event) => setFilters((current) => ({ ...current, personality: event.target.value as HouseSharePersonalityTag | "" }))} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option>{Object.entries(PERSONALITY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <label className="space-y-1 text-xs font-medium">Language<select value={filters.language} onChange={(event) => updateFilter("language", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option>{Array.from(new Set(posts.flatMap((post) => post.prefs.languages))).sort().map((language) => <option key={language} value={language}>{language}</option>)}</select></label>
+            <fieldset className="space-y-1 text-xs font-medium sm:col-span-2"><legend>Languages spoken</legend><p className="text-[10px] font-normal text-muted-foreground">Choose any languages you would like your housemates to speak.</p><div className="flex flex-wrap gap-2 pt-1">{Array.from(new Set([...posts.flatMap((post) => post.prefs.languages), ...profileLanguages])).sort().map((language) => { const selected = filters.languages.includes(language); return <button key={language} type="button" aria-pressed={selected} onClick={() => toggleLanguage(language)} className={cn("min-h-9 rounded-full border px-3 text-xs font-medium transition-colors", selected ? "border-blue-700 bg-blue-700 text-white hover:bg-blue-800" : "border-input bg-background text-foreground hover:bg-accent")}>{language}</button>; })}</div><div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] font-normal"><Link href="/profile" className="text-primary underline underline-offset-2">Customize languages on your profile</Link>{profileLanguages.length > 0 && <button type="button" onClick={() => setFilters((current) => ({ ...current, languages: profileLanguages }))} className="text-primary underline underline-offset-2">Use my profile languages</button>}</div></fieldset>
             <fieldset className="space-y-1 text-xs font-medium sm:col-span-2"><legend>Facilities</legend><div className="flex flex-wrap gap-2 pt-1">{FACILITY_OPTIONS.map((facility) => { const selected = filters.facilities.includes(facility.value); return <button key={facility.value} type="button" aria-pressed={selected} onClick={() => toggleFacility(facility.value)} className={cn("min-h-9 rounded-full border px-3 text-xs font-medium transition-colors", selected ? "border-blue-700 bg-blue-700 text-white hover:bg-blue-800" : "border-input bg-background text-foreground hover:bg-accent")}>{facility.label}</button>; })}</div></fieldset>
             {activeFilterCount > 0 && <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="text-left text-xs font-semibold text-primary hover:underline sm:col-span-2 lg:col-span-5">Clear filters</button>}
           </CardContent>
@@ -157,13 +183,13 @@ function HouseShareCard({ post, score }: { post: HouseSharePost; score?: HouseSh
   const currentTenants = post.total_tenants - post.looking_for_n;
   const preferenceLabels = [
     post.prefs.study_level && (post.prefs.study_level === "postgrad" ? "Postgraduate" : "Undergraduate"),
+    getHouseShareAgeGroup(post) && `Age: ${HOUSE_SHARE_AGE_GROUPS.find(({ value }) => value === getHouseShareAgeGroup(post))?.label}`,
     post.prefs.gender && `${post.prefs.gender} household`,
     post.prefs.pets ? "Pets welcome" : "No pets",
     post.prefs.smoking ? "Smoking allowed" : "Non-smoking",
     post.prefs.drinking && `Drinking: ${post.prefs.drinking}`,
     post.prefs.instruments ? "Instruments welcome" : "No instruments",
     post.prefs.parties ? "Parties welcome" : "Quiet household",
-    ...post.prefs.personality.map((tag) => PERSONALITY_LABELS[tag]),
     post.prefs.languages.length ? `Languages: ${post.prefs.languages.join(", ")}` : undefined,
     ...post.prefs.facilities.map((facility) => facility.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")),
   ].filter(Boolean) as string[];

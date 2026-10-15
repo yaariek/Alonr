@@ -72,9 +72,9 @@ describe("filterHouseShare", () => {
     expect(filterHouseShare(posts, { pets: false, smoking: true, drinking: "often", instruments: false }).map((post) => post.id)).toEqual(["share-b"]);
   });
 
-  it("filters by DISC-inspired personality tag and language", () => {
-    expect(filterHouseShare(posts, { personality: "steadiness" }).map((post) => post.id)).toEqual(["share-a"]);
-    expect(filterHouseShare(posts, { language: "french" }).map((post) => post.id)).toEqual(["share-b"]);
+  it("filters by one or more spoken languages, case-insensitively", () => {
+    expect(filterHouseShare(posts, { languages: ["french"] }).map((post) => post.id)).toEqual(["share-b"]);
+    expect(filterHouseShare(posts, { languages: ["arabic", "french"] }).map((post) => post.id)).toEqual(["share-a", "share-b"]);
   });
 
   it("combines all provided filters", () => {

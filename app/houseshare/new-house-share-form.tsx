@@ -14,20 +14,14 @@ import type {
   HouseShareDrinkingPreference,
   HouseShareFacilityTag,
   HouseShareGenderPreference,
-  HouseSharePersonalityTag,
-  HouseSharePost,
   HouseShareStudyLevel,
 } from "@/lib/types";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, type HouseSharePostWithAgeGroup } from "./age-groups";
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
 import { saveLocalHouseSharePost } from "./demo-storage";
+import { createClient } from "@/lib/supabase/client";
 
 const AREA_OPTIONS = Array.from(new Set(DEMO_HOUSESHARE_POSTS.flatMap((post) => post.areas))).sort();
-const PERSONALITY_OPTIONS: { value: HouseSharePersonalityTag; label: string }[] = [
-  { value: "dominance", label: "Dominance (D)" },
-  { value: "influence", label: "Influence (I)" },
-  { value: "steadiness", label: "Steadiness (S)" },
-  { value: "conscientiousness", label: "Conscientiousness (C)" },
-];
 const FACILITY_OPTIONS: { value: HouseShareFacilityTag; label: string }[] = [
   { value: "wifi", label: "Wi-Fi" }, { value: "laundry", label: "Laundry" }, { value: "garden", label: "Garden" },
   { value: "bike_storage", label: "Bike storage" }, { value: "dishwasher", label: "Dishwasher" },
@@ -44,14 +38,13 @@ export default function NewHouseShareForm() {
   const [currentTenants, setCurrentTenants] = useState("2");
   const [totalTenants, setTotalTenants] = useState("3");
   const [studyLevel, setStudyLevel] = useState<HouseShareStudyLevel | "">("");
+  const [ageGroup, setAgeGroup] = useState<HouseShareAgeGroup | "">("");
   const [gender, setGender] = useState<HouseShareGenderPreference | "">("");
   const [pets, setPets] = useState("");
   const [smoking, setSmoking] = useState("");
   const [drinking, setDrinking] = useState<HouseShareDrinkingPreference | "">("");
   const [parties, setParties] = useState("");
   const [instruments, setInstruments] = useState("");
-  const [personality, setPersonality] = useState<HouseSharePersonalityTag[]>([]);
-  const [languagesInput, setLanguagesInput] = useState("");
   const [facilities, setFacilities] = useState<HouseShareFacilityTag[]>([]);
   const [busy, setBusy] = useState(false);
 
@@ -59,7 +52,7 @@ export default function NewHouseShareForm() {
     update(values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const current = Number(currentTenants);
     const total = Number(totalTenants);
@@ -80,13 +73,24 @@ export default function NewHouseShareForm() {
       toast.error("Enter a weekly budget greater than zero.");
       return;
     }
-    if (!studyLevel || !gender || pets === "" || smoking === "" || !drinking || parties === "" || instruments === "") {
+    if (!studyLevel || !ageGroup || !gender || pets === "" || smoking === "" || !drinking || parties === "" || instruments === "") {
       toast.error("Answer each household preference so students can filter your post.");
       return;
     }
 
-    const languages = Array.from(new Set(languagesInput.split(",").map((language) => language.trim()).filter(Boolean)));
-    const post: HouseSharePost = {
+    setBusy(true);
+    let languages: string[] = [];
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("languages").eq("id", user.id).maybeSingle();
+        languages = profile?.languages ?? [];
+      }
+    } catch {
+      // Languages are optional profile details; the demo post can still be saved if profile lookup fails.
+    }
+    const post: HouseSharePostWithAgeGroup = {
       id: `local-house-share-${crypto.randomUUID()}`,
       user_id: "local-user",
       name: name.trim(),
@@ -98,19 +102,19 @@ export default function NewHouseShareForm() {
       total_tenants: total,
       prefs: {
         study_level: studyLevel,
+        age_group: ageGroup,
         gender,
         pets: pets === "true",
         smoking: smoking === "true",
         drinking,
         parties: parties === "true",
         instruments: instruments === "true",
-        personality,
+        personality: [],
         languages,
         facilities,
       },
     };
 
-    setBusy(true);
     try {
       saveLocalHouseSharePost(post);
       toast.success("Your demo House Share post is saved in this browser.");
@@ -170,17 +174,13 @@ export default function NewHouseShareForm() {
           <CardHeader><CardTitle>Household preferences</CardTitle><p className="text-xs text-muted-foreground">These answers appear on your post and match the House Share filters.</p></CardHeader>
           <CardContent className="grid gap-3 sm:grid-cols-2">
             <Field label="Study level" htmlFor="study-level"><SelectField id="study-level" value={studyLevel} onChange={(value) => setStudyLevel(value as HouseShareStudyLevel | "")}><option value="">Choose one</option><option value="undergrad">Undergraduate</option><option value="postgrad">Postgraduate</option></SelectField></Field>
+            <Field label="Age group" htmlFor="age-group"><SelectField id="age-group" value={ageGroup} onChange={(value) => setAgeGroup(value as HouseShareAgeGroup | "")}><option value="">Choose one</option>{HOUSE_SHARE_AGE_GROUPS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}</SelectField></Field>
             <Field label="Gender preference" htmlFor="gender"><SelectField id="gender" value={gender} onChange={(value) => setGender(value as HouseShareGenderPreference | "")}><option value="">Choose one</option><option value="women">Women</option><option value="men">Men</option><option value="mixed">Mixed</option></SelectField></Field>
             <BooleanField label="Pets allowed?" id="pets" value={pets} onChange={setPets} />
             <BooleanField label="Smoking allowed?" id="smoking" value={smoking} onChange={setSmoking} />
             <Field label="Drinking preference" htmlFor="drinking"><SelectField id="drinking" value={drinking} onChange={(value) => setDrinking(value as HouseShareDrinkingPreference | "")}><option value="">Choose one</option><option value="none">No drinking</option><option value="sometimes">Sometimes</option><option value="often">Often</option></SelectField></Field>
             <BooleanField label="Parties?" id="parties" value={parties} onChange={setParties} yesLabel="Welcome" noLabel="Quiet home" />
             <BooleanField label="Musical instruments allowed?" id="instruments" value={instruments} onChange={setInstruments} />
-            <Field label="Languages spoken" htmlFor="languages"><Input id="languages" value={languagesInput} onChange={(event) => setLanguagesInput(event.target.value)} placeholder="English, Arabic" /><span className="block text-[11px] text-muted-foreground">Separate multiple languages with commas.</span></Field>
-            <fieldset className="space-y-2 sm:col-span-2">
-              <legend className="text-sm font-medium">DISC-inspired personality tags <span className="font-normal text-muted-foreground">(optional)</span></legend>
-              <div className="flex flex-wrap gap-2">{PERSONALITY_OPTIONS.map((option) => { const selected = personality.includes(option.value); return <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleValue(personality, option.value, setPersonality)} className={`inline-flex min-h-9 items-center gap-1 rounded-full border px-3 text-xs font-medium ${selected ? "border-primary bg-primary/5 text-primary" : "text-muted-foreground hover:bg-muted"}`}>{selected && <Check className="size-3" />}{option.label}</button>; })}</div>
-            </fieldset>
             <fieldset className="space-y-2 sm:col-span-2">
               <legend className="text-sm font-medium">Facilities <span className="font-normal text-muted-foreground">(optional)</span></legend>
               <div className="flex flex-wrap gap-2">{FACILITY_OPTIONS.map((option) => { const selected = facilities.includes(option.value); return <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleValue(facilities, option.value, setFacilities)} className={`inline-flex min-h-9 items-center gap-1 rounded-full border px-3 text-xs font-medium ${selected ? "border-blue-700 bg-blue-700 text-white" : "border-input bg-background hover:bg-accent"}`}>{selected && <Check className="size-3" />}{option.label}</button>; })}</div>

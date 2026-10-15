@@ -1,4 +1,4 @@
-import type { HouseSharePost } from "@/lib/types";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseSharePostWithAgeGroup } from "./age-groups";
 
 const LONDON_AREAS = [
   "Acton", "Balham", "Bermondsey", "Bethnal Green", "Brixton", "Brockley",
@@ -33,7 +33,7 @@ const pick = <T,>(items: readonly T[]) => items[Math.floor(random() * items.leng
 const integer = (min: number, max: number) => min + Math.floor(random() * (max - min + 1));
 
 // Fixed demo fixture: the areas are real, but the households and availability are fictional.
-export const DEMO_HOUSESHARE_POSTS: HouseSharePost[] = LONDON_AREAS.map((area, index) => {
+export const DEMO_HOUSESHARE_POSTS: HouseSharePostWithAgeGroup[] = LONDON_AREAS.map((area, index) => {
   const totalTenants = integer(2, 7);
   const lookingFor = integer(1, Math.min(3, totalTenants - 1));
   const moveIn = new Date(Date.UTC(2026, 10, 1 + integer(0, 150))).toISOString().slice(0, 10);
@@ -50,13 +50,14 @@ export const DEMO_HOUSESHARE_POSTS: HouseSharePost[] = LONDON_AREAS.map((area, i
     total_tenants: totalTenants,
     prefs: {
       study_level: pick(["undergrad", "postgrad"] as const),
+      age_group: pick(HOUSE_SHARE_AGE_GROUPS.map(({ value }) => value)),
       gender: pick(["women", "men", "mixed"] as const),
       pets: random() < 0.5,
       smoking: random() < 0.5,
       drinking: pick(["none", "sometimes", "often"] as const),
       parties: random() < 0.5,
       instruments: random() < 0.5,
-      personality: [pick(["dominance", "influence", "steadiness", "conscientiousness"] as const)],
+      personality: [],
       languages: [pick(DEMO_LANGUAGES)],
       facilities: DEMO_FACILITIES.filter(() => random() < 0.5),
     },

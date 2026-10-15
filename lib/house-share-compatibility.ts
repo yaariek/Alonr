@@ -4,6 +4,7 @@ import type {
 } from "@/lib/types";
 import { closestHouseShareAreaDistanceKm, houseShareMoveInDifferenceDays, HOUSE_SHARE_LOCATION_WINDOW_KM, HOUSE_SHARE_MOVE_IN_WINDOW_DAYS } from "@/lib/house-share-distance";
 import type { HouseShareFilters } from "@/lib/house-share-filters";
+import { getHouseShareAgeGroup } from "@/app/houseshare/age-groups";
 
 const MOVE_IN_WEIGHT = 35;
 const LOCATION_WEIGHT = 35;
@@ -36,13 +37,13 @@ export function scoreHouseShareCompatibility(
   const preferenceMatches = [
     filters.maxBudget !== undefined ? house.budget <= filters.maxBudget : undefined,
     filters.studyLevel ? house.prefs.study_level === filters.studyLevel : undefined,
+    filters.ageGroup ? getHouseShareAgeGroup(house) === filters.ageGroup : undefined,
     filters.gender ? house.prefs.gender === filters.gender || filters.gender === "mixed" || house.prefs.gender === "mixed" : undefined,
     filters.pets !== undefined ? house.prefs.pets === filters.pets : undefined,
     filters.smoking !== undefined ? house.prefs.smoking === filters.smoking : undefined,
     filters.drinking ? house.prefs.drinking === filters.drinking : undefined,
     filters.instruments !== undefined ? house.prefs.instruments === filters.instruments : undefined,
-    filters.personality ? house.prefs.personality.includes(filters.personality) : undefined,
-    filters.language ? house.prefs.languages.some((language) => language.toLocaleLowerCase() === filters.language?.trim().toLocaleLowerCase()) : undefined,
+    filters.languages?.length ? filters.languages.some((language) => house.prefs.languages.some((spoken) => spoken.toLocaleLowerCase() === language.trim().toLocaleLowerCase())) : undefined,
     filters.parties !== undefined ? house.prefs.parties === filters.parties : undefined,
     ...(filters.facilities ?? []).map((facility) => house.prefs.facilities.includes(facility)),
   ].filter((match): match is boolean => match !== undefined);
