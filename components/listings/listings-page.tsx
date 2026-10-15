@@ -168,12 +168,12 @@ export function ListingsPage() {
               view === key ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {label}
             {((key === "mine" && myListings.length > 0) || (key === "saved" && likedListings.length > 0)) && (
-              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
+              <span className="mr-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
                 {key === "mine" ? myListings.length : likedListings.length}
               </span>
             )}
+            {label}
           </button>
         ))}
       </div>

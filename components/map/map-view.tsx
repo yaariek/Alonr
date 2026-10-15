@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection, Point } from 'geojson';
+import { BedDouble, UsersRound } from 'lucide-react';
 import { FilterSheet } from '@/components/filters';
+import { useListings } from '@/components/listings/use-listings';
 import { useListingCounts } from '@/lib/data/use-listing-counts';
 import { useProperties } from '@/lib/data/use-properties';
 import { minPrice } from '@/lib/filters';
 import { propertyImagePath } from '@/lib/property-images';
 import { PROVIDER_COLOURS } from '@/lib/sample-data';
+import type { RoomListing } from '@/components/listings/types';
 import { usePropertyFilters } from '@/lib/use-property-filters';
+import { getDemoHouseShareMapPins, type HouseShareMapPinProperties } from './house-share-map-pins';
 
 // MapLibre v6 loads its worker from next to its own script, which breaks once Next bundles it.
 // The worker is copied to public/ by the "postinstall" script in package.json.
@@ -22,6 +26,12 @@ const PROPERTY_SOURCE = 'property-points';
 const CLUSTER_LAYER = 'property-clusters';
 const CLUSTER_COUNT_LAYER = 'property-cluster-count';
 const PROPERTY_LAYER = 'property-points-unclustered';
+const ROOM_SOURCE = 'shared-room-points';
+const ROOM_LAYER = 'shared-room-pins';
+const HOUSE_SHARE_SOURCE = 'house-share-points';
+const HOUSE_SHARE_LAYER = 'house-share-pins';
+const ROOM_PIN_IMAGE = 'shared-room-pin';
+const HOUSE_SHARE_PIN_IMAGE = 'house-share-pin';
 const providerPinImageId = (colour: string) => `provider-pin-${colour.slice(1).toLowerCase()}`;
 
 interface PropertyFeatureProperties {
@@ -33,6 +43,17 @@ interface PropertyFeatureProperties {
   priceLabel: string;
   listingCount: number;
 }
+
+interface RoomFeatureProperties {
+  id: string;
+  propertyName: string;
+  roomKind: string;
+  kind: RoomListing['kind'];
+  priceWeek: number;
+}
+
+const EMPTY_ROOM_FEATURES: FeatureCollection<Point, RoomFeatureProperties> = { type: 'FeatureCollection', features: [] };
+const DEMO_HOUSESHARE_FEATURES = getDemoHouseShareMapPins();
 
 function createProviderPinImage(colour: string): ImageData {
   const canvas = document.createElement('canvas');
@@ -91,7 +112,10 @@ export function MapView() {
   const locationMarker = useRef<maplibregl.Marker | null>(null);
 
   const { properties } = useProperties();
+  const { listings } = useListings();
   const listingCounts = useListingCounts();
+  const [showSharedRoomPins, setShowSharedRoomPins] = useState(false);
+  const [showHouseSharePins, setShowHouseSharePins] = useState(false);
   const {
     selectedProvider,
     setSelectedProvider,
@@ -129,6 +153,31 @@ export function MapView() {
     }),
   }), [filteredProperties, listingCounts]);
 
+  const roomFeatures = useMemo<FeatureCollection<Point, RoomFeatureProperties>>(() => {
+    if (!showSharedRoomPins) return EMPTY_ROOM_FEATURES;
+    const propertiesById = new Map(properties.map((property) => [property.id, property]));
+    return {
+      type: 'FeatureCollection',
+      features: listings.filter((listing) => (listing.status ?? 'active') === 'active').flatMap((listing) => {
+        const property = propertiesById.get(listing.propertyId);
+        if (!property) return [];
+        return [{
+          type: 'Feature' as const,
+          geometry: { type: 'Point' as const, coordinates: [property.lng, property.lat] as [number, number] },
+          properties: {
+            id: listing.id,
+            propertyName: listing.propertyName,
+            roomKind: listing.roomKind.replaceAll('_', ' '),
+            kind: listing.kind,
+            priceWeek: listing.priceWeek,
+          },
+        }];
+      }),
+    };
+  }, [listings, properties, showSharedRoomPins]);
+
+  const houseShareFeatures = showHouseSharePins ? DEMO_HOUSESHARE_FEATURES : null;
+
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
 
@@ -151,6 +200,8 @@ export function MapView() {
           activeMap.addImage(imageId, createProviderPinImage(colour), { pixelRatio: 2 });
         }
       }
+      if (!activeMap.hasImage(ROOM_PIN_IMAGE)) activeMap.addImage(ROOM_PIN_IMAGE, createProviderPinImage('#315b8c'), { pixelRatio: 2 });
+      if (!activeMap.hasImage(HOUSE_SHARE_PIN_IMAGE)) activeMap.addImage(HOUSE_SHARE_PIN_IMAGE, createProviderPinImage('#2f7f86'), { pixelRatio: 2 });
 
       activeMap.addSource(PROPERTY_SOURCE, {
         type: 'geojson',
@@ -159,6 +210,8 @@ export function MapView() {
         clusterRadius: 48,
         clusterMaxZoom: 14,
       });
+      activeMap.addSource(ROOM_SOURCE, { type: 'geojson', data: EMPTY_ROOM_FEATURES });
+      activeMap.addSource(HOUSE_SHARE_SOURCE, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
 
       activeMap.addLayer({
         id: CLUSTER_LAYER,
@@ -200,6 +253,19 @@ export function MapView() {
         },
       });
 
+      activeMap.addLayer({
+        id: ROOM_LAYER,
+        type: 'symbol',
+        source: ROOM_SOURCE,
+        layout: { 'icon-image': ROOM_PIN_IMAGE, 'icon-anchor': 'bottom', 'icon-offset': [20, 0], 'icon-size': 0.85, 'icon-allow-overlap': true, 'icon-ignore-placement': true },
+      });
+      activeMap.addLayer({
+        id: HOUSE_SHARE_LAYER,
+        type: 'symbol',
+        source: HOUSE_SHARE_SOURCE,
+        layout: { 'icon-image': HOUSE_SHARE_PIN_IMAGE, 'icon-anchor': 'bottom', 'icon-offset': [20, 0], 'icon-size': 0.85, 'icon-allow-overlap': true, 'icon-ignore-placement': true },
+      });
+
       activeMap.on('click', CLUSTER_LAYER, (event) => {
         const feature = activeMap.queryRenderedFeatures(event.point, { layers: [CLUSTER_LAYER] })[0];
         const clusterId = feature?.properties?.cluster_id;
@@ -233,10 +299,31 @@ export function MapView() {
           .addTo(activeMap);
       });
 
+      activeMap.on('click', ROOM_LAYER, (event) => {
+        const feature = activeMap.queryRenderedFeatures(event.point, { layers: [ROOM_LAYER] })[0];
+        const details = feature?.properties as RoomFeatureProperties | undefined;
+        if (!details) return;
+        const kind = details.kind === 'swap' ? 'Swap' : 'Contract release';
+        const popupContent = `<div style="padding:4px"><strong style="font-size:14px">${escapeHtml(details.propertyName)}</strong><br/><span style="font-size:12px;color:#666">${escapeHtml(kind)} · ${escapeHtml(details.roomKind)}</span><br/><strong style="font-size:13px;color:#2563eb">£${details.priceWeek}/wk</strong><br/><a href="/listings/${encodeURIComponent(details.id)}" style="display:inline-block;margin-top:6px;font-size:13px;font-weight:600;text-decoration:underline">View room →</a></div>`;
+        new maplibregl.Popup({ offset: 12, className: 'provider-map-popup' }).setLngLat(event.lngLat).setHTML(popupContent).addTo(activeMap);
+      });
+
+      activeMap.on('click', HOUSE_SHARE_LAYER, (event) => {
+        const feature = activeMap.queryRenderedFeatures(event.point, { layers: [HOUSE_SHARE_LAYER] })[0];
+        const details = feature?.properties as HouseShareMapPinProperties | undefined;
+        if (!details) return;
+        const popupContent = `<div style="padding:4px"><strong style="font-size:14px">${escapeHtml(details.name)}</strong><br/><span style="font-size:12px;color:#666">${escapeHtml(details.area)} · illustrative demo location</span><br/><strong style="font-size:13px;color:#2563eb">Budget £${details.budget}/wk</strong><br/><span style="font-size:12px;color:#666">${details.seeking} seeking · ${details.tenants} total tenants</span><br/><a href="/houseshare" style="display:inline-block;margin-top:6px;font-size:13px;font-weight:600;text-decoration:underline">Open House Share →</a></div>`;
+        new maplibregl.Popup({ offset: 12, className: 'provider-map-popup' }).setLngLat(event.lngLat).setHTML(popupContent).addTo(activeMap);
+      });
+
       activeMap.on('mouseenter', CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
       activeMap.on('mouseleave', CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
       activeMap.on('mouseenter', PROPERTY_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
       activeMap.on('mouseleave', PROPERTY_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
+      activeMap.on('mouseenter', ROOM_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
+      activeMap.on('mouseleave', ROOM_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
+      activeMap.on('mouseenter', HOUSE_SHARE_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
+      activeMap.on('mouseleave', HOUSE_SHARE_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
     };
 
     if (map.current.isStyleLoaded()) addPropertyLayers();
@@ -265,6 +352,25 @@ export function MapView() {
     else activeMap.once('load', updateProperties);
     return () => { activeMap.off('load', updateProperties); };
   }, [propertyFeatures]);
+
+  useEffect(() => {
+    const activeMap = map.current;
+    if (!activeMap) return;
+    const updateRoomPins = () => (activeMap.getSource(ROOM_SOURCE) as maplibregl.GeoJSONSource | undefined)?.setData(roomFeatures);
+    if (activeMap.isStyleLoaded()) updateRoomPins();
+    else activeMap.once('load', updateRoomPins);
+    return () => { activeMap.off('load', updateRoomPins); };
+  }, [roomFeatures]);
+
+  useEffect(() => {
+    const activeMap = map.current;
+    if (!activeMap) return;
+    const data = houseShareFeatures ?? { type: 'FeatureCollection' as const, features: [] };
+    const updateHouseSharePins = () => (activeMap.getSource(HOUSE_SHARE_SOURCE) as maplibregl.GeoJSONSource | undefined)?.setData(data);
+    if (activeMap.isStyleLoaded()) updateHouseSharePins();
+    else activeMap.once('load', updateHouseSharePins);
+    return () => { activeMap.off('load', updateHouseSharePins); };
+  }, [houseShareFeatures]);
 
   useEffect(() => {
     const activeMap = map.current;
@@ -313,6 +419,24 @@ export function MapView() {
 
   return (
     <div className="relative h-screen w-full">
+      <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
+        <button
+          type="button"
+          aria-pressed={showSharedRoomPins}
+          onClick={() => setShowSharedRoomPins((visible) => !visible)}
+          className={`inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold shadow-md backdrop-blur transition-colors ${showSharedRoomPins ? 'border-blue-800 bg-blue-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
+        >
+          <BedDouble className="size-4" /> Shared rooms
+        </button>
+        <button
+          type="button"
+          aria-pressed={showHouseSharePins}
+          onClick={() => setShowHouseSharePins((visible) => !visible)}
+          className={`inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold shadow-md backdrop-blur transition-colors ${showHouseSharePins ? 'border-teal-800 bg-teal-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
+        >
+          <UsersRound className="size-4" /> House Share
+        </button>
+      </div>
       <div className="absolute left-4 right-4 top-4 z-10 flex justify-end sm:left-auto">
           <FilterSheet
             filters={filters}
