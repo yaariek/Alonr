@@ -31,7 +31,7 @@ describe("startSignIn", () => {
 
   it("sends a sign-in email to real students", async () => {
     const { client, auth } = fakeSupabase();
-    expect(await startSignIn(client, "Student@UCL.ac.uk")).toEqual({ step: "check-email", tester: false });
+    expect(await startSignIn(client, "Student@UCL.ac.uk")).toEqual({ step: "code", tester: false });
     expect(auth.signInWithOtp).toHaveBeenCalledWith(expect.objectContaining({ email: "student@ucl.ac.uk" }));
   });
 

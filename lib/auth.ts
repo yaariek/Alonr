@@ -2,15 +2,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 
 // Sign-in helpers for the login page. Two kinds of account:
-// - Real students (…ac.uk): Supabase emails them a sign-in link (and a code once SMTP is set up).
+// - Real students (…ac.uk): we email them a 6-digit code (and a link), sent via Gmail SMTP
+//   (supabase/config.toml). They type the code, or tap the link on the same device.
 // - Testers (…@demo.ac.uk, created by data/seed.py): NO email is sent. They type the shared
 //   tester code (DEMO_PASSWORD, ask Person C), which is really their password.
 
 type Client = SupabaseClient<Database>;
 
 export type StartResult =
-  | { step: "code"; tester: true } // show the code box straight away
-  | { step: "check-email"; tester: false } // tell them to open their uni email
+  | { step: "code"; tester: boolean } // show the code box (tester: no email was sent)
   | { step: "error"; message: string };
 
 export type VerifyResult = { ok: true } | { ok: false; message: string };
@@ -50,7 +50,7 @@ export async function startSignIn(supabase: Client, email: string): Promise<Star
     },
   });
   if (error) return { step: "error", message: friendly(error.message) };
-  return { step: "check-email", tester: false };
+  return { step: "code", tester: false };
 }
 
 export async function verifyCode(supabase: Client, email: string, code: string): Promise<VerifyResult> {

@@ -22,6 +22,7 @@ export function LoginForm() {
 
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
+  const [tester, setTester] = useState(false);
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(
@@ -35,7 +36,10 @@ export function LoginForm() {
     const res = await startSignIn(createClient(), email);
     setBusy(false);
     if (res.step === "error") setError(res.message);
-    else setStep(res.step === "code" ? "code" : "sent");
+    else {
+      setTester(res.tester);
+      setStep("code");
+    }
   }
 
   async function submitCode(e: React.FormEvent) {
@@ -54,6 +58,7 @@ export function LoginForm() {
 
   function demoLogin() {
     setEmail(DEMO_EMAIL);
+    setTester(true);
     setCode("");
     setError(null);
     setStep("code");
@@ -136,6 +141,7 @@ export function LoginForm() {
                 <Input
                   id="code"
                   autoComplete="one-time-code"
+                  inputMode={tester ? "text" : "numeric"}
                   className="pl-9 tracking-widest"
                   autoFocus
                   required
@@ -143,7 +149,11 @@ export function LoginForm() {
                   onChange={(e) => setCode(e.target.value)}
                 />
               </div>
-              <p className="text-xs text-muted-foreground">Testers: use the tester code you were given.</p>
+              <p className="text-xs text-muted-foreground">
+                {tester
+                  ? "Testers: use the tester code you were given."
+                  : "We emailed you a 6-digit code (check spam too). You can also tap the link in that email on this device."}
+              </p>
             </div>
             <Button type="submit" className="h-10 w-full font-semibold" disabled={busy}>
               {busy ? "Signing in…" : "Sign in"}
