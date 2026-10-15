@@ -140,3 +140,15 @@
 .provider-map-popup .maplibregl-popup-tip {
   display: none;
 }
+
+.provider-map-popup .maplibregl-popup-close-button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 0 12px 0 8px;
+  color: #1f2937;
+  font-size: 28px;
+  line-height: 1;
+}

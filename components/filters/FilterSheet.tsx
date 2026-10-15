@@ -8,6 +8,7 @@ import { useState } from "react";
 import { roomKindLabel, universityName } from "@/lib/format";
 import type { LatLng, RoomKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { PROVIDER_GROUPS } from "./GroupChips";
 
 export interface FilterState {
   minPrice: number | null;
@@ -46,6 +47,11 @@ interface FilterSheetProps {
   activeCount: number;
   options?: FilterOptions;
   onReset?: () => void;
+  providerFilter?: {
+    selected: string;
+    onSelect: (provider: string) => void;
+    available?: string[];
+  };
 }
 
 const ROOM_KINDS: RoomKind[] = ["ensuite", "studio", "shared_bathroom", "twin", "non_ensuite"];
@@ -101,7 +107,7 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   );
 }
 
-export function FilterSheet({ filters, priceBounds, onChange, activeCount, options, onReset }: FilterSheetProps) {
+export function FilterSheet({ filters, priceBounds, onChange, activeCount, options, onReset, providerFilter }: FilterSheetProps) {
   const selectedMin = filters.minPrice ?? priceBounds.min;
   const selectedMax = filters.maxPrice ?? priceBounds.max;
   const hasPrices = priceBounds.max > priceBounds.min;
@@ -142,9 +148,14 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount, optio
           </span>
         )}
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[85dvh] max-h-[85dvh] rounded-t-2xl px-6 py-4 data-[side=bottom]:h-[85dvh]">
+      <SheetContent
+        side={providerFilter ? "right" : "bottom"}
+        className={providerFilter
+          ? "h-dvh w-[min(24rem,90vw)] max-w-none rounded-none px-5 py-4"
+          : "h-[85dvh] max-h-[85dvh] rounded-t-2xl px-6 py-4 data-[side=bottom]:h-[85dvh]"}
+      >
         <SheetHeader className="flex-row items-center justify-between gap-3 p-0 pr-10 text-left">
-          <SheetTitle>Filter Halls</SheetTitle>
+          <SheetTitle>{providerFilter ? "Map filters" : "Filter Halls"}</SheetTitle>
           {onReset && activeCount > 0 && (
             <button type="button" onClick={onReset} className="text-sm font-medium text-primary underline">
               Clear all
@@ -152,7 +163,31 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount, optio
           )}
         </SheetHeader>
 
-        <div className="-mx-6 min-h-0 flex-1 space-y-6 overflow-y-auto px-6 pb-12">
+        <div className={cn("min-h-0 flex-1 space-y-6 overflow-y-auto pb-12", providerFilter ? "-mx-5 px-5" : "-mx-6 px-6")}>
+          {providerFilter && (
+            <Section title="Providers" hint="Show halls from one provider or all providers.">
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Filter by provider">
+                {PROVIDER_GROUPS.filter(({ value }) => value === "All" || value === providerFilter.selected || !providerFilter.available?.length || providerFilter.available.includes(value)).map(({ label, value }) => {
+                  const selected = providerFilter.selected === value;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => providerFilter.onSelect(value)}
+                      className={cn(
+                        "min-h-10 rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors",
+                        selected ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent",
+                      )}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </Section>
+          )}
+
           <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-900 dark:bg-rose-950/40">
             <div>
               <h3 className="text-sm font-semibold">Has rooms listed</h3>

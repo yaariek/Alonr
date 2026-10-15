@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection, Point } from 'geojson';
-import { FilterSheet, GroupChips } from '@/components/filters';
+import { FilterSheet } from '@/components/filters';
 import { useListingCounts } from '@/lib/data/use-listing-counts';
 import { useProperties } from '@/lib/data/use-properties';
 import { minPrice } from '@/lib/filters';
@@ -104,6 +104,10 @@ export function MapView() {
     filteredProperties,
     resetFilters,
   } = usePropertyFilters(properties, listingCounts);
+  const resetMapFilters = () => {
+    resetFilters();
+    setSelectedProvider('All');
+  };
 
   const propertyFeatures = useMemo<FeatureCollection<Point, PropertyFeatureProperties>>(() => ({
     type: 'FeatureCollection',
@@ -309,18 +313,16 @@ export function MapView() {
 
   return (
     <div className="relative h-screen w-full">
-      <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 rounded-2xl bg-background/90 p-3 shadow-md backdrop-blur-md">
-        <div className="flex items-center justify-between gap-2 overflow-hidden">
-          <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} available={availableProviders} />
+      <div className="absolute left-4 right-4 top-4 z-10 flex justify-end sm:left-auto">
           <FilterSheet
             filters={filters}
             priceBounds={priceBounds}
             onChange={setFilters}
-            activeCount={activeFilterCount}
+            activeCount={activeFilterCount + (selectedProvider === 'All' ? 0 : 1)}
             options={options}
-            onReset={resetFilters}
+            onReset={resetMapFilters}
+            providerFilter={{ selected: selectedProvider, onSelect: setSelectedProvider, available: availableProviders }}
           />
-        </div>
       </div>
 
       <div ref={mapContainer} className="h-full w-full" />

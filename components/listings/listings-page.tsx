@@ -17,6 +17,11 @@ import { listingsAreMutualMatches } from "./matching";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 import { SearchView } from "@/components/search/search-view";
+import { Slider } from "@/components/ui/slider";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Search, SlidersHorizontal } from "lucide-react";
+import { roomKindLabel } from "@/lib/format";
+import type { RoomKind } from "@/lib/types";
 
 type View = "explore" | "halls" | "quick" | "mine" | "saved";
 type Layout = "grid" | "list";
@@ -33,6 +38,9 @@ export function ListingsPage() {
   const [view, setView] = useState<View>(initialView);
   const [layout, setLayout] = useState<Layout>("grid");
   const [offerFilter, setOfferFilter] = useState<OfferFilter>("all");
+  const [roomQuery, setRoomQuery] = useState("");
+  const [roomKindFilter, setRoomKindFilter] = useState<RoomKind | "all">("all");
+  const [roomMaxPrice, setRoomMaxPrice] = useState<number | null>(null);
   const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3);
   const [selectedId, setSelectedId] = useState("");
   const [passed, setPassed] = useState<string[]>([]);
@@ -54,6 +62,16 @@ export function ListingsPage() {
         : view === "quick"
           ? quickMatches
           : filteredFeedListings;
+  const maxRoomPrice = Math.max(5, ...listings.map((listing) => listing.priceWeek));
+  const selectedRoomMaxPrice = Math.min(roomMaxPrice ?? maxRoomPrice, maxRoomPrice);
+  const roomFilterCount = (roomKindFilter === "all" ? 0 : 1) + (selectedRoomMaxPrice < maxRoomPrice ? 1 : 0);
+  const roomResults = view !== "explore" ? shownListings : shownListings.filter((listing) => {
+    const needle = roomQuery.trim().toLowerCase();
+    const matchesQuery = !needle || [listing.propertyName, listing.university, listing.postcode, listing.ownerName, listing.description, listing.roomKind]
+      .some((value) => value?.toLowerCase().includes(needle));
+    return matchesQuery && (roomKindFilter === "all" || listing.roomKind === roomKindFilter) && listing.priceWeek <= selectedRoomMaxPrice;
+  });
+  const availableRoomKinds = [...new Set(listings.map((listing) => listing.roomKind))];
   const listingGridClass = layout === "list"
     ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
     : `grid gap-4 ${gridColumns === 2 ? "grid-cols-1 sm:grid-cols-2" : gridColumns === 3 ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4"}`;
@@ -136,7 +154,7 @@ export function ListingsPage() {
 
       <div className="mb-5 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Swap views">
         {([
-          ["explore", "Rooms"], ["halls", "Halls"], ["quick", "Match"], ["mine", "Mine"], ["saved", "Saved"],
+          ["explore", "Rooms"], ["halls", "Halls"], ["quick", "Match"], ["mine", "My listings"], ["saved", "Saved"],
         ] as const).map(([key, label]) => (
           <button
             key={key}
@@ -156,6 +174,42 @@ export function ListingsPage() {
       </div>
 
       {view === "halls" ? <SearchView embedded /> : <>
+      {view === "explore" && (
+        <div className="mb-3 flex items-center gap-2">
+          <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border bg-background px-3 py-2.5 focus-within:ring-2 focus-within:ring-ring">
+            <Search className="size-4 shrink-0 text-muted-foreground" />
+            <input value={roomQuery} onChange={(event) => setRoomQuery(event.target.value)} placeholder="Search rooms, halls, areas…" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" aria-label="Search room listings" />
+          </label>
+          <Sheet>
+            <SheetTrigger className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm transition-colors hover:bg-accent">
+              <SlidersHorizontal className="size-4" /> Filter{roomFilterCount > 0 ? ` (${roomFilterCount})` : ""}
+            </SheetTrigger>
+            <SheetContent side="right" className="h-dvh w-[min(24rem,90vw)] max-w-none rounded-none px-5 py-4">
+              <SheetHeader className="p-0 pr-10 text-left"><SheetTitle>Filter rooms</SheetTitle></SheetHeader>
+              <div className="min-h-0 flex-1 space-y-7 overflow-y-auto py-4">
+                <section className="space-y-3">
+                  <div><h3 className="text-sm font-semibold">Room type</h3><p className="text-xs text-muted-foreground">Choose a room type to show.</p></div>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" aria-pressed={roomKindFilter === "all"} onClick={() => setRoomKindFilter("all")} className={cn("rounded-full border px-3 py-2 text-xs font-medium", roomKindFilter === "all" ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent")}>All rooms</button>
+                    {availableRoomKinds.map((kind) => (
+                      <button key={kind} type="button" aria-pressed={roomKindFilter === kind} onClick={() => setRoomKindFilter(roomKindFilter === kind ? "all" : kind)} className={cn("rounded-full border px-3 py-2 text-xs font-medium", roomKindFilter === kind ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent")}>{roomKindLabel(kind)}</button>
+                    ))}
+                  </div>
+                </section>
+                <section className="space-y-3">
+                  <div className="flex items-center justify-between gap-3 text-sm font-medium"><span>Maximum weekly price</span><span className="font-bold text-primary">£{selectedRoomMaxPrice}/wk</span></div>
+                  <Slider value={[selectedRoomMaxPrice]} min={0} max={maxRoomPrice} step={5} onValueChange={(value) => { if (Array.isArray(value) && value.length) setRoomMaxPrice(value[0]); }} aria-label="Maximum weekly price" />
+                  <div className="flex justify-between text-xs text-muted-foreground"><span>£0/wk</span><span>£{maxRoomPrice}/wk</span></div>
+                </section>
+              </div>
+              <div className="flex gap-2 border-t pt-4">
+                <button type="button" onClick={() => { setRoomKindFilter("all"); setRoomMaxPrice(null); }} className="flex-1 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-accent">Clear filters</button>
+                <SheetClose className="flex-1 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Show rooms</SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      )}
       {view === "explore" && (
         <div className="mb-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter room offers by type">
           {([
@@ -182,7 +236,7 @@ export function ListingsPage() {
       )}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="text-xs text-muted-foreground">
-          {view === "explore" ? <span>{shownListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
+          {view === "explore" ? <span>{roomResults.length} rooms to explore</span> : <span>{roomResults.length} {roomResults.length === 1 ? "room" : "rooms"}</span>}
           {view === "explore" && <span className="ml-3 inline-flex items-center gap-1"><Heart className="size-3.5" /> Like a room to save it</span>}
         </div>
         {/* Grid and list look the same on phones, so the layout controls only show from sm up. */}
@@ -244,9 +298,9 @@ export function ListingsPage() {
         <div className={listingGridClass}>{[0, 1, 2, 3].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
       ) : loadingMatches && view === "quick" ? (
         <div className={listingGridClass}>{[0, 1].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
-      ) : shownListings.length ? (
+      ) : roomResults.length ? (
         <div className={listingGridClass}>
-          {shownListings.map((listing, index) => (
+          {roomResults.map((listing, index) => (
             <div key={`${view}-${listing.id}`} className="space-y-2">
               <QuickMatchCard
                 listing={listing}
@@ -274,6 +328,8 @@ export function ListingsPage() {
         <EmptyState title="No saved rooms yet" description="Tap the heart on a room to keep it here while you compare your options." />
       ) : view === "quick" ? (
         <EmptyState title={mySwapListings.length ? "No reciprocal matches yet" : "Create a swap listing first"} description={mySwapListings.length ? "We’ll show students whose room matches what you want and whose room fits what you have." : "Add your room and what you are looking for to see reciprocal swap matches."} />
+      ) : view === "explore" && (roomQuery.trim() || roomFilterCount > 0) ? (
+        <EmptyState title="No matching rooms" description="Try a different search or clear some room filters." />
       ) : view === "explore" && offerFilter !== "all" ? (
         <EmptyState
           title={offerFilter === "swap" ? "No swap rooms available" : "No contract releases available"}

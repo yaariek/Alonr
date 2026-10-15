@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 
 // label shown on the chip -> value matched against Property.provider ('All' = no filter)
-const PROVIDER_GROUPS = [
+export const PROVIDER_GROUPS = [
 { label: 'All', value: 'All' },
 { label: 'Unite Students', value: 'Unite' },
 { label: 'iQ Student', value: 'iQ' },
