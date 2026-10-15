@@ -7,11 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
+import { DEMO_HOUSESHARE_MATCH_PROFILE, DEMO_HOUSESHARE_POSTS } from "./demo-data";
 import type { HouseSharePost } from "@/lib/types";
 import { filterHouseShare } from "@/lib/house-share-filters";
+import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
 
 type Layout = "grid" | "list";
+type View = "explore" | "match";
 type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string };
 
 const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", gender: "", pets: "", smoking: "", drinking: "", instruments: "" };
@@ -19,6 +21,7 @@ const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", gender: "", pets
 export default function Page() {
   const posts = DEMO_HOUSESHARE_POSTS;
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<View>("explore");
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [layout, setLayout] = useState<Layout>("grid");
@@ -38,6 +41,12 @@ export default function Page() {
       instruments: filters.instruments ? filters.instruments === "true" : undefined,
     });
   }, [posts, search, filters]);
+
+  const rankedMatches = useMemo(() => filteredPosts
+    .map((post) => ({ post, score: scoreHouseShareCompatibility(DEMO_HOUSESHARE_MATCH_PROFILE, post) }))
+    .sort((a, b) => b.score.points - a.score.points), [filteredPosts]);
+  const visiblePosts = view === "match" ? rankedMatches.map((match) => match.post) : filteredPosts;
+  const compatibilityByPostId = new Map(rankedMatches.map((match) => [match.post.id, match.score]));
 
   const gridClass = layout === "list"
     ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
@@ -63,8 +72,11 @@ export default function Page() {
       </p>
 
       <div className="mb-5 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="House Share views">
-        <button type="button" role="tab" aria-selected="true" className="min-h-10 flex-1 rounded-lg bg-background px-2 text-sm font-semibold text-foreground shadow-sm">Explore</button>
+        <button type="button" role="tab" aria-selected={view === "explore"} onClick={() => setView("explore")} className={cn("min-h-10 flex-1 rounded-lg px-2 text-sm font-semibold", view === "explore" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground")}>Explore</button>
+        <button type="button" role="tab" aria-selected={view === "match"} onClick={() => setView("match")} className={cn("min-h-10 flex-1 rounded-lg px-2 text-sm font-semibold", view === "match" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground")}>Match</button>
       </div>
+
+      {view === "match" && <p className="mb-4 rounded-xl border border-primary/15 bg-primary/5 px-3.5 py-3 text-xs text-muted-foreground">Demo match profile: moving {new Date(`${DEMO_HOUSESHARE_MATCH_PROFILE.move_in}T00:00:00`).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}, looking around {DEMO_HOUSESHARE_MATCH_PROFILE.areas.join(", ")}. Move-in timing and distance contribute 70 of 100 points.</p>}
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <label className="flex min-h-11 flex-1 items-center gap-2 rounded-xl border bg-background px-3">
@@ -92,7 +104,7 @@ export default function Page() {
       )}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground">{filteredPosts.length} house {filteredPosts.length === 1 ? "share" : "shares"}</p>
+        <p className="text-xs text-muted-foreground">{visiblePosts.length} {view === "match" ? "matched" : "available"} house {visiblePosts.length === 1 ? "share" : "shares"}{view === "match" ? " · ranked by compatibility" : ""}</p>
         <div className="flex items-center gap-2">
           <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="House Share layout">
             <button type="button" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "grid" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}><LayoutGrid className="size-3.5" /> Grid</button>
@@ -102,8 +114,8 @@ export default function Page() {
         </div>
       </div>
 
-      {filteredPosts.length ? (
-        <div className={gridClass}>{filteredPosts.map((post) => <HouseShareCard key={post.id} post={post} />)}</div>
+      {visiblePosts.length ? (
+        <div className={gridClass}>{visiblePosts.map((post) => <HouseShareCard key={post.id} post={post} score={view === "match" ? compatibilityByPostId.get(post.id) : undefined} />)}</div>
       ) : (
         <Card className="border-dashed shadow-none"><CardContent className="flex min-h-44 flex-col items-center justify-center px-6 text-center"><span className="mb-3 flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary"><Users className="size-5" /></span><p className="font-semibold">{search || activeFilterCount ? "No house shares match those filters" : "No House Share posts yet"}</p><p className="mt-1 max-w-sm text-sm text-muted-foreground">{search || activeFilterCount ? "Try changing your search or clearing a filter." : "New student posts will appear here when they’re available."}</p></CardContent></Card>
       )}
@@ -111,7 +123,7 @@ export default function Page() {
   );
 }
 
-function HouseShareCard({ post }: { post: HouseSharePost }) {
+function HouseShareCard({ post, score }: { post: HouseSharePost; score?: { percentage: number; points: number; maxPoints: number } }) {
   const currentTenants = post.total_tenants - post.looking_for_n;
   const preferenceLabels = [
     post.prefs.study_level && (post.prefs.study_level === "postgrad" ? "Postgraduate" : "Undergraduate"),
@@ -121,6 +133,7 @@ function HouseShareCard({ post }: { post: HouseSharePost }) {
     post.prefs.drinking && `Drinking: ${post.prefs.drinking}`,
     post.prefs.instruments ? "Instruments welcome" : "No instruments",
     post.prefs.parties ? "Parties welcome" : "Quiet household",
+    ...post.prefs.facilities.map((facility) => facility.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")),
   ].filter(Boolean) as string[];
 
   return (
@@ -128,6 +141,7 @@ function HouseShareCard({ post }: { post: HouseSharePost }) {
       <div className="flex aspect-[1.45] flex-col items-center justify-center gap-3 bg-gradient-to-br from-primary/15 via-amber-50 to-rose-100 text-primary">
         <span className="flex size-20 items-center justify-center rounded-full border-4 border-white/80 bg-white/80 text-2xl font-bold shadow-sm">{post.name.slice(0, 1).toUpperCase()}</span>
         <span className="rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-foreground">{currentTenants} current · {post.total_tenants} total</span>
+        {score && <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">{score.percentage}% match · {score.points}/{score.maxPoints} points</span>}
       </div>
       <div className="space-y-3 p-3.5">
         <div className="flex items-start justify-between gap-2">

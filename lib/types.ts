@@ -76,6 +76,15 @@ export type HouseSharePersonalityTag =
   | "influence"
   | "steadiness"
   | "conscientiousness";
+export type HouseShareFacilityTag =
+  | "wifi"
+  | "laundry"
+  | "garden"
+  | "bike_storage"
+  | "dishwasher"
+  | "shared_lounge"
+  | "parking"
+  | "gym";
 
 /** Lifestyle preferences stored under profiles.lifestyle / a post's prefs JSON. */
 export interface HouseSharePreferences {
@@ -88,6 +97,7 @@ export interface HouseSharePreferences {
   instruments: boolean;
   personality: HouseSharePersonalityTag[];
   languages: string[];
+  facilities: HouseShareFacilityTag[];
 }
 
 /** House Share post data; budget, areas and occupancy are post fields, not lifestyle prefs. */
@@ -102,4 +112,21 @@ export interface HouseSharePost {
   looking_for_n: number;
   total_tenants: number;
   prefs: HouseSharePreferences;
+}
+
+export interface HouseShareMatchProfile {
+  move_in: string;
+  areas: string[];
+  prefs: HouseSharePreferences;
+}
+
+export interface HouseShareCompatibilityScore {
+  points: number;
+  maxPoints: 100;
+  percentage: number;
+  breakdown: {
+    moveIn: number;
+    location: number;
+    preferences: number;
+  };
 }

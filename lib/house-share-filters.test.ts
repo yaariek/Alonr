@@ -23,6 +23,7 @@ const posts: HouseSharePost[] = [
       instruments: true,
       personality: ["steadiness", "conscientiousness"],
       languages: ["English", "Arabic"],
+      facilities: ["wifi", "laundry"],
     },
   },
   {
@@ -45,6 +46,7 @@ const posts: HouseSharePost[] = [
       instruments: false,
       personality: ["influence"],
       languages: ["English", "French"],
+      facilities: ["gym"],
     },
   },
 ];
