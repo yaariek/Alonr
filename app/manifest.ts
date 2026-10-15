@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "alonr: student room swap",
     short_name: "alonr",
     description: "Room swap & house share for London students",
-    start_url: "/map",
+    start_url: "/listings",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#4f46e5",
