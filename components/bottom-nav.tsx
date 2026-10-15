@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, MessageCircle, Search, User, Users, HeartHandshake } from "lucide-react";
+import { ArrowLeftRight, Map, MessageCircle, User, Users } from "lucide-react";
 import { useUnreadChats } from "@/lib/data/use-unread-chats";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { href: "/map", label: "Map", icon: Map },
-  { href: "/search", label: "Search", icon: Search },
-  { href: "/listings", label: "Listings", icon: HeartHandshake },
+  { href: "/listings", label: "Swap", icon: ArrowLeftRight },
   { href: "/houseshare", label: "Share", icon: Users },
+  { href: "/map", label: "Map", icon: Map },
   { href: "/messages", label: "Chats", icon: MessageCircle },
   { href: "/profile", label: "Me", icon: User },
 ] as const;

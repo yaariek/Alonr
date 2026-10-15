@@ -15,8 +15,9 @@ import { ListingCard } from "./listing-card";
 import { listingsAreMutualMatches } from "./matching";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
+import { SearchView } from "@/components/search/search-view";
 
-type View = "explore" | "quick" | "mine" | "saved";
+type View = "explore" | "halls" | "quick" | "mine" | "saved";
 type Layout = "grid" | "list";
 
 export function ListingsPage() {
@@ -26,7 +27,8 @@ export function ListingsPage() {
   } = useListings();
   // Deep links from the Me tab: /listings?view=mine or ?view=saved
   const linkedView = useSearchParams().get("view");
-  const [view, setView] = useState<View>(linkedView === "mine" || linkedView === "saved" ? linkedView : "explore");
+  const initialView: View = linkedView === "mine" || linkedView === "saved" || linkedView === "halls" ? linkedView : "explore";
+  const [view, setView] = useState<View>(initialView);
   const [layout, setLayout] = useState<Layout>("grid");
   const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3);
   const [selectedId, setSelectedId] = useState("");
@@ -117,22 +119,23 @@ export function ListingsPage() {
           <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             <Sparkles className="size-3.5" /> Student-to-student
           </p>
-          <h1 className="text-2xl font-bold tracking-tight">Find your next room</h1>
-          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Real rooms, fair prices, and people who want to swap.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Swap rooms</h1>
+          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a room, explore halls, and connect with students.</p>
         </div>
         <Link href="/listings/new" className={buttonVariants({ className: "h-10 gap-1.5 px-3" })}>
           <Plus className="size-4" /> <span className="hidden sm:inline">Create listing</span><span className="sm:hidden">List room</span>
         </Link>
       </header>
 
-      <div className="mb-5 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Listings views">
+      <div className="mb-5 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Swap views">
         {([
-          ["explore", "Explore"], ["quick", "Quick match"], ["mine", "My listings"], ["saved", "Saved"],
+          ["explore", "Rooms"], ["halls", "Halls"], ["quick", "Match"], ["mine", "Mine"], ["saved", "Saved"],
         ] as const).map(([key, label]) => (
           <button
             key={key}
             type="button"
             role="tab"
+            aria-label={key === "quick" ? "Quick match" : label}
             aria-selected={view === key}
             onClick={() => void changeView(key)}
             className={cn(
@@ -145,6 +148,7 @@ export function ListingsPage() {
         ))}
       </div>
 
+      {view === "halls" ? <SearchView embedded /> : <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="text-xs text-muted-foreground">
           {view === "explore" ? <span>{feedListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
@@ -246,6 +250,7 @@ export function ListingsPage() {
           Publish your own room <ArrowRight className="size-4" />
         </Link>
       )}
+      </>}
     </div>
   );
 }

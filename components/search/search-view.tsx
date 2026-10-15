@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Building2, Map as MapIcon, Search, SlidersHorizontal } from "lucide-react";
+import { Building2, Search, SlidersHorizontal } from "lucide-react";
 import { FilterSheet, GroupChips } from "@/components/filters";
 import { useListingCounts } from "@/lib/data/use-listing-counts";
 import { useProperties } from "@/lib/data/use-properties";
@@ -73,7 +73,7 @@ function PropertyPost({ property, listingCount }: { property: Property; listingC
   );
 }
 
-export function SearchView() {
+export function SearchView({ embedded = false }: { embedded?: boolean } = {}) {
   const { properties, loading, error } = useProperties();
   const listingCounts = useListingCounts();
   const {
@@ -106,19 +106,15 @@ export function SearchView() {
   }, [filteredProperties, query]);
 
   return (
-    <div className="min-h-full bg-muted/30 pb-8">
+    <div className={embedded ? "pb-2" : "min-h-full bg-muted/30 pb-8"}>
       <header className="sticky top-0 z-20 border-b bg-background/95 px-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))] backdrop-blur">
         <div className="mx-auto max-w-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">alonr</p>
-              <h1 className="text-2xl font-bold tracking-tight">Find your place</h1>
-            </div>
-            <Link href="/map" aria-label="Open map view" className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold hover:bg-accent">
-              <MapIcon className="size-4" /> Map
-            </Link>
-          </div>
-          <div className="mt-4 flex items-center gap-2">
+          {!embedded && <div className="mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">alonr</p>
+            <h1 className="text-2xl font-bold tracking-tight">Find your place</h1>
+          </div>}
+          {embedded && <h2 className="mb-3 text-sm font-semibold">Find a student hall</h2>}
+          <div className="flex items-center gap-2">
             <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border bg-muted/60 px-3 py-2.5 focus-within:ring-2 focus-within:ring-ring">
               <Search className="size-4 shrink-0 text-muted-foreground" />
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search halls, areas, stations…" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" aria-label="Search halls, areas, stations" />

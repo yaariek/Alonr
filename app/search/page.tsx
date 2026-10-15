@@ -1,5 +1,5 @@
-import { SearchView } from "@/components/search/search-view";
+import { redirect } from "next/navigation";
 
 export default function SearchPage() {
-  return <SearchView />;
+  redirect("/listings?view=halls");
 }
