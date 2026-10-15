@@ -176,7 +176,7 @@ export function MapView() {
         filter: ['has', 'point_count'],
         layout: {
           'text-field': ['get', 'point_count_abbreviated'],
-          'text-font': ['Open Sans Bold'],
+          'text-font': ['Noto Sans Bold'],
           'text-size': 12,
         },
         paint: { 'text-color': '#ffffff' },
