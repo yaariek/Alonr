@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  isMutualMatch, photoPath, prefillFromHall, satisfies, toListing, validateListing, type Listing, type NewListing,
+  countByProperty, isMutualMatch, photoPath, prefillFromHall, satisfies, toListing, validateListing, type Listing, type NewListing,
 } from "@/lib/data/listings";
 import { SAMPLE_PROPERTIES } from "@/lib/sample-data";
 
@@ -80,5 +80,12 @@ describe("photoPath", () => {
   it("rejects wrong types and big files", () => {
     expect(() => photoPath("u1", { name: "a.gif", type: "image/gif", size: 1 })).toThrow(/JPG/);
     expect(() => photoPath("u1", { name: "a.jpg", type: "image/jpeg", size: 11 * 1024 * 1024 })).toThrow(/10 MB/);
+  });
+});
+
+describe("countByProperty", () => {
+  it("counts listings per hall", () => {
+    const counts = countByProperty([{ property_id: "p1" }, { property_id: "p2" }, { property_id: "p1" }]);
+    expect(Object.fromEntries(counts)).toEqual({ p1: 2, p2: 1 });
   });
 });

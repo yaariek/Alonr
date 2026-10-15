@@ -191,6 +191,19 @@ export async function getListings(
   return withLikes(supabase, data as ListingRow[]);
 }
 
+/** Number of active listings per hall (property id -> count), for the map's "Has listings" filter. */
+export async function getListingCounts(supabase: Client): Promise<Map<string, number>> {
+  const { data, error } = await supabase.from("listings").select("property_id").eq("status", "active");
+  if (error) throw new Error("Couldn't load listings. Check your connection.");
+  return countByProperty(data ?? []);
+}
+
+export function countByProperty(rows: { property_id: string }[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const r of rows) counts.set(r.property_id, (counts.get(r.property_id) ?? 0) + 1);
+  return counts;
+}
+
 /** My own listings (any status), for "My listings". Empty when signed out. */
 export async function getMyListings(supabase: Client): Promise<Listing[]> {
   const me = await myId(supabase);

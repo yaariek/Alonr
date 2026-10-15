@@ -5,6 +5,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection, Point } from 'geojson';
 import { FilterSheet, GroupChips } from '@/components/filters';
+import { useListingCounts } from '@/lib/data/use-listing-counts';
 import { useProperties } from '@/lib/data/use-properties';
 import { minPrice } from '@/lib/filters';
 import { propertyImagePath } from '@/lib/property-images';
@@ -30,6 +31,7 @@ interface PropertyFeatureProperties {
   provider: string;
   iconImage: string;
   priceLabel: string;
+  listingCount: number;
 }
 
 function createProviderPinImage(colour: string): ImageData {
@@ -89,15 +91,19 @@ export function MapView() {
   const locationMarker = useRef<maplibregl.Marker | null>(null);
 
   const { properties } = useProperties();
+  const listingCounts = useListingCounts();
   const {
     selectedProvider,
     setSelectedProvider,
     filters,
     setFilters,
     priceBounds,
+    options,
+    availableProviders,
     activeFilterCount,
     filteredProperties,
-  } = usePropertyFilters(properties);
+    resetFilters,
+  } = usePropertyFilters(properties, listingCounts);
 
   const propertyFeatures = useMemo<FeatureCollection<Point, PropertyFeatureProperties>>(() => ({
     type: 'FeatureCollection',
@@ -113,10 +119,11 @@ export function MapView() {
           provider: property.provider,
           iconImage: providerPinImageId(PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other),
           priceLabel: price === null ? 'Prices coming soon' : `From £${price}/wk`,
+          listingCount: listingCounts.get(property.id) ?? 0,
         },
       };
     }),
-  }), [filteredProperties]);
+  }), [filteredProperties, listingCounts]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -212,6 +219,7 @@ export function MapView() {
             <strong style="font-size: 14px;">${escapeHtml(details.name)}</strong><br/>
             <span style="font-size: 12px; color: #666;">${escapeHtml(details.provider)}</span><br/>
             <strong style="font-size: 13px; color: #2563eb;">${escapeHtml(details.priceLabel)}</strong><br/>
+            ${details.listingCount > 0 ? `<span style="display: inline-block; margin-top: 4px; font-size: 12px; font-weight: 600; color: #be123c;">${details.listingCount} ${details.listingCount === 1 ? 'room' : 'rooms'} listed by students</span><br/>` : ''}
             <a href="/property/${encodeURIComponent(details.id)}" style="display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 600; text-decoration: underline;">View hall →</a>
           </div>
         `;
@@ -303,12 +311,14 @@ export function MapView() {
     <div className="relative h-screen w-full">
       <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 rounded-2xl bg-background/90 p-3 shadow-md backdrop-blur-md">
         <div className="flex items-center justify-between gap-2 overflow-hidden">
-          <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} />
+          <GroupChips selected={selectedProvider} onSelect={setSelectedProvider} available={availableProviders} />
           <FilterSheet
             filters={filters}
             priceBounds={priceBounds}
             onChange={setFilters}
             activeCount={activeFilterCount}
+            options={options}
+            onReset={resetFilters}
           />
         </div>
       </div>

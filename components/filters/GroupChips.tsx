@@ -30,12 +30,17 @@ const PROVIDER_GROUPS = [
 interface GroupChipsProps {
 selected: string;
 onSelect: (group: string) => void;
+/** Providers that have halls; chips for the others (e.g. Prestige, 0 halls) are hidden. */
+available?: string[];
 }
 
-export function GroupChips({ selected, onSelect }: GroupChipsProps) {
+export function GroupChips({ selected, onSelect, available }: GroupChipsProps) {
+const groups = available?.length
+  ? PROVIDER_GROUPS.filter(({ value }) => value === 'All' || value === selected || available.includes(value))
+  : PROVIDER_GROUPS;
 return (
 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none px-4">
-  {PROVIDER_GROUPS.map(({ label, value }) => {
+  {groups.map(({ label, value }) => {
     const isSelected = selected === value;
     return (
       <Badge

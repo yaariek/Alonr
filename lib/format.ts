@@ -34,3 +34,14 @@ export function formatWeeks(weeks: number[]): string {
   const sorted = [...weeks].sort((a, b) => a - b);
   return sorted.length === 1 ? `${sorted[0]} weeks` : `${sorted.slice(0, -1).join(", ")} or ${sorted.at(-1)} weeks`;
 }
+
+// Short names for the filter (ids as in the universities table).
+const UNIVERSITY_NAMES: Record<string, string> = {
+  ucl: "UCL", kcl: "KCL", imperial: "Imperial", qmul: "Queen Mary", lse: "LSE", city: "City St George's",
+  soas: "SOAS", gold: "Goldsmiths", bbk: "Birkbeck", ual: "UAL", westminster: "Westminster", uel: "UEL",
+  lsbu: "LSBU", greenwich: "Greenwich", mdx: "Middlesex", roehampton: "Roehampton", brunel: "Brunel",
+  stmarys: "St Mary's",
+};
+
+/** "kcl" -> "KCL" (unknown ids are shown in capitals) */
+export const universityName = (id: string) => UNIVERSITY_NAMES[id.toLowerCase()] ?? id.toUpperCase();

@@ -28,6 +28,24 @@ describe("filterProperties", () => {
     expect(names(filterProperties(all, { roomKinds: ["studio"] }))).not.toContain("No prices yet");
   });
 
+  it("university: that uni's halls plus halls open to everyone", () => {
+    const result = names(filterProperties(SAMPLE_PROPERTIES, { university: "ucl" }));
+    expect(result).toContain("Ramsay Hall");
+    expect(result).not.toContain("Great Dover Street Apartments"); // KCL only
+    expect(result).toContain("iQ Shoreditch"); // private, open to all
+  });
+
+  it("onlyIds keeps just those halls (e.g. halls with listings)", () => {
+    expect(names(filterProperties(SAMPLE_PROPERTIES, { onlyIds: new Set(["s3"]) }))).toEqual(["Ramsay Hall"]);
+    expect(filterProperties(SAMPLE_PROPERTIES, { onlyIds: new Set() })).toEqual([]);
+  });
+
+  it("flatmates and contract weeks match the same room type", () => {
+    for (const p of filterProperties(SAMPLE_PROPERTIES, { maxFlatmates: 0, contractWeeks: 51 })) {
+      expect(p.roomTypes.some((r) => r.flatmates === 0 && r.contractWeeks.includes(51))).toBe(true);
+    }
+  });
+
   it("excludes properties with unknown distance when a distance filter is set", () => {
     const result = filterProperties(SAMPLE_PROPERTIES, { maxBikeDockM: 10_000 });
     expect(names(result)).not.toContain("Woodward Buildings");

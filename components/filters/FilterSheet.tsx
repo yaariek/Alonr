@@ -5,7 +5,9 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { LocateFixed, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import type { LatLng } from "@/lib/types";
+import { roomKindLabel, universityName } from "@/lib/format";
+import type { LatLng, RoomKind } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export interface FilterState {
   minPrice: number | null;
@@ -15,6 +17,21 @@ export interface FilterState {
   accessibleOnly: boolean;
   currentLocation: LatLng | null;
   radiusKm: number;
+  roomKinds: RoomKind[];
+  maxFlatmates: number | null;
+  contractWeeks: number | null;
+  maxSupermarketM: number | null;
+  maxStationM: number | null;
+  maxBikeDockM: number | null;
+  university: string | null; // university id, e.g. "kcl"
+  hasListings: boolean;
+}
+
+/** Choices that come from the data. */
+export interface FilterOptions {
+  contractWeeks: number[];
+  roomKinds: RoomKind[]; // room types some hall has
+  universities: string[]; // university ids that have their own halls
 }
 
 export interface PriceBounds {
@@ -27,9 +44,64 @@ interface FilterSheetProps {
   priceBounds: PriceBounds;
   onChange: (filters: FilterState) => void;
   activeCount: number;
+  options?: FilterOptions;
+  onReset?: () => void;
 }
 
-export function FilterSheet({ filters, priceBounds, onChange, activeCount }: FilterSheetProps) {
+const ROOM_KINDS: RoomKind[] = ["ensuite", "studio", "shared_bathroom", "twin", "non_ensuite"];
+const FLATMATES = [0, 4, 6, 8];
+const WALK_M = [400, 800, 1200]; // ~5, 10, 15 min walk
+const BIKE_M = [200, 400, 800];
+const walkMin = (m: number) => `${Math.round(m / 80)} min`;
+
+/** A row of single-choice pills; tapping the selected one again clears it. */
+function Pills<T extends string | number>({ label, value, choices, onChange, format }: {
+  label: string;
+  value: T | null;
+  choices: T[];
+  onChange: (value: T | null) => void;
+  format: (value: T) => string;
+}) {
+  return (
+    <div role="group" aria-label={label} className="flex flex-wrap gap-2">
+      {choices.map((choice) => (
+        <Pill key={choice} pressed={value === choice} onClick={() => onChange(value === choice ? null : choice)}>
+          {format(choice)}
+        </Pill>
+      ))}
+    </div>
+  );
+}
+
+function Pill({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+        pressed ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-2">
+      <div>
+        <h3 className="text-sm font-semibold">{title}</h3>
+        {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+export function FilterSheet({ filters, priceBounds, onChange, activeCount, options, onReset }: FilterSheetProps) {
   const selectedMin = filters.minPrice ?? priceBounds.min;
   const selectedMax = filters.maxPrice ?? priceBounds.max;
   const hasPrices = priceBounds.max > priceBounds.min;
@@ -70,12 +142,25 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
           </span>
         )}
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-6 py-4">
-        <SheetHeader className="text-left">
+      <SheetContent side="bottom" className="h-[85dvh] max-h-[85dvh] rounded-t-2xl px-6 py-4 data-[side=bottom]:h-[85dvh]">
+        <SheetHeader className="flex-row items-center justify-between gap-3 p-0 pr-10 text-left">
           <SheetTitle>Filter Halls</SheetTitle>
+          {onReset && activeCount > 0 && (
+            <button type="button" onClick={onReset} className="text-sm font-medium text-primary underline">
+              Clear all
+            </button>
+          )}
         </SheetHeader>
 
-        <div className="mt-6 space-y-6 overflow-y-auto pb-12">
+        <div className="-mx-6 min-h-0 flex-1 space-y-6 overflow-y-auto px-6 pb-12">
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-900 dark:bg-rose-950/40">
+            <div>
+              <h3 className="text-sm font-semibold">Has rooms listed</h3>
+              <p className="text-xs text-muted-foreground">Only halls where students are swapping or releasing a room.</p>
+            </div>
+            <Switch aria-label="Only halls with rooms listed" checked={filters.hasListings} onCheckedChange={(val) => onChange({ ...filters, hasListings: val })} />
+          </div>
+
           <div>
             <div className="flex justify-between gap-3 text-sm font-medium">
               <span>Weekly price range</span>
@@ -150,6 +235,87 @@ export function FilterSheet({ filters, priceBounds, onChange, activeCount }: Fil
               </>
             )}
           </section>
+
+          <Section title="Room type">
+            <div role="group" aria-label="Room type" className="flex flex-wrap gap-2">
+              {ROOM_KINDS.filter((kind) => !options?.roomKinds.length || options.roomKinds.includes(kind) || filters.roomKinds.includes(kind)).map((kind) => {
+                const on = filters.roomKinds.includes(kind);
+                return (
+                  <Pill
+                    key={kind}
+                    pressed={on}
+                    onClick={() => onChange({ ...filters, roomKinds: on ? filters.roomKinds.filter((k) => k !== kind) : [...filters.roomKinds, kind] })}
+                  >
+                    {roomKindLabel(kind)}
+                  </Pill>
+                );
+              })}
+            </div>
+          </Section>
+
+          <Section title="Flatmates" hint="At most this many people sharing your flat.">
+            <Pills
+              label="Flatmates"
+              value={filters.maxFlatmates}
+              choices={FLATMATES}
+              onChange={(v) => onChange({ ...filters, maxFlatmates: v })}
+              format={(n) => (n === 0 ? "None (studio)" : `Up to ${n}`)}
+            />
+          </Section>
+
+          {!!options?.contractWeeks.length && (
+            <Section title="Contract length">
+              <Pills
+                label="Contract length"
+                value={filters.contractWeeks}
+                choices={options.contractWeeks}
+                onChange={(v) => onChange({ ...filters, contractWeeks: v })}
+                format={(w) => `${w} weeks`}
+              />
+            </Section>
+          )}
+
+          {!!options?.universities.length && (
+            <Section title="My university" hint="Its own halls plus private halls open to every student.">
+              <Pills
+                label="My university"
+                value={filters.university}
+                choices={options.universities}
+                onChange={(v) => onChange({ ...filters, university: v })}
+                format={universityName}
+              />
+            </Section>
+          )}
+
+          <Section title="Walk to a supermarket">
+            <Pills
+              label="Walk to a supermarket"
+              value={filters.maxSupermarketM}
+              choices={WALK_M}
+              onChange={(v) => onChange({ ...filters, maxSupermarketM: v })}
+              format={(m) => `Under ${walkMin(m)}`}
+            />
+          </Section>
+
+          <Section title="Walk to a station" hint="Tube, Overground, DLR or rail.">
+            <Pills
+              label="Walk to a station"
+              value={filters.maxStationM}
+              choices={WALK_M}
+              onChange={(v) => onChange({ ...filters, maxStationM: v })}
+              format={(m) => `Under ${walkMin(m)}`}
+            />
+          </Section>
+
+          <Section title="Santander bike dock nearby">
+            <Pills
+              label="Santander bike dock nearby"
+              value={filters.maxBikeDockM}
+              choices={BIKE_M}
+              onChange={(v) => onChange({ ...filters, maxBikeDockM: v })}
+              format={(m) => `Within ${m} m`}
+            />
+          </Section>
 
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between">

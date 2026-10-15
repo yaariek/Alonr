@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Building2, Map as MapIcon, Search, SlidersHorizontal } from "lucide-react";
 import { FilterSheet, GroupChips } from "@/components/filters";
+import { useListingCounts } from "@/lib/data/use-listing-counts";
 import { useProperties } from "@/lib/data/use-properties";
 import { minPrice } from "@/lib/filters";
 import { PROVIDER_COLOURS } from "@/lib/sample-data";
@@ -14,7 +15,7 @@ import { HallImage } from "@/components/property/HallImage";
 const money = (price: number | null) => price === null ? "Prices coming soon" : `From £${price}/wk`;
 const titleCase = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
-function PropertyPost({ property }: { property: Property }) {
+function PropertyPost({ property, listingCount }: { property: Property; listingCount: number }) {
   const price = minPrice(property);
   const providerColour = PROVIDER_COLOURS[property.provider];
   const roomKinds = [...new Set(property.roomTypes.map((room) => titleCase(room.kind)))];
@@ -47,6 +48,7 @@ function PropertyPost({ property }: { property: Property }) {
         </div>
         <span className="absolute bottom-4 left-4 z-20 rounded-full bg-white/85 px-3 py-1 text-xs font-medium text-slate-800 backdrop-blur">{property.postcode || "London"}</span>
         {property.catered && <span className="absolute right-4 top-4 z-20 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-foreground">Catered</span>}
+        {listingCount > 0 && <span className="absolute left-4 top-4 z-20 rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">{listingCount} {listingCount === 1 ? "room" : "rooms"} listed</span>}
       </div>
 
       <div className="space-y-3 p-4">
@@ -73,15 +75,19 @@ function PropertyPost({ property }: { property: Property }) {
 
 export function SearchView() {
   const { properties, loading, error } = useProperties();
+  const listingCounts = useListingCounts();
   const {
     selectedProvider,
     setSelectedProvider,
     filters,
     setFilters,
     priceBounds,
+    options,
+    availableProviders,
     activeFilterCount,
     filteredProperties,
-  } = usePropertyFilters(properties);
+    resetFilters,
+  } = usePropertyFilters(properties, listingCounts);
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -117,9 +123,9 @@ export function SearchView() {
               <Search className="size-4 shrink-0 text-muted-foreground" />
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search halls, areas, stations…" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" aria-label="Search halls, areas, stations" />
             </label>
-            <FilterSheet filters={filters} priceBounds={priceBounds} onChange={setFilters} activeCount={activeFilterCount} />
+            <FilterSheet filters={filters} priceBounds={priceBounds} onChange={setFilters} activeCount={activeFilterCount} options={options} onReset={resetFilters} />
           </div>
-          <div className="mt-3 -mx-2"><GroupChips selected={selectedProvider} onSelect={setSelectedProvider} /></div>
+          <div className="mt-3 -mx-2"><GroupChips selected={selectedProvider} onSelect={setSelectedProvider} available={availableProviders} /></div>
         </div>
       </header>
 
@@ -131,7 +137,7 @@ export function SearchView() {
         {error ? (
           <div className="rounded-2xl border bg-card p-6 text-center text-sm text-muted-foreground">{error}</div>
         ) : results.length ? (
-          <div className="space-y-4">{results.map((property) => <PropertyPost key={property.id} property={property} />)}</div>
+          <div className="space-y-4">{results.map((property) => <PropertyPost key={property.id} property={property} listingCount={listingCounts.get(property.id) ?? 0} />)}</div>
         ) : (
           <div className="rounded-2xl border bg-card px-6 py-12 text-center">
             <Search className="mx-auto size-8 text-muted-foreground" />

@@ -17,6 +17,10 @@ export interface PropertyFilters {
   maxBikeDockM?: number;
   maxFlatmates?: number;
   contractWeeks?: number;
+  /** University id (e.g. "kcl"): that uni's halls plus halls open to all students (no affiliated uni). */
+  university?: string;
+  /** Only these halls, e.g. the ones with active listings. */
+  onlyIds?: Set<string>;
 }
 
 const hasAny = <T,>(xs?: T[]): xs is T[] => !!xs && xs.length > 0;
@@ -51,6 +55,8 @@ export function matchesFilters(p: Property, f: PropertyFilters): boolean {
     within(p.supermarketM, f.maxSupermarketM) &&
     within(p.stationM, f.maxStationM) &&
     within(p.bikeDockM, f.maxBikeDockM) &&
+    (!f.university || !p.affiliatedUniversity || p.affiliatedUniversity.toLowerCase() === f.university.toLowerCase()) &&
+    (!f.onlyIds || f.onlyIds.has(p.id)) &&
     roomMatches(p, f)
   );
 }

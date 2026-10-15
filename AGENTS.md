@@ -20,7 +20,7 @@ Tick a box (`[x]`) in the same commit as the work. Pull before editing this sect
 
 ### Done (live on https://alonr.vercel.app)
 - **Login** (C, design by B): `.ac.uk` email link, tester code for the 12 `@demo.ac.uk` demo accounts, `/auth/callback`, Me tab with sign out.
-- **Map on real data** (A, loader by C): 48 halls from B's CSV, provider-coloured pins, provider chips, price/catered/24-7/accessible filters, nearby search with your location, list view `/search`.
+- **Map on real data** (A, loader by C): 48 halls from B's CSV, provider-coloured pins, provider chips, clustered pins, all the filters (price, room type, flatmates, contract weeks, uni, walk to supermarket/station, bike dock, catered, 24/7, accessible, "Has rooms listed"), nearby search with your location, list view `/search` with listing counts. Chips with 0 halls are hidden.
 - **Property page** `/property/[id]` (C): rooms & prices, facilities, nearby walk times, active listings at that hall, website. Map popups link to it.
 - **Data** (C, CSV by B): `check_csv.py` → `enrich.py` → `seed.py`. 48 halls, all priced; 20 provider groups; 12 demo users; 11 demo listings with 23 likes (see *Demo story*).
 
@@ -28,10 +28,10 @@ Tick a box (`[x]`) in the same commit as the work. Pull before editing this sect
 Agents: do the tasks under **your person** only, top first. Stay inside the folders that person owns (see *Team split*).
 
 **A: Map** (owns `app/map`, `app/search`, `app/property`, `components/map`, `components/filters`, `lib/geo.ts`, `lib/filters.ts`)
-1. [ ] `git pull --rebase` first (new provider chips + this file).
-2. [ ] Cluster the pins (MapLibre GeoJSON source with `cluster: true`), so central London isn't a pile of overlapping pins.
-3. [ ] Hide the Prestige chip (0 halls) and tidy the chip bar (20 chips, scrolls sideways).
-4. [ ] After C pushes `lib/data/listings.ts`: a "Has listings" filter on the map, and the listing count on each hall card in `/search`.
+1. [x] `git pull --rebase` first (new provider chips + this file).
+2. [x] Cluster the pins (MapLibre GeoJSON source with `cluster: true`), so central London isn't a pile of overlapping pins.
+3. [x] Hide the Prestige chip (0 halls) and tidy the chip bar (20 chips, scrolls sideways).
+4. [x] After C pushes `lib/data/listings.ts`: a "Has listings" filter on the map, and the listing count on each hall card in `/search`.
 
 **B: Listings** (was "Swap"; owns `app/(auth)`, `app/listings`, `components/listings`, `app/layout.tsx`, `components/bottom-nav.tsx`)
 1. [x] Rename Swap → **Listings**: bottom-nav tab and routes `/listings`, `/listings/new`, `/listings/[id]` (delete `app/swap`).
