@@ -119,8 +119,8 @@ export function ListingsPage() {
           <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             <Sparkles className="size-3.5" /> Student-to-student
           </p>
-          <h1 className="text-2xl font-bold tracking-tight">Swap rooms</h1>
-          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a room, explore halls, and connect with students.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Room offers</h1>
+          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a swap or a student to take over your contract.</p>
         </div>
         <Link href="/listings/new" className={buttonVariants({ className: "h-10 gap-1.5 px-3" })}>
           <Plus className="size-4" /> <span className="hidden sm:inline">Create listing</span><span className="sm:hidden">List room</span>
