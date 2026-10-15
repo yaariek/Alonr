@@ -52,6 +52,7 @@ interface RoomFeatureProperties {
   priceWeek: number;
 }
 
+const EMPTY_PROPERTY_FEATURES: FeatureCollection<Point, PropertyFeatureProperties> = { type: 'FeatureCollection', features: [] };
 const EMPTY_ROOM_FEATURES: FeatureCollection<Point, RoomFeatureProperties> = { type: 'FeatureCollection', features: [] };
 const DEMO_HOUSESHARE_FEATURES = getDemoHouseShareMapPins();
 
@@ -133,25 +134,29 @@ export function MapView() {
     setSelectedProvider('All');
   };
 
-  const propertyFeatures = useMemo<FeatureCollection<Point, PropertyFeatureProperties>>(() => ({
-    type: 'FeatureCollection',
-    features: filteredProperties.map((property) => {
-      const price = minPrice(property);
-      return {
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [property.lng, property.lat] },
-        properties: {
-          id: property.id,
-          name: property.name,
-          imagePath: propertyImagePath(property.name),
-          provider: property.provider,
-          iconImage: providerPinImageId(PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other),
-          priceLabel: price === null ? 'Prices coming soon' : `From £${price}/wk`,
-          listingCount: listingCounts.get(property.id) ?? 0,
-        },
-      };
-    }),
-  }), [filteredProperties, listingCounts]);
+  const propertyFeatures = useMemo<FeatureCollection<Point, PropertyFeatureProperties>>(() => {
+    if (!showSharedRoomPins && !showHouseSharePins) return EMPTY_PROPERTY_FEATURES;
+
+    return {
+      type: 'FeatureCollection',
+      features: filteredProperties.map((property) => {
+        const price = minPrice(property);
+        return {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [property.lng, property.lat] },
+          properties: {
+            id: property.id,
+            name: property.name,
+            imagePath: propertyImagePath(property.name),
+            provider: property.provider,
+            iconImage: providerPinImageId(PROVIDER_COLOURS[property.provider] ?? PROVIDER_COLOURS.Other),
+            priceLabel: price === null ? 'Prices coming soon' : `From £${price}/wk`,
+            listingCount: listingCounts.get(property.id) ?? 0,
+          },
+        };
+      }),
+    };
+  }, [filteredProperties, listingCounts, showHouseSharePins, showSharedRoomPins]);
 
   const roomFeatures = useMemo<FeatureCollection<Point, RoomFeatureProperties>>(() => {
     if (!showSharedRoomPins) return EMPTY_ROOM_FEATURES;
@@ -419,25 +424,25 @@ export function MapView() {
 
   return (
     <div className="relative h-screen w-full">
-      <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
+      <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-1.5 sm:gap-2">
         <button
           type="button"
           aria-pressed={showSharedRoomPins}
           onClick={() => setShowSharedRoomPins((visible) => !visible)}
-          className={`inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold shadow-md backdrop-blur transition-colors ${showSharedRoomPins ? 'border-blue-800 bg-blue-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
+          className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-2 text-xs font-semibold shadow-md backdrop-blur transition-colors sm:h-10 sm:gap-2 sm:px-3 sm:text-sm ${showSharedRoomPins ? 'border-blue-800 bg-blue-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
         >
-          <BedDouble className="size-4" /> Shared rooms
+          <BedDouble className="size-3.5 sm:size-4" /> Shared rooms
         </button>
         <button
           type="button"
           aria-pressed={showHouseSharePins}
           onClick={() => setShowHouseSharePins((visible) => !visible)}
-          className={`inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold shadow-md backdrop-blur transition-colors ${showHouseSharePins ? 'border-teal-800 bg-teal-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
+          className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-2 text-xs font-semibold shadow-md backdrop-blur transition-colors sm:h-10 sm:gap-2 sm:px-3 sm:text-sm ${showHouseSharePins ? 'border-teal-800 bg-teal-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
         >
-          <UsersRound className="size-4" /> House Share
+          <UsersRound className="size-3.5 sm:size-4" /> House Share
         </button>
       </div>
-      <div className="absolute left-4 right-4 top-4 z-10 flex justify-end sm:left-auto">
+      <div className="absolute right-4 top-4 z-10">
           <FilterSheet
             filters={filters}
             priceBounds={priceBounds}
