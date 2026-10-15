@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
 import type { HouseSharePost } from "@/lib/types";
+import { filterHouseShare } from "@/lib/house-share-filters";
 
 type Layout = "grid" | "list";
 type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string };
@@ -24,18 +25,19 @@ export default function Page() {
   const [columns, setColumns] = useState<2 | 3 | 4>(3);
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
-  const filteredPosts = useMemo(() => posts.filter((post) => {
-    const text = `${post.apartment_name} ${post.name} ${post.areas.join(" ")}`.toLowerCase();
-    if (search && !text.includes(search.toLowerCase())) return false;
-    if (filters.maxBudget && post.budget > Number(filters.maxBudget)) return false;
-    if (filters.studyLevel && post.prefs.study_level !== filters.studyLevel) return false;
-    if (filters.gender && post.prefs.gender !== filters.gender) return false;
-    if (filters.pets && String(Boolean(post.prefs.pets)) !== filters.pets) return false;
-    if (filters.smoking && String(Boolean(post.prefs.smoking)) !== filters.smoking) return false;
-    if (filters.drinking && post.prefs.drinking !== filters.drinking) return false;
-    if (filters.instruments && String(Boolean(post.prefs.instruments)) !== filters.instruments) return false;
-    return true;
-  }), [posts, search, filters]);
+  const filteredPosts = useMemo(() => {
+    const maxBudget = filters.maxBudget.trim() ? Number(filters.maxBudget) : undefined;
+    return filterHouseShare(posts, {
+      query: search,
+      maxBudget: maxBudget !== undefined && Number.isFinite(maxBudget) ? maxBudget : undefined,
+      studyLevel: filters.studyLevel ? filters.studyLevel as "undergrad" | "postgrad" : undefined,
+      gender: filters.gender ? filters.gender as "women" | "men" | "mixed" : undefined,
+      pets: filters.pets ? filters.pets === "true" : undefined,
+      smoking: filters.smoking ? filters.smoking === "true" : undefined,
+      drinking: filters.drinking ? filters.drinking as "none" | "sometimes" | "often" : undefined,
+      instruments: filters.instruments ? filters.instruments === "true" : undefined,
+    });
+  }, [posts, search, filters]);
 
   const gridClass = layout === "list"
     ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
