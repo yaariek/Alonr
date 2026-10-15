@@ -33,7 +33,7 @@ function PropertyPost({ property }: { property: Property }) {
       </div>
 
       <div className="relative flex aspect-[1.25/1] items-center justify-center overflow-hidden px-6 text-white" style={{ background: `linear-gradient(145deg, ${providerColour} 0%, #fffaf7 100%)` }}>
-        <HallImage propertyName={property.name} alt={`${property.name} hall`} className="z-10 object-cover" sizes="(max-width: 768px) 100vw, 640px" />
+        <HallImage propertyName={property.name} alt={`${property.name} hall`} className="z-10 bg-white object-contain" sizes="(max-width: 768px) 100vw, 640px" />
         <div className="absolute -right-10 -top-12 size-56 rounded-full border border-slate-900/10" />
         <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-slate-900/10" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />

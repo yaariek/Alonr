@@ -208,7 +208,7 @@ export function MapView() {
 
         const popupContent = `
           <div style="padding: 4px;">
-            <img src="${details.imagePath}" alt="${escapeHtml(details.name)}" onerror="this.style.display='none'" style="display:block;width:220px;height:132px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />
+            <img src="${details.imagePath}" alt="${escapeHtml(details.name)}" onerror="this.style.display='none'" style="display:block;width:220px;height:132px;object-fit:contain;background:#fff;border-radius:8px;margin-bottom:8px;" />
             <strong style="font-size: 14px;">${escapeHtml(details.name)}</strong><br/>
             <span style="font-size: 12px; color: #666;">${escapeHtml(details.provider)}</span><br/>
             <strong style="font-size: 13px; color: #2563eb;">${escapeHtml(details.priceLabel)}</strong><br/>

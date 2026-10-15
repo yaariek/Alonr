@@ -67,7 +67,7 @@ async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
       </header>
 
       <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted">
-        <HallImage propertyName={p.name} alt={`${p.name} hall`} className="z-10 object-cover" sizes="(max-width: 640px) 100vw, 512px" />
+        <HallImage propertyName={p.name} alt={`${p.name} hall`} className="z-10 bg-white object-contain" sizes="(max-width: 640px) 100vw, 512px" />
         <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">
           <Building2 aria-hidden="true" className="size-12" strokeWidth={1.25} />
           <span className="text-xs">Hall photo</span>
