@@ -1,23 +1,4 @@
-export type HouseSharePost = {
-  id: string;
-  user_id: string;
-  name: string;
-  apartment_name: string;
-  budget: number;
-  areas: string[];
-  move_in: string;
-  looking_for_n: number;
-  total_tenants: number;
-  prefs: {
-    study_level: "undergrad" | "postgrad";
-    gender: "women" | "men" | "mixed";
-    pets: boolean;
-    smoking: boolean;
-    drinking: "none" | "sometimes" | "often";
-    parties: boolean;
-    instruments: boolean;
-  };
-};
+import type { HouseSharePost } from "@/lib/types";
 
 const LONDON_AREAS = [
   "Acton", "Balham", "Bermondsey", "Bethnal Green", "Brixton", "Brockley",
@@ -33,6 +14,7 @@ const LONDON_AREAS = [
 
 const DEMO_NAMES = ["Amira", "Tom", "Mei", "Jonas", "Priya", "Leo", "Sara", "Omar", "Chloe", "Ravi", "Hana", "Alex"];
 const APARTMENT_STYLES = ["Garden Flat", "House Share", "Bright Apartment", "Terrace House", "Riverside Flat", "Townhouse"];
+const DEMO_LANGUAGES = ["English", "Arabic", "French", "Mandarin", "Spanish", "Urdu", "Hindi", "Portuguese"];
 
 function seededRandom(seed: number) {
   let state = seed >>> 0;
@@ -73,6 +55,8 @@ export const DEMO_HOUSESHARE_POSTS: HouseSharePost[] = LONDON_AREAS.map((area, i
       drinking: pick(["none", "sometimes", "often"] as const),
       parties: random() < 0.5,
       instruments: random() < 0.5,
+      personality: [pick(["dominance", "influence", "steadiness", "conscientiousness"] as const)],
+      languages: [pick(DEMO_LANGUAGES)],
     },
   };
 });

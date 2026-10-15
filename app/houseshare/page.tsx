@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { DEMO_HOUSESHARE_POSTS, type HouseSharePost } from "./demo-data";
+import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
+import type { HouseSharePost } from "@/lib/types";
 
 type Layout = "grid" | "list";
 type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string };
