@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Map, MessageCircle, Search, User, Users, HeartHandshake } from "lucide-react";
+import { useUnreadChats } from "@/lib/data/use-unread-chats";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -22,6 +23,7 @@ export function BottomNav() {
 }
 
 export function NavBar({ pathname }: { pathname: string }) {
+  const unread = useUnreadChats();
   return (
     <nav className="border-t bg-background pb-[env(safe-area-inset-bottom)]">
       <ul className="mx-auto flex max-w-lg justify-around">
@@ -36,7 +38,17 @@ export function NavBar({ pathname }: { pathname: string }) {
                   active ? "text-primary" : "text-muted-foreground",
                 )}
               >
-                <Icon className="size-5" />
+                <span className="relative">
+                  <Icon className="size-5" />
+                  {href === "/messages" && unread > 0 && (
+                    <span
+                      aria-label={`${unread} unread ${unread === 1 ? "chat" : "chats"}`}
+                      className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-background"
+                    >
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </span>
                 {label}
               </Link>
             </li>

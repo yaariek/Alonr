@@ -5,7 +5,9 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PersonAvatar } from "@/components/chat/person-avatar";
-import { chatTime, getConversations, subscribeToMessages, type Conversation } from "@/lib/data/chat";
+import { chatTime, getConversations, isUnread, subscribeToMessages, type Conversation } from "@/lib/data/chat";
+import { getReadTimes } from "@/lib/data/chat-read";
+import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
 type State =
@@ -80,10 +82,12 @@ export function ConversationList() {
     );
   }
 
+  const reads = getReadTimes(state.me);
   return (
     <ul className="divide-y">
       {state.conversations.map((c) => {
         const last = c.lastMessage;
+        const unread = isUnread(c, state.me, reads);
         return (
           <li key={c.id}>
             <Link href={`/messages/${c.id}`} className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 hover:bg-muted/60">
@@ -91,15 +95,20 @@ export function ConversationList() {
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline justify-between gap-2">
                   <span className="truncate font-semibold">{c.other.name}</span>
-                  <span className="shrink-0 text-xs text-muted-foreground">{chatTime(c.updatedAt)}</span>
+                  <span className={cn("shrink-0 text-xs", unread ? "font-semibold text-primary" : "text-muted-foreground")}>
+                    {chatTime(c.updatedAt)}
+                  </span>
                 </span>
                 {c.listing && (
                   <span className="block truncate text-xs text-muted-foreground">
                     {c.listing.propertyName} · {c.listing.kind === "swap" ? "Swap" : "Contract release"}
                   </span>
                 )}
-                <span className="block truncate text-sm text-muted-foreground">
-                  {last ? `${last.senderId === state.me ? "You: " : ""}${last.body}` : "No messages yet"}
+                <span className="flex items-center gap-2">
+                  <span className={cn("block min-w-0 flex-1 truncate text-sm", unread ? "font-semibold text-foreground" : "text-muted-foreground")}>
+                    {last ? `${last.senderId === state.me ? "You: " : ""}${last.body}` : "No messages yet"}
+                  </span>
+                  {unread && <span className="size-2.5 shrink-0 rounded-full bg-primary" aria-label="Unread" />}
                 </span>
               </span>
             </Link>

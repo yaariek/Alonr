@@ -181,3 +181,19 @@ export function subscribeToMessages(
     supabase.removeChannel(channel);
   };
 }
+
+// ───────────── Unread (remembered per browser, see chat-read.ts) ─────────────
+
+/** conversation id -> ISO time I last read it */
+export type ReadTimes = Record<string, string>;
+
+/** Unread = the last message is from the other person and newer than when I last opened the chat. */
+export function isUnread(c: Conversation, me: string, reads: ReadTimes): boolean {
+  const last = c.lastMessage;
+  if (!last || last.senderId === me) return false;
+  const readAt = reads[c.id];
+  return !readAt || last.createdAt > readAt;
+}
+
+export const unreadCount = (cs: Conversation[], me: string, reads: ReadTimes) =>
+  cs.filter((c) => isUnread(c, me, reads)).length;

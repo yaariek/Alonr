@@ -10,6 +10,7 @@ import {
   clockTime, dayLabel, getConversation, getMessages, mergeMessage, sendMessage, subscribeToMessages,
   type Conversation, type Message,
 } from "@/lib/data/chat";
+import { markChatRead } from "@/lib/data/chat-read";
 import { roomKindLabel } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,17 @@ export function ChatRoom({ id }: { id: string }) {
       stop();
     };
   }, [id]);
+
+  // Everything shown while the chat is open counts as read (clears the Chats tab badge).
+  const reader = state.status === "ready" ? state.me : null;
+  useEffect(() => {
+    const newest = messages.at(-1)?.createdAt;
+    if (!reader || !newest) return;
+    const mark = () => document.visibilityState === "visible" && markChatRead(reader, id, newest);
+    mark();
+    document.addEventListener("visibilitychange", mark);
+    return () => document.removeEventListener("visibilitychange", mark);
+  }, [reader, id, messages]);
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ block: "end" });

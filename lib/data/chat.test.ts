@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chatTime, dayLabel, mergeMessage, toConversation, type Message } from "@/lib/data/chat";
+import { chatTime, dayLabel, isUnread, mergeMessage, toConversation, unreadCount, type Conversation, type Message } from "@/lib/data/chat";
 
 const msg = (id: number, createdAt: string, senderId = "a"): Message =>
   ({ id, conversationId: "c1", senderId, body: `m${id}`, createdAt });
@@ -51,5 +51,28 @@ describe("chatTime", () => {
   it("day separators", () => {
     expect(dayLabel(new Date(2026, 9, 14, 9, 5).toISOString(), now)).toBe("Today");
     expect(dayLabel(new Date(2026, 9, 13, 9, 5).toISOString(), now)).toBe("Yesterday");
+  });
+});
+
+describe("unread", () => {
+  const msg = (senderId: string, createdAt: string): Message => ({ id: 1, conversationId: "c", senderId, body: "hi", createdAt });
+  const conv = (id: string, last: Message | null): Conversation => ({
+    id, other: { id: "them", name: "Tom" }, listing: null, lastMessage: last, updatedAt: last?.createdAt ?? "",
+  });
+  const fromThem = conv("c1", msg("them", "2026-10-15T10:00:00Z"));
+  const fromMe = conv("c2", msg("me", "2026-10-15T11:00:00Z"));
+  const empty = conv("c3", null);
+
+  it("a reply from the other person is unread until I open the chat after it", () => {
+    expect(isUnread(fromThem, "me", {})).toBe(true);
+    expect(isUnread(fromThem, "me", { c1: "2026-10-15T09:00:00Z" })).toBe(true);
+    expect(isUnread(fromThem, "me", { c1: "2026-10-15T10:00:00Z" })).toBe(false);
+  });
+  it("my own last message or an empty chat is never unread", () => {
+    expect(isUnread(fromMe, "me", {})).toBe(false);
+    expect(isUnread(empty, "me", {})).toBe(false);
+  });
+  it("counts unread chats", () => {
+    expect(unreadCount([fromThem, fromMe, empty], "me", {})).toBe(1);
   });
 });
