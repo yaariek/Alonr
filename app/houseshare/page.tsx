@@ -96,7 +96,7 @@ export default function Page() {
             <button type="button" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "grid" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}><LayoutGrid className="size-3.5" /> Grid</button>
             <button type="button" aria-pressed={layout === "list"} onClick={() => setLayout("list")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}><List className="size-3.5" /> List</button>
           </div>
-          {layout === "grid" && <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="Grid columns">{([2, 3, 4] as const).map((count) => <button key={count} type="button" aria-label={`${count} columns`} aria-pressed={columns === count} onClick={() => setColumns(count)} className={cn("size-8 rounded-md text-xs font-medium", columns === count ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>{count}</button>)}</div>}
+          {layout === "grid" && <div className="hidden rounded-lg border bg-background p-0.5 xl:flex" role="group" aria-label="Grid columns">{([2, 3, 4] as const).map((count) => <button key={count} type="button" aria-label={`${count} columns`} aria-pressed={columns === count} onClick={() => setColumns(count)} className={cn("size-8 rounded-md text-xs font-medium", columns === count ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>{count}</button>)}</div>}
         </div>
       </div>
 
