@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Archive, ArrowRight, Heart, LayoutGrid, List, Plus, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,9 @@ export function ListingsPage() {
     listings, myListings, likedListings, likedIds, userId, ready, error, isDemo,
     toggleLike, loadQuickMatches, changeStatus, deleteOwnListing,
   } = useListings();
-  const [view, setView] = useState<View>("explore");
+  // Deep links from the Me tab: /listings?view=mine or ?view=saved
+  const linkedView = useSearchParams().get("view");
+  const [view, setView] = useState<View>(linkedView === "mine" || linkedView === "saved" ? linkedView : "explore");
   const [layout, setLayout] = useState<Layout>("grid");
   const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3);
   const [selectedId, setSelectedId] = useState("");
