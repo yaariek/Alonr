@@ -2,6 +2,7 @@ export type HouseSharePost = {
   id: string;
   user_id: string;
   name: string;
+  apartment_name: string;
   budget: number;
   areas: string[];
   move_in: string;
@@ -31,6 +32,7 @@ const LONDON_AREAS = [
 ];
 
 const DEMO_NAMES = ["Amira", "Tom", "Mei", "Jonas", "Priya", "Leo", "Sara", "Omar", "Chloe", "Ravi", "Hana", "Alex"];
+const APARTMENT_STYLES = ["Garden Flat", "House Share", "Bright Apartment", "Terrace House", "Riverside Flat", "Townhouse"];
 
 function seededRandom(seed: number) {
   let state = seed >>> 0;
@@ -57,6 +59,7 @@ export const DEMO_HOUSESHARE_POSTS: HouseSharePost[] = LONDON_AREAS.map((area, i
     id: `demo-house-share-${String(index + 1).padStart(2, "0")}`,
     user_id: `demo-user-${String(index % DEMO_NAMES.length + 1).padStart(2, "0")}`,
     name: DEMO_NAMES[index % DEMO_NAMES.length],
+    apartment_name: `${area} ${APARTMENT_STYLES[index % APARTMENT_STYLES.length]}`,
     budget: integer(160, 450),
     areas: [area],
     move_in: moveIn,

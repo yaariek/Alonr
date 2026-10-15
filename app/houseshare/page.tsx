@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { LayoutGrid, List, MapPin, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react";
+import Link from "next/link";
+import { LayoutGrid, List, MapPin, MessageCircle, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +24,7 @@ export default function Page() {
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
   const filteredPosts = useMemo(() => posts.filter((post) => {
-    const text = `${post.name} ${post.areas.join(" ")}`.toLowerCase();
+    const text = `${post.apartment_name} ${post.name} ${post.areas.join(" ")}`.toLowerCase();
     if (search && !text.includes(search.toLowerCase())) return false;
     if (filters.maxBudget && post.budget > Number(filters.maxBudget)) return false;
     if (filters.studyLevel && post.prefs.study_level !== filters.studyLevel) return false;
@@ -65,7 +66,7 @@ export default function Page() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <label className="flex min-h-11 flex-1 items-center gap-2 rounded-xl border bg-background px-3">
           <Search className="size-4 shrink-0 text-muted-foreground" />
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search names or areas…" aria-label="Search House Share posts" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search apartments, hosts or areas…" aria-label="Search House Share posts" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
         </label>
         <Button type="button" variant="outline" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)} className="h-11 gap-2">
           <SlidersHorizontal className="size-4" /> Filters{activeFilterCount ? ` · ${activeFilterCount}` : ""}
@@ -127,11 +128,12 @@ function HouseShareCard({ post }: { post: HouseSharePost }) {
       </div>
       <div className="space-y-3 p-3.5">
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0"><h2 className="truncate font-semibold leading-snug">{post.name}</h2><p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground"><MapPin className="size-3 shrink-0" />{post.areas.length ? post.areas.join(", ") : "Area flexible"}</p></div>
+          <div className="min-w-0"><h2 className="truncate font-semibold leading-snug">{post.apartment_name}</h2><p className="mt-0.5 truncate text-xs text-muted-foreground">Hosted by {post.name}</p><p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground"><MapPin className="size-3 shrink-0" />{post.areas.length ? post.areas.join(", ") : "Area flexible"}</p></div>
           <p className="shrink-0 text-right text-sm font-bold">£{post.budget}<span className="font-normal text-muted-foreground"> / wk budget</span></p>
         </div>
         <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-muted-foreground"><span className="inline-flex items-center gap-1"><Users className="size-3" /> Seeking {post.looking_for_n} {post.looking_for_n === 1 ? "tenant" : "tenants"}</span>{post.move_in && <span>Move in {new Date(post.move_in).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</span>}</div>
         <div className="flex flex-wrap gap-1.5">{preferenceLabels.length ? preferenceLabels.map((label) => <Badge key={label} variant="secondary" className="text-[10px]">{label}</Badge>) : <Badge variant="secondary" className="text-[10px]">Preferences flexible</Badge>}</div>
+        <Link href={`/houseshare/chat/${post.id}`} className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"><MessageCircle className="size-4" />Chat with {post.name}</Link>
       </div>
     </article>
   );
