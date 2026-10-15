@@ -19,7 +19,10 @@ export const metadata: Metadata = {
   title: "alonr",
   description: "Room swap & house share for London students",
   appleWebApp: { capable: true, title: "alonr", statusBarStyle: "default" },
-  icons: { apple: "/icons/apple-touch-icon.png" },
+  icons: {
+    icon: "/alonr-logo.svg",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 205 565 330" role="img" aria-labelledby="title">
+  <title id="title">alonr</title>
+  <g fill="none" stroke="#09090b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M280 280 383 205l172 129" />
+    <path d="M70 440c19-35 65-37 79-9v45c-19 1-43 4-62 2-29-3-30-34-5-45 20-9 47-10 67 3" />
+    <path d="M169 298h37v178" />
+    <path d="M110 478h129" />
+    <circle cx="316" cy="356" r="45" />
+    <path d="M407 475v-88c0-34 23-54 54-54s54 20 54 54v88h-57" />
+    <path d="M558 475v-79l62-37" />
+  </g>
+</svg>
