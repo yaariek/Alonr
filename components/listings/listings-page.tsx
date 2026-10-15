@@ -64,7 +64,7 @@ export function ListingsPage() {
           : filteredFeedListings;
   const maxRoomPrice = Math.max(5, ...listings.map((listing) => listing.priceWeek));
   const selectedRoomMaxPrice = Math.min(roomMaxPrice ?? maxRoomPrice, maxRoomPrice);
-  const roomFilterCount = (roomKindFilter === "all" ? 0 : 1) + (selectedRoomMaxPrice < maxRoomPrice ? 1 : 0);
+  const roomFilterCount = (roomKindFilter === "all" ? 0 : 1) + (selectedRoomMaxPrice < maxRoomPrice ? 1 : 0) + (offerFilter === "all" ? 0 : 1);
   const roomResults = view !== "explore" ? shownListings : shownListings.filter((listing) => {
     const needle = roomQuery.trim().toLowerCase();
     const matchesQuery = !needle || [listing.propertyName, listing.university, listing.postcode, listing.ownerName, listing.description, listing.roomKind]
@@ -168,7 +168,12 @@ export function ListingsPage() {
               view === key ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {label}{key === "mine" && myListings.length > 0 ? ` ${myListings.length}` : key === "saved" && likedListings.length > 0 ? ` ${likedListings.length}` : ""}
+            {label}
+            {((key === "mine" && myListings.length > 0) || (key === "saved" && likedListings.length > 0)) && (
+              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
+                {key === "mine" ? myListings.length : likedListings.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -188,6 +193,14 @@ export function ListingsPage() {
               <SheetHeader className="p-0 pr-10 text-left"><SheetTitle>Filter rooms</SheetTitle></SheetHeader>
               <div className="min-h-0 flex-1 space-y-7 overflow-y-auto py-4">
                 <section className="space-y-3">
+                  <div><h3 className="text-sm font-semibold">Listing type</h3><p className="text-xs text-muted-foreground">Show swaps, contract releases, or both.</p></div>
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by listing type">
+                    {([ ["all", "All rooms"], ["swap", "Swaps"], ["release", "Contract releases"] ] as const).map(([kind, label]) => (
+                      <button key={kind} type="button" aria-pressed={offerFilter === kind} onClick={() => setOfferFilter(kind)} className={cn("rounded-full border px-3 py-2 text-xs font-medium", offerFilter === kind ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent")}>{label}</button>
+                    ))}
+                  </div>
+                </section>
+                <section className="space-y-3">
                   <div><h3 className="text-sm font-semibold">Room type</h3><p className="text-xs text-muted-foreground">Choose a room type to show.</p></div>
                   <div className="flex flex-wrap gap-2">
                     <button type="button" aria-pressed={roomKindFilter === "all"} onClick={() => setRoomKindFilter("all")} className={cn("rounded-full border px-3 py-2 text-xs font-medium", roomKindFilter === "all" ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-accent")}>All rooms</button>
@@ -203,35 +216,11 @@ export function ListingsPage() {
                 </section>
               </div>
               <div className="flex gap-2 border-t pt-4">
-                <button type="button" onClick={() => { setRoomKindFilter("all"); setRoomMaxPrice(null); }} className="flex-1 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-accent">Clear filters</button>
+                <button type="button" onClick={() => { setOfferFilter("all"); setRoomKindFilter("all"); setRoomMaxPrice(null); }} className="flex-1 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-accent">Clear filters</button>
                 <SheetClose className="flex-1 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Show rooms</SheetClose>
               </div>
             </SheetContent>
           </Sheet>
-        </div>
-      )}
-      {view === "explore" && (
-        <div className="mb-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter room offers by type">
-          {([
-            ["all", "All rooms"],
-            ["swap", "Swaps"],
-            ["release", "Contract releases"],
-          ] as const).map(([kind, label]) => (
-            <button
-              key={kind}
-              type="button"
-              aria-pressed={offerFilter === kind}
-              onClick={() => setOfferFilter(kind)}
-              className={cn(
-                "shrink-0 rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
-                offerFilter === kind
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "bg-background text-muted-foreground hover:bg-accent hover:text-foreground",
-              )}
-            >
-              {label}
-            </button>
-          ))}
         </div>
       )}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
