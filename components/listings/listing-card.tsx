@@ -5,6 +5,7 @@ import { Heart, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate, roomKindLabel } from "@/lib/format";
+import { HallImage } from "@/components/property/HallImage";
 import { listingsAreMutualMatches } from "./matching";
 import type { RoomListing } from "./types";
 
@@ -17,6 +18,12 @@ export function ListingPhoto({ listing, className = "" }: { listing: RoomListing
       className={`relative overflow-hidden bg-gradient-to-br from-amber-100 via-orange-50 to-rose-100 ${className}`}
       style={photo ? { backgroundImage: `url("${photo}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
     >
+      <HallImage
+        propertyName={listing.propertyName}
+        alt={`${listing.propertyName} hall`}
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, 640px"
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
     </div>
   );
