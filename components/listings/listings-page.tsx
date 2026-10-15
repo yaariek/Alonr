@@ -19,6 +19,7 @@ import { SearchView } from "@/components/search/search-view";
 
 type View = "explore" | "halls" | "quick" | "mine" | "saved";
 type Layout = "grid" | "list";
+type OfferFilter = "all" | RoomListing["kind"];
 
 export function ListingsPage() {
   const {
@@ -30,6 +31,7 @@ export function ListingsPage() {
   const initialView: View = linkedView === "mine" || linkedView === "saved" || linkedView === "halls" ? linkedView : "explore";
   const [view, setView] = useState<View>(initialView);
   const [layout, setLayout] = useState<Layout>("grid");
+  const [offerFilter, setOfferFilter] = useState<OfferFilter>("all");
   const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3);
   const [selectedId, setSelectedId] = useState("");
   const [passed, setPassed] = useState<string[]>([]);
@@ -41,13 +43,16 @@ export function ListingsPage() {
   const currentListing = mySwapListings.find((listing) => listing.id === selectedId) ?? mySwapListings[0] ?? DEMO_LISTINGS[0];
   const isMine = (listing: RoomListing) => listing.ownerId === userId;
   const feedListings = listings.filter((listing) => !isMine(listing));
+  const filteredFeedListings = offerFilter === "all"
+    ? feedListings
+    : feedListings.filter((listing) => listing.kind === offerFilter);
   const shownListings = view === "mine"
     ? myListings
     : view === "saved"
       ? likedListings
-      : view === "quick"
-        ? quickMatches
-        : feedListings;
+        : view === "quick"
+          ? quickMatches
+          : filteredFeedListings;
   const listingGridClass = layout === "list"
     ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
     : `grid gap-4 ${gridColumns === 2 ? "grid-cols-1 sm:grid-cols-2" : gridColumns === 3 ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4"}`;
@@ -149,9 +154,33 @@ export function ListingsPage() {
       </div>
 
       {view === "halls" ? <SearchView embedded /> : <>
+      {view === "explore" && (
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter room offers by type">
+          {([
+            ["all", "All rooms"],
+            ["swap", "Swaps"],
+            ["release", "Contract releases"],
+          ] as const).map(([kind, label]) => (
+            <button
+              key={kind}
+              type="button"
+              aria-pressed={offerFilter === kind}
+              onClick={() => setOfferFilter(kind)}
+              className={cn(
+                "shrink-0 rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
+                offerFilter === kind
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "bg-background text-muted-foreground hover:bg-accent hover:text-foreground",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="text-xs text-muted-foreground">
-          {view === "explore" ? <span>{feedListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
+          {view === "explore" ? <span>{shownListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
           {view === "explore" && <span className="ml-3 inline-flex items-center gap-1"><Heart className="size-3.5" /> Like a room to save it</span>}
         </div>
         <div className="flex items-center gap-2">
@@ -241,6 +270,11 @@ export function ListingsPage() {
         <EmptyState title="No saved rooms yet" description="Tap the heart on a room to keep it here while you compare your options." />
       ) : view === "quick" ? (
         <EmptyState title={mySwapListings.length ? "No reciprocal matches yet" : "Create a swap listing first"} description={mySwapListings.length ? "We’ll show students whose room matches what you want and whose room fits what you have." : "Add your room and what you are looking for to see reciprocal swap matches."} />
+      ) : view === "explore" && offerFilter !== "all" ? (
+        <EmptyState
+          title={offerFilter === "swap" ? "No swap rooms available" : "No contract releases available"}
+          description="Try another filter or check back later for new room offers."
+        />
       ) : (
         <EmptyState title="No listings yet" description="Check back soon for rooms from London students." />
       )}
