@@ -38,7 +38,7 @@ function Slider({
           <SliderPrimitive.Indicator
             data-slot="slider-range"
             style={{ backgroundColor: accentColour }}
-            className="bg-blue-600 select-none data-horizontal:h-full data-vertical:w-full"
+            className="absolute inset-y-0 rounded-full bg-blue-600 select-none data-vertical:inset-x-0 data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
