@@ -193,7 +193,7 @@ export function ListingsPage() {
             </button>
           </div>
           {layout === "grid" && (
-            <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="Grid columns">
+            <div className="hidden rounded-lg border bg-background p-0.5 xl:flex" role="group" aria-label="Grid columns">
               {([2, 3, 4] as const).map((columns) => (
                 <button key={columns} type="button" aria-label={`${columns} columns`} aria-pressed={gridColumns === columns} onClick={() => setGridColumns(columns)} className={cn("size-8 rounded-md text-xs font-medium", gridColumns === columns ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
                   {columns}
