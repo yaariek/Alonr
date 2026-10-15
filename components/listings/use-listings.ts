@@ -49,6 +49,7 @@ function fromBackend(row: BackendListing, userId: string | null, match = false):
     ownerId: row.userId,
     ownerName: row.userId === userId ? "You" : row.owner.name || "Student",
     university: row.property.provider,
+    postcode: row.property.postcode ?? undefined,
     propertyId: row.property.id,
     propertyName: row.property.name,
     roomKind: row.roomKind,

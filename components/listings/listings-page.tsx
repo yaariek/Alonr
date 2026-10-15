@@ -59,6 +59,22 @@ export function ListingsPage() {
     if (next === "quick") await showQuickMatches();
   }
 
+  // Like/unlike a card. In Quick match, update that card in place (heart + count) instead of reloading the list.
+  async function likeListing(id: string) {
+    try {
+      await toggleLike(id);
+      if (view === "quick") {
+        setQuickMatches((list) => list.map((l) => {
+          if (l.id !== id) return l;
+          const nowLiked = !likedIds.includes(id);
+          return { ...l, likedByMe: nowLiked, likes: Math.max(0, (l.likes ?? 0) + (nowLiked ? 1 : -1)) };
+        }));
+      }
+    } catch (cause) {
+      toast.error(cause instanceof Error ? cause.message : "Couldn't save that like.");
+    }
+  }
+
   async function passMatch(id: string) {
     const next = [...passed, id];
     setPassed(next);
@@ -171,7 +187,7 @@ export function ListingsPage() {
               <QuickMatchCard
                 listing={listing}
                 liked={likedIds.includes(listing.id)}
-                onLike={() => void toggleLike(listing.id).then(() => view === "quick" ? showQuickMatches(currentListing.id) : undefined).catch((cause: unknown) => toast.error(cause instanceof Error ? cause.message : "Couldn't save that like."))}
+                onLike={() => void likeListing(listing.id)}
                 onPass={() => void passMatch(listing.id)}
                 quick={view === "quick"}
                 mutualMatch={view === "quick" || myListings.some((mine) => mine.kind === "swap" && (mine.status ?? "active") === "active" && listingsAreMutualMatches(mine, listing))}

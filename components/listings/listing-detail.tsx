@@ -14,7 +14,7 @@ import { useProperties } from "@/lib/data/use-properties";
 import { formatDate, roomKindLabel } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
 import { listingsAreMutualMatches } from "./matching";
-import { ListingPhoto } from "./listing-card";
+import { ListingPhoto, listingPlace } from "./listing-card";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 
@@ -101,7 +101,7 @@ export function ListingDetail({ id }: { id: string }) {
       <header className="space-y-3 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4 shrink-0" />{listing.university}</p>
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4 shrink-0" />{listingPlace(listing)}</p>
             <h1 className="mt-1 text-2xl font-bold tracking-tight">{listing.propertyName}</h1>
           </div>
           <p className="shrink-0 text-right text-lg font-bold">£{listing.priceWeek}<span className="text-sm font-normal text-muted-foreground">/wk</span></p>
@@ -140,7 +140,7 @@ export function ListingDetail({ id }: { id: string }) {
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{listing.description || "No extra details added yet."}</p>
             <div className="flex items-center gap-2 border-t pt-3 text-sm">
               <span className="flex size-9 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">{listing.ownerName.slice(0, 1)}</span>
-              <span><span className="block font-medium">{listing.ownerName}</span><span className="text-xs text-muted-foreground">{listing.university} student</span></span>
+              <span><span className="block font-medium">{listing.ownerName}</span><span className="text-xs text-muted-foreground">Verified student</span></span>
               {isMine && <Badge variant="outline" className="ml-auto">Yours</Badge>}
             </div>
           </CardContent>

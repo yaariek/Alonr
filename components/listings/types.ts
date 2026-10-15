@@ -12,6 +12,7 @@ export type RoomListing = {
   ownerId: string;
   ownerName: string;
   university: string;
+  postcode?: string; // the hall's postcode
   propertyId: string;
   propertyName: string;
   roomKind: RoomKind;

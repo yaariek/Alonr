@@ -9,6 +9,10 @@ import { HallImage } from "@/components/property/HallImage";
 import { listingsAreMutualMatches } from "./matching";
 import type { RoomListing } from "./types";
 
+/** "Chapter · N1 9JP": provider (or uni) and the hall's postcode. */
+export const listingPlace = (listing: RoomListing) =>
+  [listing.university === "Other" ? "" : listing.university, listing.postcode].filter(Boolean).join(" · ") || "London";
+
 export function ListingPhoto({ listing, className = "" }: { listing: RoomListing; className?: string }) {
   const photo = listing.photos[0];
   return (
@@ -87,7 +91,7 @@ export function ListingCard({
           <Link href={`/listings/${listing.id}`} className="min-w-0 flex-1">
             <h2 className="truncate font-semibold leading-snug hover:text-primary">{listing.propertyName}</h2>
             <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
-              <MapPin className="size-3 shrink-0" /> {listing.university}
+              <MapPin className="size-3 shrink-0" /> {listingPlace(listing)}
             </p>
           </Link>
           <p className="shrink-0 text-right text-sm font-bold">£{listing.priceWeek}<span className="font-normal text-muted-foreground">/wk</span></p>
@@ -106,7 +110,7 @@ export function ListingCard({
             </span>
             <span className="text-xs text-muted-foreground">{listing.ownerName}</span>
           </div>
-          <span className="mr-2 text-xs text-muted-foreground">{listing.likes ? `${listing.likes} likes` : "Be the first to like"}</span>
+          <span className="mr-2 text-xs text-muted-foreground">{listing.likes ? `${listing.likes} ${listing.likes === 1 ? "like" : "likes"}` : "Be the first to like"}</span>
           <Link href={`/listings/${listing.id}`} className="text-xs font-semibold text-primary">View room</Link>
         </div>
       </div>
