@@ -20,6 +20,8 @@ describe("toListing", () => {
     expect(l).toMatchObject({ id: "l1", roomKind: "ensuite", priceWeek: 300, likes: 3, likedByMe: true });
     expect(l.property).toEqual({ id: "p1", name: "Floyer House", provider: "QMUL", postcode: "E1 4NS" });
     expect(l.wants).toEqual({ property_ids: ["p2"], max_price: 350 });
+    expect(l.owner).toEqual({ id: "u1", name: null });
+    expect(toListing(ROW, 0, false, "Amira").owner).toEqual({ id: "u1", name: "Amira" });
   });
 });
 

@@ -35,6 +35,8 @@ export interface Listing {
   property: { id: string; name: string; provider: ProviderGroup; postcode: string | null };
   likes: number;
   likedByMe: boolean; // false when signed out
+  /** Who posted it. name is null when signed out (only signed-in students can see names). */
+  owner: { id: string; name: string | null };
 }
 
 export interface NewListing {
@@ -57,7 +59,7 @@ type ListingRow = Tables<"listings"> & {
 
 // ───────────── Pure helpers (tested in listings.test.ts) ─────────────
 
-export function toListing(row: ListingRow, likes = 0, likedByMe = false): Listing {
+export function toListing(row: ListingRow, likes = 0, likedByMe = false, ownerName: string | null = null): Listing {
   const p = row.properties;
   return {
     id: row.id,
@@ -81,6 +83,7 @@ export function toListing(row: ListingRow, likes = 0, likedByMe = false): Listin
     },
     likes,
     likedByMe,
+    owner: { id: row.user_id, name: ownerName },
   };
 }
 
@@ -153,16 +156,24 @@ async function requireMe(supabase: Client, action: string): Promise<string> {
   return id;
 }
 
-/** Like counts + my likes for these rows, then map them to Listing. */
+/** Owners' display names. Profiles are only readable when signed in, so this is empty when signed out. */
+async function ownerNames(supabase: Client, userIds: string[]): Promise<Map<string, string>> {
+  if (!(await myId(supabase))) return new Map();
+  const { data } = await supabase.from("profiles").select("id, display_name").in("id", [...new Set(userIds)]);
+  return new Map((data ?? []).filter((p) => p.display_name).map((p) => [p.id, p.display_name as string]));
+}
+
+/** Like counts, my likes and owner names for these rows, then map them to Listing. */
 async function withLikes(supabase: Client, rows: ListingRow[]): Promise<Listing[]> {
   if (rows.length === 0) return [];
   const ids = rows.map((r) => r.id);
-  const [{ data: counts }, liked] = await Promise.all([
+  const [{ data: counts }, liked, names] = await Promise.all([
     supabase.from("listing_like_counts").select("listing_id, likes").in("listing_id", ids),
     myLikes(supabase),
+    ownerNames(supabase, rows.map((r) => r.user_id)),
   ]);
   const countOf = new Map((counts ?? []).map((c) => [c.listing_id, c.likes ?? 0]));
-  return rows.map((r) => toListing(r, countOf.get(r.id) ?? 0, liked.has(r.id)));
+  return rows.map((r) => toListing(r, countOf.get(r.id) ?? 0, liked.has(r.id), names.get(r.user_id) ?? null));
 }
 
 /** Listings for the feed, newest first. By default only active ones. */

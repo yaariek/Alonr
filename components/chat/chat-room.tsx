@@ -120,8 +120,7 @@ export function ChatRoom({ id }: { id: string }) {
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold leading-tight">{c.other.name}</p>
           {listing && (
-            // TODO: link to /listings/<id> once B's listing page exists
-            <Link href={`/property/${listing.propertyId}`} className="block truncate text-xs text-muted-foreground hover:underline">
+            <Link href={`/listings/${listing.id}`} className="block truncate text-xs text-muted-foreground hover:underline">
               {listing.ownerId === me ? "Your listing" : "Their listing"}: {listing.propertyName} ·{" "}
               {roomKindLabel(listing.roomKind)} · £{listing.priceWeek}/wk
             </Link>
