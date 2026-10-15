@@ -1,22 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { LayoutGrid, List, MapPin, MessageCircle, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
-import type { HouseShareCompatibilityScore, HouseShareFacilityTag, HouseSharePost } from "@/lib/types";
+import type { HouseShareCompatibilityScore, HouseShareFacilityTag, HouseSharePersonalityTag, HouseSharePost } from "@/lib/types";
 import { filterHouseShare, type HouseShareFilters } from "@/lib/house-share-filters";
 import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
+import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "./demo-storage";
 
 type Layout = "grid" | "list";
 type View = "explore" | "match";
-type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string; parties: string; moveIn: string; area: string; facilities: HouseShareFacilityTag[] };
+type Filters = { maxBudget: string; studyLevel: string; gender: string; pets: string; smoking: string; drinking: string; instruments: string; parties: string; moveIn: string; area: string; personality: HouseSharePersonalityTag | ""; language: string; facilities: HouseShareFacilityTag[] };
 
-const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", gender: "", pets: "", smoking: "", drinking: "", instruments: "", parties: "", moveIn: "", area: "", facilities: [] };
+const EMPTY_FILTERS: Filters = { maxBudget: "", studyLevel: "", gender: "", pets: "", smoking: "", drinking: "", instruments: "", parties: "", moveIn: "", area: "", personality: "", language: "", facilities: [] };
+const PERSONALITY_LABELS: Record<HouseSharePersonalityTag, string> = {
+  dominance: "Dominance (D)", influence: "Influence (I)", steadiness: "Steadiness (S)", conscientiousness: "Conscientiousness (C)",
+};
 const FACILITY_OPTIONS: { value: HouseShareFacilityTag; label: string }[] = [
   { value: "wifi", label: "Wi-Fi" }, { value: "laundry", label: "Laundry" }, { value: "garden", label: "Garden" },
   { value: "bike_storage", label: "Bike storage" }, { value: "dishwasher", label: "Dishwasher" },
@@ -24,7 +28,8 @@ const FACILITY_OPTIONS: { value: HouseShareFacilityTag; label: string }[] = [
 ];
 
 export default function Page() {
-  const posts = DEMO_HOUSESHARE_POSTS;
+  const localPosts = useSyncExternalStore(subscribeLocalHouseSharePosts, getLocalHouseSharePosts, () => EMPTY_LOCAL_HOUSESHARE_POSTS);
+  const posts = useMemo(() => [...localPosts, ...DEMO_HOUSESHARE_POSTS], [localPosts]);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<View>("explore");
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
@@ -45,6 +50,8 @@ export default function Page() {
       drinking: filters.drinking ? filters.drinking as "none" | "sometimes" | "often" : undefined,
       instruments: filters.instruments ? filters.instruments === "true" : undefined,
       parties: filters.parties ? filters.parties === "true" : undefined,
+      personality: filters.personality || undefined,
+      language: filters.language || undefined,
       moveIn: filters.moveIn || undefined,
       area: filters.area || undefined,
       facilities: filters.facilities.length ? filters.facilities : undefined,
@@ -52,7 +59,7 @@ export default function Page() {
   }, [search, filters]);
 
   const filteredPosts = useMemo(() => filterHouseShare(posts, selectedFilters), [posts, selectedFilters]);
-  const hasMatchCriteria = Boolean(selectedFilters.maxBudget !== undefined || selectedFilters.studyLevel || selectedFilters.gender || selectedFilters.pets !== undefined || selectedFilters.smoking !== undefined || selectedFilters.drinking || selectedFilters.instruments !== undefined || selectedFilters.parties !== undefined || selectedFilters.moveIn || selectedFilters.area || selectedFilters.facilities?.length);
+  const hasMatchCriteria = Boolean(selectedFilters.maxBudget !== undefined || selectedFilters.studyLevel || selectedFilters.gender || selectedFilters.pets !== undefined || selectedFilters.smoking !== undefined || selectedFilters.drinking || selectedFilters.instruments !== undefined || selectedFilters.parties !== undefined || selectedFilters.personality || selectedFilters.language || selectedFilters.moveIn || selectedFilters.area || selectedFilters.facilities?.length);
   const rankedMatches = useMemo(() => filteredPosts
     .map((post) => ({ post, score: scoreHouseShareCompatibility(selectedFilters, post) }))
     .sort((a, b) => b.score.points - a.score.points), [filteredPosts, selectedFilters]);
@@ -79,7 +86,7 @@ export default function Page() {
           <h1 className="text-2xl font-bold tracking-tight">Find your house share</h1>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a home and housemates that suit you.</p>
         </div>
-        <Button type="button" disabled title="Post creation is coming soon" className="h-10">Create post</Button>
+        <Link href="/houseshare/new" className={buttonVariants({ className: "h-10" })}>Create post</Link>
       </header>
 
       <p className="mb-5 rounded-xl border border-primary/15 bg-primary/5 px-3.5 py-3 text-xs text-muted-foreground">
@@ -116,6 +123,8 @@ export default function Page() {
             <label className="space-y-1 text-xs font-medium">Drinking preference<select value={filters.drinking} onChange={(event) => updateFilter("drinking", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="none">No drinking</option><option value="sometimes">Sometimes</option><option value="often">Often</option></select></label>
             <label className="space-y-1 text-xs font-medium">Musical instruments<select value={filters.instruments} onChange={(event) => updateFilter("instruments", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Allowed</option><option value="false">Not allowed</option></select></label>
             <label className="space-y-1 text-xs font-medium">Parties<select value={filters.parties} onChange={(event) => updateFilter("parties", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option><option value="true">Welcome</option><option value="false">Quiet home</option></select></label>
+            <label className="space-y-1 text-xs font-medium">DISC-inspired personality<select value={filters.personality} onChange={(event) => setFilters((current) => ({ ...current, personality: event.target.value as HouseSharePersonalityTag | "" }))} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option>{Object.entries(PERSONALITY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+            <label className="space-y-1 text-xs font-medium">Language<select value={filters.language} onChange={(event) => updateFilter("language", event.target.value)} className="h-10 w-full rounded-md border bg-background px-3 text-sm font-normal"><option value="">Any</option>{Array.from(new Set(posts.flatMap((post) => post.prefs.languages))).sort().map((language) => <option key={language} value={language}>{language}</option>)}</select></label>
             <fieldset className="space-y-1 text-xs font-medium sm:col-span-2"><legend>Facilities</legend><div className="flex flex-wrap gap-2 pt-1">{FACILITY_OPTIONS.map((facility) => { const selected = filters.facilities.includes(facility.value); return <button key={facility.value} type="button" aria-pressed={selected} onClick={() => toggleFacility(facility.value)} className={cn("min-h-9 rounded-full border px-3 text-xs font-medium transition-colors", selected ? "border-blue-700 bg-blue-700 text-white hover:bg-blue-800" : "border-input bg-background text-foreground hover:bg-accent")}>{facility.label}</button>; })}</div></fieldset>
             {activeFilterCount > 0 && <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="text-left text-xs font-semibold text-primary hover:underline sm:col-span-2 lg:col-span-5">Clear filters</button>}
           </CardContent>
@@ -154,6 +163,8 @@ function HouseShareCard({ post, score }: { post: HouseSharePost; score?: HouseSh
     post.prefs.drinking && `Drinking: ${post.prefs.drinking}`,
     post.prefs.instruments ? "Instruments welcome" : "No instruments",
     post.prefs.parties ? "Parties welcome" : "Quiet household",
+    ...post.prefs.personality.map((tag) => PERSONALITY_LABELS[tag]),
+    post.prefs.languages.length ? `Languages: ${post.prefs.languages.join(", ")}` : undefined,
     ...post.prefs.facilities.map((facility) => facility.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")),
   ].filter(Boolean) as string[];
 

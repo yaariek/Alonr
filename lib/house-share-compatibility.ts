@@ -41,6 +41,8 @@ export function scoreHouseShareCompatibility(
     filters.smoking !== undefined ? house.prefs.smoking === filters.smoking : undefined,
     filters.drinking ? house.prefs.drinking === filters.drinking : undefined,
     filters.instruments !== undefined ? house.prefs.instruments === filters.instruments : undefined,
+    filters.personality ? house.prefs.personality.includes(filters.personality) : undefined,
+    filters.language ? house.prefs.languages.some((language) => language.toLocaleLowerCase() === filters.language?.trim().toLocaleLowerCase()) : undefined,
     filters.parties !== undefined ? house.prefs.parties === filters.parties : undefined,
     ...(filters.facilities ?? []).map((facility) => house.prefs.facilities.includes(facility)),
   ].filter((match): match is boolean => match !== undefined);
