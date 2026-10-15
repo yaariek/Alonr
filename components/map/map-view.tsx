@@ -115,8 +115,8 @@ export function MapView() {
   const { properties } = useProperties();
   const { listings } = useListings();
   const listingCounts = useListingCounts();
-  const [showSharedRoomPins, setShowSharedRoomPins] = useState(false);
-  const [showHouseSharePins, setShowHouseSharePins] = useState(false);
+  const [showSharedRoomPins, setShowSharedRoomPins] = useState(true);
+  const [showHouseSharePins, setShowHouseSharePins] = useState(true);
   const {
     selectedProvider,
     setSelectedProvider,
