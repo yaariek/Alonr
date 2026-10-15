@@ -12,6 +12,6 @@ For example, save the photo for **Chapter King's Cross** as:
 public/images/halls/chapter-king-s-cross.jpg
 ```
 
-Usually, the slug is made by lowercasing the hall name and replacing every run of non-letter/number characters with a hyphen. Two halls use location-specific filenames: **The Stay Club** uses `stay-club-north-acton.jpg`, and **Stay Club** uses `stay-club-camden.jpg`. The photo will appear automatically on that hall's map popup, Search card, and detail page. If no matching photo exists, the existing Search artwork and detail placeholder remain visible.
+Usually, the slug is made by lowercasing the hall name and replacing every run of non-letter/number characters with a hyphen. Custom filenames: **The Stay Club** uses `stay-club-north-acton.jpg`, **Stay Club** uses `stay-club-camden.jpg`, and **Vega** uses `iq-vega.jpg`. The photo will appear automatically on that hall's map popup, Search card, and detail page. If no matching photo exists, the existing Search artwork and detail placeholder remain visible.
 
 Use `.jpg` filenames. To add or replace photos on the live site, include the files in your next Git push.

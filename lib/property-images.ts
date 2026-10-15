@@ -2,6 +2,8 @@
 export function propertyImageSlug(name: string): string {
   if (name === "The Stay Club") return "stay-club-north-acton";
   if (name === "Stay Club") return "stay-club-camden";
+  if (name === "Vega") return "iq-vega";
+  if (name === "Unite Students - Stratford One") return "unite-students-stratford-one";
 
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }

@@ -1235,7 +1235,7 @@
   {
     "slug": "vega",
     "name": "Vega",
-    "provider_id": "other",
+    "provider_id": "iq",
     "affiliated_university_id": null,
     "address": "11 Miles Street",
     "postcode": "SW8 1RZ",
@@ -1371,14 +1371,14 @@
     "bike_dock_m": 93
   },
   {
-    "slug": "unite-students-battersea",
-    "name": "Unite Students - Battersea",
+    "slug": "unite-students-stratford-one",
+    "name": "Unite Students - Stratford One",
     "provider_id": "unite",
     "affiliated_university_id": null,
-    "address": "5-7 Lombard Road",
-    "postcode": "SW15 4JD",
-    "lat": 51.448178,
-    "lng": -0.241763,
+    "address": "1 International Way",
+    "postcode": "E20 1GS",
+    "lat": 51.544266,
+    "lng": -0.011862,
     "reception_24h": true,
     "accessible": true,
     "catered": false,
@@ -1388,7 +1388,7 @@
       "laundry",
       "social spaces"
     ],
-    "website": "https://www.unitestudents.com",
+    "website": "https://www.unitestudents.com/student-accommodation/london/stratford-one",
     "room_types": [
       {
         "kind": "ensuite",
@@ -1400,11 +1400,11 @@
         ]
       }
     ],
-    "supermarket_name": "Asda",
-    "supermarket_m": 1007,
-    "station_name": "Barnes",
-    "station_m": 2069,
-    "bike_dock_m": 2236
+    "supermarket_name": null,
+    "supermarket_m": null,
+    "station_name": null,
+    "station_m": null,
+    "bike_dock_m": null
   },
   {
     "slug": "chapter-white-city",
