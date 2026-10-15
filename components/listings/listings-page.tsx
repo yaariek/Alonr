@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { DEMO_LISTINGS } from "./demo-data";
 import { ListingCard } from "./listing-card";
+import { listingsAreMutualMatches } from "./matching";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 
@@ -169,11 +170,11 @@ export function ListingsPage() {
             <div key={`${view}-${listing.id}`} className="space-y-2">
               <QuickMatchCard
                 listing={listing}
-                allListings={[...listings, ...myListings]}
                 liked={likedIds.includes(listing.id)}
-                onLike={() => void toggleLike(listing.id).catch((cause: unknown) => toast.error(cause instanceof Error ? cause.message : "Couldn't save that like."))}
+                onLike={() => void toggleLike(listing.id).then(() => view === "quick" ? showQuickMatches(currentListing.id) : undefined).catch((cause: unknown) => toast.error(cause instanceof Error ? cause.message : "Couldn't save that like."))}
                 onPass={() => void passMatch(listing.id)}
                 quick={view === "quick"}
+                mutualMatch={view === "quick" || myListings.some((mine) => mine.kind === "swap" && (mine.status ?? "active") === "active" && listingsAreMutualMatches(mine, listing))}
               />
               {view === "mine" && (
                 <div className="flex gap-2 px-1">
@@ -206,13 +207,13 @@ export function ListingsPage() {
 }
 
 function QuickMatchCard({
-  listing, allListings, liked, onLike, onPass, quick,
+  listing, liked, onLike, onPass, quick, mutualMatch,
 }: {
-  listing: RoomListing; allListings: RoomListing[]; liked: boolean; onLike: () => void; onPass: () => void; quick: boolean;
+  listing: RoomListing; liked: boolean; onLike: () => void; onPass: () => void; quick: boolean; mutualMatch: boolean;
 }) {
   return (
     <div className="space-y-2">
-      <ListingCard listing={listing} allListings={allListings} liked={liked} onLike={onLike} />
+      <ListingCard listing={listing} allListings={[]} liked={liked} onLike={onLike} mutualMatch={mutualMatch} />
       {quick && (
         <div className="grid grid-cols-2 gap-2">
           <Button type="button" variant="outline" className="h-10" onClick={onPass}>Pass</Button>

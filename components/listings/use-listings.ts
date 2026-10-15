@@ -47,7 +47,7 @@ function fromBackend(row: BackendListing, userId: string | null, match = false):
   return {
     id: row.id,
     ownerId: row.userId,
-    ownerName: row.userId === userId ? "You" : "Student",
+    ownerName: row.userId === userId ? "You" : row.owner.name || "Student",
     university: row.property.provider,
     propertyId: row.property.id,
     propertyName: row.property.name,
@@ -58,7 +58,7 @@ function fromBackend(row: BackendListing, userId: string | null, match = false):
     startDate: row.startDate ?? "",
     endDate: row.endDate ?? "",
     description: row.description ?? "",
-    photos: row.photos.length ? row.photos : [SAMPLE_LISTINGS[0].photos[0]],
+    photos: row.photos,
     kind: row.kind,
     wants: {
       propertyIds: row.wants.property_ids ?? [],

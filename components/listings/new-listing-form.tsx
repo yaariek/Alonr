@@ -16,12 +16,12 @@ import { roomKindLabel } from "@/lib/format";
 import type { ListingKind, RoomKind } from "@/lib/types";
 import { prefillFromHall, uploadPhoto, validateListing } from "@/lib/data/listings";
 import { createClient } from "@/lib/supabase/client";
-import { DEMO_LISTINGS } from "./demo-data";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 
 const ROOM_KINDS: RoomKind[] = ["ensuite", "studio", "shared_bathroom", "twin", "non_ensuite"];
-const MAX_PHOTO_SIZE = 600 * 1024;
+const DEMO_MAX_PHOTO_SIZE = 600 * 1024;
+const SUPABASE_MAX_PHOTO_SIZE = 10 * 1024 * 1024;
 
 function fileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -88,12 +88,13 @@ export function NewListingForm() {
       toast.error("Choose image files only.");
       return;
     }
-    if (files.some((file) => file.size > MAX_PHOTO_SIZE)) {
-      toast.error("Keep each photo under 600 KB for this demo listing.");
+    const maxPhotoSize = isDemo ? DEMO_MAX_PHOTO_SIZE : SUPABASE_MAX_PHOTO_SIZE;
+    if (files.some((file) => file.size > maxPhotoSize)) {
+      toast.error(isDemo ? "Keep each photo under 600 KB for this demo listing." : "Keep each photo under 10 MB.");
       return;
     }
     try {
-      const nextPhotos = await Promise.all(files.map(fileAsDataUrl));
+      const nextPhotos = isDemo ? await Promise.all(files.map(fileAsDataUrl)) : files.map((file) => URL.createObjectURL(file));
       setPhotos((current) => [...current, ...nextPhotos].slice(0, 3));
       setPhotoFiles((current) => [...current, ...files].slice(0, 3));
     } catch {
@@ -156,7 +157,7 @@ export function NewListingForm() {
           startDate,
           endDate,
           description: description.trim(),
-          photos: isDemo && !photos.length ? [DEMO_LISTINGS[0].photos[0]] : uploadedPhotos,
+          photos: uploadedPhotos,
           kind,
           wants: kind === "swap"
             ? { propertyIds: wantedPropertyIds, roomKinds: wantedRoomKinds, maxPrice: Number(maxWantedPrice) }
@@ -289,7 +290,7 @@ export function NewListingForm() {
             <label htmlFor="photos" className="flex min-h-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed bg-muted/30 text-sm hover:bg-muted/60">
               <ImagePlus className="size-5 text-primary" />
               <span className="font-medium">Add photos <span className="font-normal text-muted-foreground">({photos.length}/3)</span></span>
-              <span className="text-xs text-muted-foreground">JPG, PNG or WebP · up to 600 KB each</span>
+              <span className="text-xs text-muted-foreground">JPG, PNG or WebP · up to {isDemo ? "600 KB" : "10 MB"} each</span>
             </label>
             <input id="photos" type="file" accept="image/*" multiple onChange={addPhotos} className="sr-only" />
             {photos.length > 0 && (
@@ -308,10 +309,10 @@ export function NewListingForm() {
           </CardContent>
         </Card>
 
-        <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
+        {isDemo && <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
           <Badge variant="secondary" className="mb-1">Demo mode</Badge>
           <p>This first version saves your listing in this browser. It will connect to your student account when the listings service is ready.</p>
-        </div>
+        </div>}
         <Button type="submit" className="h-11 w-full text-sm font-semibold" disabled={busy || loading || !property}>
           {busy ? "Saving your room…" : kind === "swap" ? "Publish swap listing" : "Publish contract release"}
         </Button>

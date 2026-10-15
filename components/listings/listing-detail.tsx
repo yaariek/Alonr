@@ -46,7 +46,7 @@ export function ListingDetail({ id }: { id: string }) {
 
   const listingId = listing.id;
   const isMine = listing.ownerId === userId;
-  const hasMutualMatch = listing.mutualMatch || listings.some((other) => listingsAreMutualMatches(listing, other));
+  const hasMutualMatch = myListings.some((mine) => mine.kind === "swap" && (mine.status ?? "active") === "active" && listingsAreMutualMatches(mine, listing));
   const currentPhoto = listing.photos[Math.min(photoIndex, listing.photos.length - 1)];
 
   async function toggleSaved() {

@@ -5,7 +5,6 @@ import { Heart, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate, roomKindLabel } from "@/lib/format";
-import { HallImage } from "@/components/property/HallImage";
 import { listingsAreMutualMatches } from "./matching";
 import type { RoomListing } from "./types";
 
@@ -18,13 +17,12 @@ export function ListingPhoto({ listing, className = "" }: { listing: RoomListing
       className={`relative overflow-hidden bg-gradient-to-br from-amber-100 via-orange-50 to-rose-100 ${className}`}
       style={photo ? { backgroundImage: `url("${photo}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
     >
-      <HallImage
-        propertyName={listing.propertyName}
-        alt={`${listing.propertyName} hall`}
-        className="object-cover"
-        sizes="(max-width: 768px) 100vw, 640px"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+      {!photo && (
+        <div className="absolute inset-0 flex items-end p-4">
+          <span className="text-lg font-semibold text-amber-950/80">{listing.propertyName}</span>
+        </div>
+      )}
+      {photo && <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />}
     </div>
   );
 }
@@ -34,13 +32,15 @@ export function ListingCard({
   allListings,
   liked,
   onLike,
+  mutualMatch = false,
 }: {
   listing: RoomListing;
   allListings: RoomListing[];
   liked: boolean;
   onLike: () => void;
+  mutualMatch?: boolean;
 }) {
-  const hasMutualMatch = listing.mutualMatch || allListings.some((other) => listingsAreMutualMatches(listing, other));
+  const hasMutualMatch = mutualMatch || allListings.some((other) => listingsAreMutualMatches(listing, other));
 
   return (
     <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
@@ -67,9 +67,9 @@ export function ListingCard({
         >
           <Heart className={`size-4 ${liked ? "fill-rose-500 text-rose-500" : ""}`} />
         </Button>
-        <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+        {listing.photos.length > 0 && <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
           {listing.photos.length} {listing.photos.length === 1 ? "photo" : "photos"}
-        </span>
+        </span>}
       </div>
 
       <div className="space-y-3 p-3.5">
