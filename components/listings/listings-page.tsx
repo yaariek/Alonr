@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Archive, ArrowRight, Heart, Plus, Sparkles, Trash2 } from "lucide-react";
+import { Archive, ArrowRight, Heart, LayoutGrid, List, Plus, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 
 type View = "explore" | "quick" | "mine" | "saved";
+type Layout = "grid" | "list";
 
 export function ListingsPage() {
   const {
@@ -23,6 +24,8 @@ export function ListingsPage() {
     toggleLike, loadQuickMatches, changeStatus, deleteOwnListing,
   } = useListings();
   const [view, setView] = useState<View>("explore");
+  const [layout, setLayout] = useState<Layout>("grid");
+  const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3);
   const [selectedId, setSelectedId] = useState("");
   const [passed, setPassed] = useState<string[]>([]);
   const [quickMatches, setQuickMatches] = useState<RoomListing[]>([]);
@@ -40,6 +43,9 @@ export function ListingsPage() {
       : view === "quick"
         ? quickMatches
         : feedListings;
+  const listingGridClass = layout === "list"
+    ? "mx-auto grid max-w-3xl grid-cols-1 gap-4"
+    : `grid gap-4 ${gridColumns === 2 ? "grid-cols-1 sm:grid-cols-2" : gridColumns === 3 ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4"}`;
 
   async function showQuickMatches(myListingId = mySwapListings[0]?.id, exclude = passed) {
     setLoadingMatches(true);
@@ -102,7 +108,7 @@ export function ListingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 pb-8 pt-5 sm:px-6">
+    <div className="mx-auto max-w-screen-2xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
       <header className="mb-5 flex items-end justify-between gap-3">
         <div>
           <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
@@ -136,12 +142,31 @@ export function ListingsPage() {
         ))}
       </div>
 
-      {view === "explore" && (
-        <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
-          <span>{feedListings.length} rooms to explore</span>
-          <span className="flex items-center gap-1"><Heart className="size-3.5" /> Like a room to save it</span>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-xs text-muted-foreground">
+          {view === "explore" ? <span>{feedListings.length} rooms to explore</span> : <span>{shownListings.length} {shownListings.length === 1 ? "room" : "rooms"}</span>}
+          {view === "explore" && <span className="ml-3 inline-flex items-center gap-1"><Heart className="size-3.5" /> Like a room to save it</span>}
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="Listing layout">
+            <button type="button" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "grid" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
+              <LayoutGrid className="size-3.5" /> Grid
+            </button>
+            <button type="button" aria-pressed={layout === "list"} onClick={() => setLayout("list")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
+              <List className="size-3.5" /> List
+            </button>
+          </div>
+          {layout === "grid" && (
+            <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="Grid columns">
+              {([2, 3, 4] as const).map((columns) => (
+                <button key={columns} type="button" aria-label={`${columns} columns`} aria-pressed={gridColumns === columns} onClick={() => setGridColumns(columns)} className={cn("size-8 rounded-md text-xs font-medium", gridColumns === columns ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
+                  {columns}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {view === "quick" && (
         <Card className="mb-4 border-primary/15 bg-primary/[0.035]">
@@ -177,11 +202,11 @@ export function ListingsPage() {
       {error && <p role="alert" className="mb-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
 
       {!ready ? (
-        <div className="grid gap-4 sm:grid-cols-2">{[0, 1, 2, 3].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
+        <div className={listingGridClass}>{[0, 1, 2, 3].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
       ) : loadingMatches && view === "quick" ? (
-        <div className="grid gap-4 sm:grid-cols-2">{[0, 1].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
+        <div className={listingGridClass}>{[0, 1].map((key) => <div key={key} className="aspect-[1.4] animate-pulse rounded-2xl bg-muted" />)}</div>
       ) : shownListings.length ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className={listingGridClass}>
           {shownListings.map((listing) => (
             <div key={`${view}-${listing.id}`} className="space-y-2">
               <QuickMatchCard
