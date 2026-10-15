@@ -135,7 +135,7 @@ export function MapView() {
   };
 
   const propertyFeatures = useMemo<FeatureCollection<Point, PropertyFeatureProperties>>(() => {
-    if (!showSharedRoomPins && !showHouseSharePins) return EMPTY_PROPERTY_FEATURES;
+    if (!showSharedRoomPins) return EMPTY_PROPERTY_FEATURES;
 
     return {
       type: 'FeatureCollection',
@@ -156,7 +156,7 @@ export function MapView() {
         };
       }),
     };
-  }, [filteredProperties, listingCounts, showHouseSharePins, showSharedRoomPins]);
+  }, [filteredProperties, listingCounts, showSharedRoomPins]);
 
   const roomFeatures = useMemo<FeatureCollection<Point, RoomFeatureProperties>>(() => {
     if (!showSharedRoomPins) return EMPTY_ROOM_FEATURES;
@@ -317,7 +317,7 @@ export function MapView() {
         const feature = activeMap.queryRenderedFeatures(event.point, { layers: [HOUSE_SHARE_LAYER] })[0];
         const details = feature?.properties as HouseShareMapPinProperties | undefined;
         if (!details) return;
-        const popupContent = `<div style="padding:4px"><strong style="font-size:14px">${escapeHtml(details.name)}</strong><br/><span style="font-size:12px;color:#666">${escapeHtml(details.area)} · illustrative demo location</span><br/><strong style="font-size:13px;color:#2563eb">Budget £${details.budget}/wk</strong><br/><span style="font-size:12px;color:#666">${details.seeking} seeking · ${details.tenants} total tenants</span><br/><a href="/houseshare" style="display:inline-block;margin-top:6px;font-size:13px;font-weight:600;text-decoration:underline">Open House Share →</a></div>`;
+        const popupContent = `<div style="padding:4px"><strong style="font-size:14px">${escapeHtml(details.name)}</strong><br/><span style="font-size:12px;color:#666">Fictional private flat · ${escapeHtml(details.area)}</span><br/><strong style="font-size:13px;color:#2563eb">Budget £${details.budget}/wk</strong><br/><span style="font-size:12px;color:#666">${details.seeking} seeking · ${details.tenants} total tenants</span><br/><a href="/houseshare" style="display:inline-block;margin-top:6px;font-size:13px;font-weight:600;text-decoration:underline">Open House Share →</a></div>`;
         new maplibregl.Popup({ offset: 12, className: 'provider-map-popup' }).setLngLat(event.lngLat).setHTML(popupContent).addTo(activeMap);
       });
 
