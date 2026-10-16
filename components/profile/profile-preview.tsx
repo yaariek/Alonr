@@ -33,6 +33,10 @@ export function demoNationalityFor(name: string): string | undefined {
   return demoProfileFor(name).country;
 }
 
+// Countries that take "the" in a sentence ("I am from the United Kingdom").
+const THE_COUNTRIES = new Set(["united kingdom", "united states", "netherlands", "philippines", "united arab emirates", "czech republic"]);
+const fromCountry = (country: string) => (THE_COUNTRIES.has(country.trim().toLocaleLowerCase()) ? `the ${country}` : country);
+
 function formatLanguages(languages: string[]): string {
   if (languages.length < 2) return languages[0] ?? "";
   if (languages.length === 2) return `${languages[0]} and ${languages[1]}`;
@@ -105,7 +109,7 @@ export function ProfilePreview({
     }
   }
 
-  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${profile.nationality}` : ""}.${profile.languages.length ? ` I can speak ${formatLanguages(profile.languages)}.` : ""}`;
+  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${fromCountry(profile.nationality)}` : ""}.${profile.languages.length ? ` I can speak ${formatLanguages(profile.languages)}.` : ""}`;
   const intro = profile.bio || defaultIntro;
 
   return (

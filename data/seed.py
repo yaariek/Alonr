@@ -100,10 +100,18 @@ def natural_join(items: list[str]) -> str:
     return f"{', '.join(items[:-1])} and {items[-1]}"
 
 
+# Countries that take "the" in a sentence ("I am from the United Kingdom").
+THE_COUNTRIES = {"united kingdom", "united states", "netherlands", "philippines", "united arab emirates", "czech republic"}
+
+
+def from_country(country: str) -> str:
+    return f"the {country}" if country.lower() in THE_COUNTRIES else country
+
+
 def demo_profile_data(person: dict) -> dict:
     country = DEMO_COUNTRIES[person["key"]]
     profile = {k: v for k, v in person.items() if k != "key"}
-    profile["bio"] = f"My name is {person['display_name']} and I am from {country}. I can speak {natural_join(person['languages'])}."
+    profile["bio"] = f"My name is {person['display_name']} and I am from {from_country(country)}. I can speak {natural_join(person['languages'])}."
     profile["lifestyle"] = {**profile["lifestyle"], "nationality": country}
     return profile
 
