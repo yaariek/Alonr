@@ -29,6 +29,8 @@ const PROPERTY_LAYER = 'property-points-unclustered';
 const ROOM_SOURCE = 'shared-room-points';
 const ROOM_LAYER = 'shared-room-pins';
 const HOUSE_SHARE_SOURCE = 'house-share-points';
+const HOUSE_SHARE_CLUSTER_LAYER = 'house-share-clusters';
+const HOUSE_SHARE_CLUSTER_COUNT_LAYER = 'house-share-cluster-count';
 const HOUSE_SHARE_LAYER = 'house-share-pins';
 const ROOM_PIN_IMAGE = 'shared-room-pin';
 const HOUSE_SHARE_PIN_IMAGE = 'house-share-pin';
@@ -216,7 +218,13 @@ export function MapView() {
         clusterMaxZoom: 14,
       });
       activeMap.addSource(ROOM_SOURCE, { type: 'geojson', data: EMPTY_ROOM_FEATURES });
-      activeMap.addSource(HOUSE_SHARE_SOURCE, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      activeMap.addSource(HOUSE_SHARE_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+        cluster: true,
+        clusterRadius: 48,
+        clusterMaxZoom: 14,
+      });
 
       activeMap.addLayer({
         id: CLUSTER_LAYER,
@@ -265,9 +273,36 @@ export function MapView() {
         layout: { 'icon-image': ROOM_PIN_IMAGE, 'icon-anchor': 'bottom', 'icon-offset': [20, 0], 'icon-size': 0.85, 'icon-allow-overlap': true, 'icon-ignore-placement': true },
       });
       activeMap.addLayer({
+        id: HOUSE_SHARE_CLUSTER_LAYER,
+        type: 'circle',
+        source: HOUSE_SHARE_SOURCE,
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#0f766e',
+          'circle-radius': ['step', ['get', 'point_count'], 18, 10, 22, 30, 27],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
+
+      activeMap.addLayer({
+        id: HOUSE_SHARE_CLUSTER_COUNT_LAYER,
+        type: 'symbol',
+        source: HOUSE_SHARE_SOURCE,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-font': ['Noto Sans Bold'],
+          'text-size': 12,
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+
+      activeMap.addLayer({
         id: HOUSE_SHARE_LAYER,
         type: 'symbol',
         source: HOUSE_SHARE_SOURCE,
+        filter: ['!', ['has', 'point_count']],
         layout: { 'icon-image': HOUSE_SHARE_PIN_IMAGE, 'icon-anchor': 'bottom', 'icon-offset': [20, 0], 'icon-size': 0.85, 'icon-allow-overlap': true, 'icon-ignore-placement': true },
       });
 
@@ -277,6 +312,18 @@ export function MapView() {
         if (clusterId === undefined) return;
 
         const source = activeMap.getSource(PROPERTY_SOURCE) as maplibregl.GeoJSONSource;
+        void source.getClusterExpansionZoom(Number(clusterId)).then((zoom) => {
+          const coordinates = (feature.geometry as Point).coordinates as [number, number];
+          activeMap.easeTo({ center: coordinates, zoom });
+        });
+      });
+
+      activeMap.on('click', HOUSE_SHARE_CLUSTER_LAYER, (event) => {
+        const feature = activeMap.queryRenderedFeatures(event.point, { layers: [HOUSE_SHARE_CLUSTER_LAYER] })[0];
+        const clusterId = feature?.properties?.cluster_id;
+        if (clusterId === undefined) return;
+
+        const source = activeMap.getSource(HOUSE_SHARE_SOURCE) as maplibregl.GeoJSONSource;
         void source.getClusterExpansionZoom(Number(clusterId)).then((zoom) => {
           const coordinates = (feature.geometry as Point).coordinates as [number, number];
           activeMap.easeTo({ center: coordinates, zoom });
@@ -323,6 +370,8 @@ export function MapView() {
 
       activeMap.on('mouseenter', CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
       activeMap.on('mouseleave', CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
+      activeMap.on('mouseenter', HOUSE_SHARE_CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
+      activeMap.on('mouseleave', HOUSE_SHARE_CLUSTER_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
       activeMap.on('mouseenter', PROPERTY_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
       activeMap.on('mouseleave', PROPERTY_LAYER, () => { activeMap.getCanvas().style.cursor = ''; });
       activeMap.on('mouseenter', ROOM_LAYER, () => { activeMap.getCanvas().style.cursor = 'pointer'; });
@@ -431,7 +480,7 @@ export function MapView() {
           onClick={() => setShowSharedRoomPins((visible) => !visible)}
           className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-2 text-xs font-semibold shadow-md backdrop-blur transition-colors sm:h-10 sm:gap-2 sm:px-3 sm:text-sm ${showSharedRoomPins ? 'border-blue-800 bg-blue-800 text-white' : 'border-background/80 bg-background/95 text-foreground hover:bg-accent'}`}
         >
-          <BedDouble className="size-3.5 sm:size-4" /> Shared rooms
+          <BedDouble className="size-3.5 sm:size-4" /> Rooms
         </button>
         <button
           type="button"
