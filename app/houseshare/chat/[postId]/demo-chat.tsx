@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ArrowLeft, Send } from "lucide-react";
+import { formatDate } from "@/lib/format";
 import { DEMO_HOUSESHARE_POSTS } from "../../demo-data";
 import { getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "../../demo-storage";
 import { PageHeading } from "@/components/page-heading";
@@ -20,7 +21,8 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
   const openingMessages: Message[] = post ? [
       { id: 1, sender: "host", text: `Hi! Thanks for your interest in ${post.apartment_name}. What would you like to know?` },
       { id: 2, sender: "you", text: "Hi! Is the room still available?" },
-      { id: 3, sender: "host", text: "This is a demo chat. A real host can reply once messaging is connected." },
+      // A believable reply built from the post; the banner above still says the chat is a demo.
+      { id: 3, sender: "host", text: `Yes, it is! We have ${post.looking_for_n === 1 ? "one room" : `${post.looking_for_n} rooms`} free from ${formatDate(post.move_in)}, around £${post.budget}/week. Happy to set up a viewing if you'd like to come round.` },
     ] : [];
 
   function sendMessage(event: FormEvent<HTMLFormElement>) {
@@ -31,10 +33,17 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
     setDraft("");
   }
 
+<<<<<<< HEAD
   if (!post) return <main className="mx-auto max-w-2xl px-4 py-8"><PageHeading title="House Share chat" tagline="Good homes start with good conversations." className="mb-5" /><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></main>;
 
   return (
     <main className="mx-auto flex min-h-full max-w-2xl flex-col px-4 py-5 sm:px-6">
+=======
+  if (!post) return <div className="mx-auto max-w-2xl px-4 py-8"><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></div>;
+
+  return (
+    <div className="mx-auto flex min-h-[calc(100dvh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6">
+>>>>>>> 7bef671d8258ad239d5cfdbb8de6f8da714bd005
       <Link href="/houseshare" className="mb-4 inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Back to House Share</Link>
       <PageHeading title="House Share chat" tagline="Good homes start with good conversations." className="mb-4" />
       <section className="flex min-h-[70dvh] flex-1 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
@@ -55,6 +64,6 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
           <button type="submit" aria-label="Add demo message" disabled={!draft.trim()} className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50"><Send className="size-4" /></button>
         </form>
       </section>
-    </main>
+    </div>
   );
 }

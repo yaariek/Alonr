@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PersonAvatar } from "@/components/chat/person-avatar";
 import type { Json } from "@/lib/database.types";
@@ -23,16 +25,16 @@ const DEMO_PROFILES: Record<string, { country: string; languages: string[] }> = 
   elena: { country: "Spain", languages: ["English", "Spanish"] },
 };
 
-function demoProfileFor(name: string) {
-  return DEMO_PROFILES[name.trim().toLocaleLowerCase()] ?? { country: "United Kingdom", languages: ["English"] };
+function demoProfileFor(name: string): { country?: string; languages: string[] } {
+  return DEMO_PROFILES[name.trim().toLocaleLowerCase()] ?? { languages: [] };
 }
 
-export function demoNationalityFor(name: string): string {
+export function demoNationalityFor(name: string): string | undefined {
   return demoProfileFor(name).country;
 }
 
 function formatLanguages(languages: string[]): string {
-  if (languages.length < 2) return languages[0] ?? "English";
+  if (languages.length < 2) return languages[0] ?? "";
   if (languages.length === 2) return `${languages[0]} and ${languages[1]}`;
   return `${languages.slice(0, -1).join(", ")} and ${languages[languages.length - 1]}`;
 }
@@ -44,6 +46,9 @@ function nationalityFromLifestyle(lifestyle: Json | null | undefined): string | 
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// Demo characters (non-UUID ids) get their made-up country/languages; a post saved in this
+// browser by a signed-out student ("local-user") gets nothing invented.
+const isDemoCharacter = (profileId: string) => !UUID_PATTERN.test(profileId) && profileId !== "local-user";
 
 export function ProfilePreview({
   profileId,
@@ -64,12 +69,15 @@ export function ProfilePreview({
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const fallbackNationality = nationality ?? (!UUID_PATTERN.test(profileId) ? dummyNationality ?? null : null);
-  const fallbackLanguages = languages ?? (!UUID_PATTERN.test(profileId) ? demoProfileFor(name).languages : []);
+  // Signed-out visitors can't read profiles (RLS), so they get a sign-in prompt instead of a blank intro.
+  const [signInHref, setSignInHref] = useState<string | null>(null);
+  const fallbackNationality = nationality ?? (isDemoCharacter(profileId) ? dummyNationality ?? null : null);
+  const fallbackLanguages = languages ?? (isDemoCharacter(profileId) ? demoProfileFor(name).languages : []);
   const [profile, setProfile] = useState({ name, bio: bio ?? "", nationality: fallbackNationality, languages: fallbackLanguages });
 
   async function openProfile() {
     setProfile({ name, bio: bio ?? "", nationality: fallbackNationality, languages: fallbackLanguages });
+    setSignInHref(null);
     setOpen(true);
     if (!UUID_PATTERN.test(profileId) || (bio !== undefined && nationality !== undefined && languages !== undefined)) return;
 
@@ -77,7 +85,10 @@ export function ProfilePreview({
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setSignInHref(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+        return;
+      }
       const { data } = await supabase.from("profiles").select("display_name, bio, lifestyle, languages").eq("id", profileId).maybeSingle();
       if (data) {
         setProfile({
@@ -94,7 +105,7 @@ export function ProfilePreview({
     }
   }
 
-  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${profile.nationality}` : ""}. I can speak ${formatLanguages(profile.languages)}.`;
+  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${profile.nationality}` : ""}.${profile.languages.length ? ` I can speak ${formatLanguages(profile.languages)}.` : ""}`;
   const intro = profile.bio || defaultIntro;
 
   return (
@@ -109,12 +120,19 @@ export function ProfilePreview({
             <DialogTitle>{profile.name}</DialogTitle>
             <DialogDescription>Student profile</DialogDescription>
           </DialogHeader>
+          {signInHref ? (
+            <div className="space-y-3 rounded-lg bg-muted/60 p-3">
+              <p className="text-sm leading-relaxed">Sign in with your university email to see who this student is.</p>
+              <Link href={signInHref} className={buttonVariants({ className: "h-10 w-full" })}>Sign in</Link>
+            </div>
+          ) : (
           <div className="space-y-2 rounded-lg bg-muted/60 p-3">
             <p className="text-sm leading-relaxed">{intro}</p>
             {profile.nationality && <p className="text-xs text-muted-foreground">From: {profile.nationality}</p>}
             {profile.languages.length > 0 && <p className="text-xs text-muted-foreground">Languages: {profile.languages.join(", ")}</p>}
             {loading && <p className="text-xs text-muted-foreground">Loading profile details…</p>}
           </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

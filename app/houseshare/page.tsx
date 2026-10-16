@@ -13,7 +13,7 @@ import { filterHouseShare, type HouseShareFilters } from "@/lib/house-share-filt
 import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
 import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "./demo-storage";
 import { createClient } from "@/lib/supabase/client";
-import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "./age-groups";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "@/lib/house-share-age-groups";
 import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
 import { PageHeading } from "@/components/page-heading";
 
@@ -107,7 +107,7 @@ export default function Page() {
   }
 
   return (
-    <main className="mx-auto max-w-screen-2xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-screen-2xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
       <header className="mb-5 flex items-end justify-between gap-3">
         <div>
           <PageHeading title="Find your house share" tagline="Find a home and housemates that suit you." />
@@ -159,7 +159,8 @@ export default function Page() {
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">{visiblePosts.length} {view === "match" ? "matched" : "available"} house {visiblePosts.length === 1 ? "share" : "shares"}{view === "match" ? " · ranked by compatibility" : ""}</p>
-        <div className="flex items-center gap-2">
+        {/* Grid and list look the same on phones, so the layout controls only show from sm up. */}
+        <div className="hidden items-center gap-2 sm:flex">
           <div className="flex rounded-lg border bg-background p-0.5" role="group" aria-label="House Share layout">
             <button type="button" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "grid" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}><LayoutGrid className="size-3.5" /> Grid</button>
             <button type="button" aria-pressed={layout === "list"} onClick={() => setLayout("list")} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", layout === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}><List className="size-3.5" /> List</button>
@@ -175,7 +176,7 @@ export default function Page() {
       ) : (
         <Card className="border-dashed shadow-none"><CardContent className="flex min-h-44 flex-col items-center justify-center px-6 text-center"><span className="mb-3 flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary"><Users className="size-5" /></span><p className="font-semibold">{search || activeFilterCount ? "No house shares match those filters" : "No House Share posts yet"}</p><p className="mt-1 max-w-sm text-sm text-muted-foreground">{search || activeFilterCount ? "Try changing your search or clearing a filter." : "New student posts will appear here when they’re available."}</p></CardContent></Card>
       )}
-    </main>
+    </div>
   );
 }
 
