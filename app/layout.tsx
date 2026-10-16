@@ -16,8 +16,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Absolute URLs for the link preview image (app/opengraph-image.tsx).
+  metadataBase: new URL("https://alonr.vercel.app"),
   title: "alonr",
   description: "Room swap & house share for London students",
+  openGraph: {
+    title: "alonr: swap your London student room",
+    description: "Compare London halls on a map, find a mutual room swap, and chat with verified students.",
+    siteName: "alonr",
+    type: "website",
+    locale: "en_GB",
+  },
+  twitter: { card: "summary_large_image" },
   appleWebApp: { capable: true, title: "alonr", statusBarStyle: "default" },
   icons: {
     icon: "/alonr-logo.jpeg",
