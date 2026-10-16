@@ -23,16 +23,16 @@ const DEMO_PROFILES: Record<string, { country: string; languages: string[] }> = 
   elena: { country: "Spain", languages: ["English", "Spanish"] },
 };
 
-function demoProfileFor(name: string) {
-  return DEMO_PROFILES[name.trim().toLocaleLowerCase()] ?? { country: "United Kingdom", languages: ["English"] };
+function demoProfileFor(name: string): { country?: string; languages: string[] } {
+  return DEMO_PROFILES[name.trim().toLocaleLowerCase()] ?? { languages: [] };
 }
 
-export function demoNationalityFor(name: string): string {
+export function demoNationalityFor(name: string): string | undefined {
   return demoProfileFor(name).country;
 }
 
 function formatLanguages(languages: string[]): string {
-  if (languages.length < 2) return languages[0] ?? "English";
+  if (languages.length < 2) return languages[0] ?? "";
   if (languages.length === 2) return `${languages[0]} and ${languages[1]}`;
   return `${languages.slice(0, -1).join(", ")} and ${languages[languages.length - 1]}`;
 }
@@ -44,6 +44,9 @@ function nationalityFromLifestyle(lifestyle: Json | null | undefined): string | 
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// Demo characters (non-UUID ids) get their made-up country/languages; a post saved in this
+// browser by a signed-out student ("local-user") gets nothing invented.
+const isDemoCharacter = (profileId: string) => !UUID_PATTERN.test(profileId) && profileId !== "local-user";
 
 export function ProfilePreview({
   profileId,
@@ -64,8 +67,8 @@ export function ProfilePreview({
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const fallbackNationality = nationality ?? (!UUID_PATTERN.test(profileId) ? dummyNationality ?? null : null);
-  const fallbackLanguages = languages ?? (!UUID_PATTERN.test(profileId) ? demoProfileFor(name).languages : []);
+  const fallbackNationality = nationality ?? (isDemoCharacter(profileId) ? dummyNationality ?? null : null);
+  const fallbackLanguages = languages ?? (isDemoCharacter(profileId) ? demoProfileFor(name).languages : []);
   const [profile, setProfile] = useState({ name, bio: bio ?? "", nationality: fallbackNationality, languages: fallbackLanguages });
 
   async function openProfile() {
@@ -94,7 +97,7 @@ export function ProfilePreview({
     }
   }
 
-  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${profile.nationality}` : ""}. I can speak ${formatLanguages(profile.languages)}.`;
+  const defaultIntro = `My name is ${profile.name}${profile.nationality ? ` and I am from ${profile.nationality}` : ""}.${profile.languages.length ? ` I can speak ${formatLanguages(profile.languages)}.` : ""}`;
   const intro = profile.bio || defaultIntro;
 
   return (

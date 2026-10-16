@@ -80,10 +80,12 @@ export default function NewHouseShareForm() {
 
     setBusy(true);
     let languages: string[] = [];
+    let userId = "local-user"; // signed out: the post stays anonymous in this browser
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        userId = user.id; // so the avatar opens the poster's real profile
         const { data: profile } = await supabase.from("profiles").select("languages").eq("id", user.id).maybeSingle();
         languages = profile?.languages ?? [];
       }
@@ -92,7 +94,7 @@ export default function NewHouseShareForm() {
     }
     const post: HouseSharePostWithAgeGroup = {
       id: `local-house-share-${crypto.randomUUID()}`,
-      user_id: "local-user",
+      user_id: userId,
       name: name.trim(),
       apartment_name: apartmentName.trim(),
       budget: weeklyBudget,
