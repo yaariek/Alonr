@@ -197,8 +197,8 @@ export default function ProfilePage() {
             <details className="group">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <span>
-                  <span className="block font-semibold">Profile bio and nationality</span>
-                  <span className="mt-1 block text-sm font-normal text-muted-foreground">Click to edit your profile details</span>
+                  <span className="block font-semibold">Profile details</span>
+                  <span className="mt-1 block text-sm font-normal text-muted-foreground">Edit your bio, nationality, and spoken languages</span>
                 </span>
                 <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
               </summary>
@@ -215,35 +215,32 @@ export default function ProfilePage() {
                 <Button type="button" className="w-full" onClick={saveProfileDetails} disabled={savingProfile}>
                   {savingProfile ? "Saving…" : "Save profile"}
                 </Button>
+                <div className="space-y-3 border-t pt-4">
+                  <div>
+                    <h2 className="text-sm font-semibold">Languages you speak</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">House Share uses these for language matching.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {COMMON_LANGUAGES.map((language) => {
+                      const selected = spokenLanguages.includes(language);
+                      return <button key={language} type="button" aria-pressed={selected} onClick={() => toggleSpokenLanguage(language)} className={`inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors ${selected ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background text-foreground hover:bg-accent"}`}>
+                        {selected && <Check className="size-3" />}{language}
+                      </button>;
+                    })}
+                    {spokenLanguages.filter((language) => !COMMON_LANGUAGES.includes(language)).map((language) => <button key={language} type="button" aria-pressed="true" onClick={() => toggleSpokenLanguage(language)} className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 text-xs font-medium text-primary-foreground">
+                      <Check className="size-3" />{language}<span aria-hidden="true">×</span>
+                    </button>)}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input value={languageInput} onChange={(event) => setLanguageInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addCustomLanguage(); } }} placeholder="Add another language" aria-label="Add another language" />
+                    <Button type="button" variant="outline" className="shrink-0 gap-1" onClick={addCustomLanguage}><Plus className="size-4" /> Add</Button>
+                  </div>
+                  <Button type="button" className="w-full" onClick={saveSpokenLanguages} disabled={savingLanguages}>
+                    {savingLanguages ? "Saving…" : "Save languages"}
+                  </Button>
+                </div>
               </CardContent>
             </details>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Languages you speak</CardTitle>
-              <CardDescription>Customize this on your profile. House Share uses these for language matching.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {COMMON_LANGUAGES.map((language) => {
-                  const selected = spokenLanguages.includes(language);
-                  return <button key={language} type="button" aria-pressed={selected} onClick={() => toggleSpokenLanguage(language)} className={`inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors ${selected ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background text-foreground hover:bg-accent"}`}>
-                    {selected && <Check className="size-3" />}{language}
-                  </button>;
-                })}
-                {spokenLanguages.filter((language) => !COMMON_LANGUAGES.includes(language)).map((language) => <button key={language} type="button" aria-pressed="true" onClick={() => toggleSpokenLanguage(language)} className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 text-xs font-medium text-primary-foreground">
-                  <Check className="size-3" />{language}<span aria-hidden="true">×</span>
-                </button>)}
-              </div>
-              <div className="flex gap-2">
-                <Input value={languageInput} onChange={(event) => setLanguageInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addCustomLanguage(); } }} placeholder="Add another language" aria-label="Add another language" />
-                <Button type="button" variant="outline" className="shrink-0 gap-1" onClick={addCustomLanguage}><Plus className="size-4" /> Add</Button>
-              </div>
-              <Button type="button" className="w-full" onClick={saveSpokenLanguages} disabled={savingLanguages}>
-                {savingLanguages ? "Saving…" : "Save languages"}
-              </Button>
-            </CardContent>
           </Card>
 
           <section>
