@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PersonAvatar } from "@/components/chat/person-avatar";
 import type { Json } from "@/lib/database.types";
@@ -67,12 +69,15 @@ export function ProfilePreview({
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Signed-out visitors can't read profiles (RLS), so they get a sign-in prompt instead of a blank intro.
+  const [signInHref, setSignInHref] = useState<string | null>(null);
   const fallbackNationality = nationality ?? (isDemoCharacter(profileId) ? dummyNationality ?? null : null);
   const fallbackLanguages = languages ?? (isDemoCharacter(profileId) ? demoProfileFor(name).languages : []);
   const [profile, setProfile] = useState({ name, bio: bio ?? "", nationality: fallbackNationality, languages: fallbackLanguages });
 
   async function openProfile() {
     setProfile({ name, bio: bio ?? "", nationality: fallbackNationality, languages: fallbackLanguages });
+    setSignInHref(null);
     setOpen(true);
     if (!UUID_PATTERN.test(profileId) || (bio !== undefined && nationality !== undefined && languages !== undefined)) return;
 
@@ -80,7 +85,10 @@ export function ProfilePreview({
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setSignInHref(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+        return;
+      }
       const { data } = await supabase.from("profiles").select("display_name, bio, lifestyle, languages").eq("id", profileId).maybeSingle();
       if (data) {
         setProfile({
@@ -112,12 +120,19 @@ export function ProfilePreview({
             <DialogTitle>{profile.name}</DialogTitle>
             <DialogDescription>Student profile</DialogDescription>
           </DialogHeader>
+          {signInHref ? (
+            <div className="space-y-3 rounded-lg bg-muted/60 p-3">
+              <p className="text-sm leading-relaxed">Sign in with your university email to see who this student is.</p>
+              <Link href={signInHref} className={buttonVariants({ className: "h-10 w-full" })}>Sign in</Link>
+            </div>
+          ) : (
           <div className="space-y-2 rounded-lg bg-muted/60 p-3">
             <p className="text-sm leading-relaxed">{intro}</p>
             {profile.nationality && <p className="text-xs text-muted-foreground">From: {profile.nationality}</p>}
             {profile.languages.length > 0 && <p className="text-xs text-muted-foreground">Languages: {profile.languages.join(", ")}</p>}
             {loading && <p className="text-xs text-muted-foreground">Loading profile details…</p>}
           </div>
+          )}
         </DialogContent>
       </Dialog>
     </>
