@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ArrowLeft, Send } from "lucide-react";
+import { formatDate } from "@/lib/format";
 import { DEMO_HOUSESHARE_POSTS } from "../../demo-data";
 import { getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "../../demo-storage";
 
@@ -19,7 +20,8 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
   const openingMessages: Message[] = post ? [
       { id: 1, sender: "host", text: `Hi! Thanks for your interest in ${post.apartment_name}. What would you like to know?` },
       { id: 2, sender: "you", text: "Hi! Is the room still available?" },
-      { id: 3, sender: "host", text: "This is a demo chat. A real host can reply once messaging is connected." },
+      // A believable reply built from the post; the banner above still says the chat is a demo.
+      { id: 3, sender: "host", text: `Yes, it is! We have ${post.looking_for_n === 1 ? "one room" : `${post.looking_for_n} rooms`} free from ${formatDate(post.move_in)}, around £${post.budget}/week. Happy to set up a viewing if you'd like to come round.` },
     ] : [];
 
   function sendMessage(event: FormEvent<HTMLFormElement>) {
