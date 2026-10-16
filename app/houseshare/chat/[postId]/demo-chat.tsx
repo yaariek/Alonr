@@ -33,17 +33,10 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
     setDraft("");
   }
 
-<<<<<<< HEAD
-  if (!post) return <main className="mx-auto max-w-2xl px-4 py-8"><PageHeading title="House Share chat" tagline="Good homes start with good conversations." className="mb-5" /><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></main>;
+  if (!post) return <div className="mx-auto max-w-2xl px-4 py-8"><PageHeading title="House Share chat" tagline="Good homes start with good conversations." className="mb-5" /><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></div>;
 
   return (
-    <main className="mx-auto flex min-h-full max-w-2xl flex-col px-4 py-5 sm:px-6">
-=======
-  if (!post) return <div className="mx-auto max-w-2xl px-4 py-8"><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></div>;
-
-  return (
-    <div className="mx-auto flex min-h-[calc(100dvh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6">
->>>>>>> 7bef671d8258ad239d5cfdbb8de6f8da714bd005
+    <div className="mx-auto flex min-h-full max-w-2xl flex-col px-4 py-5 sm:px-6">
       <Link href="/houseshare" className="mb-4 inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Back to House Share</Link>
       <PageHeading title="House Share chat" tagline="Good homes start with good conversations." className="mb-4" />
       <section className="flex min-h-[70dvh] flex-1 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
