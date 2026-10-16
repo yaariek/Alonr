@@ -124,7 +124,6 @@ python -m pytest data
 ---
 
 ## Team
-Built in four days for a hackathon (13–16 Oct 2026) by:
 - **Keira**: data pipeline, backend (Supabase schema, security, matching), chat.
 - **Naerthi**: Room offers, design, logo.
 - **Zilin**: map, filters, House Share.
