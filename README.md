@@ -125,8 +125,8 @@ python -m pytest data
 
 ## Team
 - **Keira**: data pipeline, backend (Supabase schema, security, matching), chat.
-- **Naerthi**: Room offers, design, logo.
-- **Zilin**: map, filters, House Share.
+- **Naerthi**: Room offers, design, logo, manually record hall data.
+- **Zilin**: map, filters, House Share, manually upload hall picture.
 
 ## Licence
 MIT (see [LICENSE](LICENSE)).
