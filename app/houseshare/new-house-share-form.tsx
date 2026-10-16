@@ -128,7 +128,7 @@ export default function NewHouseShareForm() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 pb-10 pt-4 sm:px-6">
+    <div className="mx-auto max-w-xl px-4 pb-10 pt-4 sm:px-6">
       <Link href="/houseshare" className={buttonVariants({ variant: "ghost", size: "sm", className: "-ml-2 mb-2 gap-1" })}>
         <ArrowLeft className="size-4" /> House Share
       </Link>
@@ -193,7 +193,7 @@ export default function NewHouseShareForm() {
         <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground"><Badge variant="secondary" className="mb-1">Demo mode</Badge><p>This post is saved in this browser only. It won’t be sent to Supabase or shown to other users.</p></div>
         <Button type="submit" className="h-11 w-full text-sm font-semibold" disabled={busy}>{busy ? "Saving your post…" : "Publish House Share post"}</Button>
       </form>
-    </main>
+    </div>
   );
 }
 

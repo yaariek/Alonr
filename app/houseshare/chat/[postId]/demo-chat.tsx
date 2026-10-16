@@ -32,10 +32,10 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
     setDraft("");
   }
 
-  if (!post) return <main className="mx-auto max-w-2xl px-4 py-8"><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></main>;
+  if (!post) return <div className="mx-auto max-w-2xl px-4 py-8"><p className="mb-3 text-sm text-muted-foreground">This House Share post could not be found in this browser.</p><Link href="/houseshare" className="text-sm font-medium text-primary hover:underline">Back to House Share</Link></div>;
 
   return (
-    <main className="mx-auto flex min-h-[calc(100dvh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6">
+    <div className="mx-auto flex min-h-[calc(100dvh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6">
       <Link href="/houseshare" className="mb-4 inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Back to House Share</Link>
       <section className="flex min-h-[70dvh] flex-1 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
         <header className="border-b px-4 py-4">
@@ -55,6 +55,6 @@ export default function DemoHouseShareChat({ postId }: { postId: string }) {
           <button type="submit" aria-label="Add demo message" disabled={!draft.trim()} className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50"><Send className="size-4" /></button>
         </form>
       </section>
-    </main>
+    </div>
   );
 }

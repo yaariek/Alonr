@@ -1,9 +1,8 @@
 import type { HouseSharePost } from "@/lib/types";
 
 export const HOUSE_SHARE_AGE_GROUPS = [
-  { value: "under_18", label: "Under 18" },
-  { value: "18_21", label: "18–21" },
-  { value: "21_25", label: "21–25" },
+  { value: "18_21", label: "18–20" },
+  { value: "21_25", label: "21–24" },
   { value: "25_plus", label: "25+" },
 ] as const;
 
