@@ -472,7 +472,7 @@ export function MapView() {
   }, [filters.currentLocation]);
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-full w-full">
       <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-1.5 sm:gap-2">
         <button
           type="button"

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppBrandHeader } from "@/components/app-brand-header";
 import { BottomNav, NavBar } from "@/components/bottom-nav";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -39,7 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex h-dvh flex-col overflow-hidden">
-        <main className="relative flex-1 overflow-y-auto">{children}</main>
+        <AppBrandHeader />
+        <main className="relative min-h-0 flex-1 overflow-y-auto">{children}</main>
         <Suspense fallback={<NavBar pathname="" />}>
           <BottomNav />
         </Suspense>

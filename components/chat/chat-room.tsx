@@ -6,6 +6,7 @@ import { ArrowLeft, SendHorizontal } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PersonAvatar } from "@/components/chat/person-avatar";
+import { PageHeading } from "@/components/page-heading";
 import {
   clockTime, dayLabel, getConversation, getMessages, mergeMessage, sendMessage, subscribeToMessages,
   type Conversation, type Message,
@@ -102,12 +103,13 @@ export function ChatRoom({ id }: { id: string }) {
   }
 
   if (state.status === "loading") {
-    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Loading chat…</div>;
+    return <div className="mx-auto max-w-lg px-4 py-4"><PageHeading title="Chat" tagline="Student to student, one message at a time." /><p className="pt-8 text-center text-sm text-muted-foreground">Loading chat…</p></div>;
   }
   if (state.status !== "ready") {
     const signedOut = state.status === "signed-out";
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+        <PageHeading title={signedOut ? "Chats" : "Chat unavailable"} tagline="Student to student, one message at a time." />
         <p className="font-semibold">{signedOut ? "Sign in to see this chat" : "Chat not found"}</p>
         <Link
           href={signedOut ? `/login?next=/messages/${id}` : "/messages"}
@@ -130,7 +132,8 @@ export function ChatRoom({ id }: { id: string }) {
         </Link>
         <PersonAvatar id={c.other.id} name={c.other.name} className="size-9 text-sm" />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold leading-tight">{c.other.name}</p>
+          <h1 className="truncate font-semibold leading-tight">{c.other.name}</h1>
+          <p className="text-[10px] text-muted-foreground">Student to student · Start with a hello.</p>
           {listing && (
             <Link href={`/listings/${listing.id}`} className="block truncate text-xs text-muted-foreground hover:underline">
               {listing.ownerId === me ? "Your listing" : "Their listing"}: {listing.propertyName} ·{" "}

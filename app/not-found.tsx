@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPinOff } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 
 // Shown for any unknown URL, and when a hall or listing doesn't exist (notFound()).
 export default function NotFound() {
@@ -9,7 +10,7 @@ export default function NotFound() {
       <span className="inline-flex size-14 items-center justify-center rounded-full bg-muted">
         <MapPinOff className="size-7 text-muted-foreground" />
       </span>
-      <h1 className="text-xl font-bold tracking-tight">We couldn&apos;t find that page</h1>
+      <PageHeading title="Page not found" tagline="Let’s get you back to finding home." />
       <p className="text-sm text-muted-foreground">
         The link may be old, or the room may have been taken down.
       </p>

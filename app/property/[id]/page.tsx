@@ -8,6 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeading } from "@/components/page-heading";
 import { PROPERTY_SELECT, toProperty, type PropertyRow } from "@/lib/data/properties";
 import { formatDate, formatDistance, formatWeeks, roomKindLabel, walkTime } from "@/lib/format";
 import { PROVIDER_COLOURS } from "@/lib/sample-data";
@@ -52,7 +53,7 @@ async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
         >
           {p.provider}
         </span>
-        <h1 className="text-2xl font-bold tracking-tight">{p.name}</h1>
+        <PageHeading title={p.name} tagline="Explore the rooms, facilities, and nearby essentials." />
         {(p.address || p.postcode) && (
           <p className="flex items-start gap-1.5 text-sm text-muted-foreground">
             <MapPin className="mt-0.5 size-4 shrink-0" />

@@ -16,6 +16,7 @@ import { roomKindLabel } from "@/lib/format";
 import type { ListingKind, RoomKind } from "@/lib/types";
 import { prefillFromHall, uploadPhoto, validateListing } from "@/lib/data/listings";
 import { createClient } from "@/lib/supabase/client";
+import { PageHeading } from "@/components/page-heading";
 import { useListings } from "./use-listings";
 import type { RoomListing } from "./types";
 
@@ -179,9 +180,7 @@ export function NewListingForm() {
         <ArrowLeft className="size-4" /> Listings
       </Link>
       <header className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">Your next move</p>
-        <h1 className="text-2xl font-bold tracking-tight">List your room</h1>
-        <p className="mt-1 text-sm text-muted-foreground">A few details help the right student find you.</p>
+        <PageHeading title="List your room" tagline="A few details help the right student find you." />
       </header>
 
       <form onSubmit={submit} className="space-y-4">

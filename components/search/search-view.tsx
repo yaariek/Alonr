@@ -11,6 +11,7 @@ import { PROVIDER_COLOURS } from "@/lib/sample-data";
 import { usePropertyFilters } from "@/lib/use-property-filters";
 import type { Property } from "@/lib/types";
 import { HallImage } from "@/components/property/HallImage";
+import { PageHeading } from "@/components/page-heading";
 import { cn } from "@/lib/utils";
 
 const money = (price: number | null) => price === null ? "Prices coming soon" : `From £${price}/wk`;
@@ -116,8 +117,7 @@ export function SearchView({ embedded = false }: { embedded?: boolean } = {}) {
       <header className="sticky top-0 z-20 border-b bg-background/95 px-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))] backdrop-blur">
         <div className="mx-auto max-w-screen-2xl">
           {!embedded && <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">alonr</p>
-            <h1 className="text-2xl font-bold tracking-tight">Find your place</h1>
+            <PageHeading title="Find your place" tagline="Explore halls and homes that fit your student life." />
           </div>}
           {embedded && <h2 className="mb-3 text-sm font-semibold">Find a student hall</h2>}
           <div className="flex items-center gap-2">

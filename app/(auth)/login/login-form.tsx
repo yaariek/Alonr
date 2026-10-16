@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { KeyRound, Mail, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { PageHeading } from "@/components/page-heading";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { safeNext, startSignIn, verifyCode } from "@/lib/auth";
@@ -76,7 +77,7 @@ export function LoginForm() {
         <div className="mx-auto mb-2 inline-flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <ShieldCheck className="size-6" />
         </div>
-        <CardTitle className="text-2xl font-bold tracking-tight">Welcome to alonr</CardTitle>
+        <PageHeading title="Welcome to alonr" tagline="Find your next room, student to student." />
         <CardDescription>
           {step === "email" && "Verified UK student housing swap & release marketplace. Sign in with your .ac.uk email."}
           {step === "code" && <>Enter the code for <strong>{email}</strong>.</>}

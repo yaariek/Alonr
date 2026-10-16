@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { LayoutGrid, List, MapPin, MessageCircle, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react";
+import { LayoutGrid, List, MapPin, MessageCircle, Search, SlidersHorizontal, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHo
 import { createClient } from "@/lib/supabase/client";
 import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "./age-groups";
 import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
+import { PageHeading } from "@/components/page-heading";
 
 type Layout = "grid" | "list";
 type View = "explore" | "match";
@@ -109,9 +110,7 @@ export default function Page() {
     <main className="mx-auto max-w-screen-2xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
       <header className="mb-5 flex items-end justify-between gap-3">
         <div>
-          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary"><Sparkles className="size-3.5" /> Student-to-student</p>
-          <h1 className="text-2xl font-bold tracking-tight">Find your house share</h1>
-          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a home and housemates that suit you.</p>
+          <PageHeading title="Find your house share" tagline="Find a home and housemates that suit you." />
         </div>
         <Link href="/houseshare/new" className={buttonVariants({ className: "h-10" })}>Create post</Link>
       </header>

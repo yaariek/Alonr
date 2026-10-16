@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Archive, ArrowRight, Heart, LayoutGrid, List, Plus, Sparkles, Trash2 } from "lucide-react";
@@ -20,6 +19,7 @@ import { SearchView } from "@/components/search/search-view";
 import { Slider } from "@/components/ui/slider";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { PageHeading } from "@/components/page-heading";
 import { roomKindLabel } from "@/lib/format";
 import type { RoomKind } from "@/lib/types";
 
@@ -139,14 +139,7 @@ export function ListingsPage() {
   return (
     <div className="mx-auto max-w-screen-2xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
       <header className="mb-5 flex items-end justify-between gap-3">
-        <div>
-          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            <Image src="/alonr-logo.jpeg" alt="alonr" width={691} height={691} className="h-12 w-[5.2rem] object-cover object-center" />
-            <Sparkles className="size-3.5" /> Student-to-student
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight">Room offers</h1>
-          <p className="mt-1 max-w-sm text-sm text-muted-foreground">Find a swap or a student to take over your contract.</p>
-        </div>
+        <PageHeading title="Room offers" tagline="Find a swap or a student to take over your contract." />
         <Link href="/listings/new" className={buttonVariants({ className: "h-10 gap-1.5 px-3" })}>
           <Plus className="size-4" /> <span className="hidden sm:inline">Create listing</span><span className="sm:hidden">List room</span>
         </Link>

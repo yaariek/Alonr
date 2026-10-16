@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
+import { PageHeading } from "@/components/page-heading";
 import { startConversation } from "@/lib/data/listings";
 import { useProperties } from "@/lib/data/use-properties";
 import { formatDate, roomKindLabel } from "@/lib/format";
@@ -103,7 +104,7 @@ export function ListingDetail({ id }: { id: string }) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4 shrink-0" />{listingPlace(listing)}</p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight">{listing.propertyName}</h1>
+            <PageHeading title={listing.propertyName} tagline="Room details shared student to student." className="mt-1" />
           </div>
           <p className="shrink-0 text-right text-lg font-bold">£{listing.priceWeek}<span className="text-sm font-normal text-muted-foreground">/wk</span></p>
         </div>

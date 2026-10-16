@@ -20,6 +20,7 @@ import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, type HouseSharePostWit
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
 import { saveLocalHouseSharePost } from "./demo-storage";
 import { createClient } from "@/lib/supabase/client";
+import { PageHeading } from "@/components/page-heading";
 
 const AREA_OPTIONS = Array.from(new Set(DEMO_HOUSESHARE_POSTS.flatMap((post) => post.areas))).sort();
 const FACILITY_OPTIONS: { value: HouseShareFacilityTag; label: string }[] = [
@@ -131,9 +132,7 @@ export default function NewHouseShareForm() {
         <ArrowLeft className="size-4" /> House Share
       </Link>
       <header className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">Student-to-student</p>
-        <h1 className="text-2xl font-bold tracking-tight">Create a House Share post</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Answer the same details people can filter by, so the right housemates can find you.</p>
+        <PageHeading title="Create a House Share post" tagline="Answer the details people filter by so the right housemates can find you." />
       </header>
 
       <form onSubmit={submit} className="space-y-4">

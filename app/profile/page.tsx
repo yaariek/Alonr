@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Check, ChevronDown, ChevronRight, Heart, House, LogOut, MessageCircle, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { ProfilePreview } from "@/components/profile/profile-preview";
+import { PageHeading } from "@/components/page-heading";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,7 +152,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 pt-4 pb-8">
-      <h1 className="mb-4 text-2xl font-bold tracking-tight">Me</h1>
+      <PageHeading title="Me" tagline="Your student profile, listings, saved rooms, and chats." className="mb-4" />
 
       {me === undefined && (
         <div className="space-y-3">
