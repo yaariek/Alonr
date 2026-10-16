@@ -14,6 +14,8 @@ London students get stuck in accommodation contracts they no longer want: the wr
 |---|---|---|---|
 | ![Room offers feed](docs/screenshots/rooms.png) | ![A mutual swap match](docs/screenshots/match.png) | ![Map of London halls](docs/screenshots/map.png) | ![House Share feed](docs/screenshots/house-share.png) |
 
+See Demo:
+'demo_final_compressed.mp4'
 ---
 
 ## Try it (judges)
@@ -22,7 +24,7 @@ London students get stuck in accommodation contracts they no longer want: the wr
 2. Browse without signing in: **Rooms**, **Map** and **Share** are public.
 3. To like, list a room or chat, tap **Me → Sign in** and use the judge account:
    - Email: `judge@demo.ac.uk`
-   - Code: the **tester code from our submission** (it isn't in this public repo). Demo accounts get no email; you type the code straight in.
+   - Code: the **tester code from our submission** - code: 123abc - available on this git until 7pm. Demo accounts get no email; you type the code straight in.
 4. Real students sign in with any `.ac.uk` address and get a 6-digit code by email. Other domains are rejected.
 
 ### The 1-minute demo: find a mutual swap
