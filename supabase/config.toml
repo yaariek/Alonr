@@ -251,8 +251,9 @@ otp_expiry = 3600
 # sender_name = "Admin"
 
 # alonr: sign-in emails are sent from our Gmail account (Gmail SMTP with an app password).
-# The address and app password live only in Person C's .env.local (never committed), as
-# SUPABASE_AUTH_SMTP_USER and SUPABASE_AUTH_SMTP_PASS. Push with the command in AGENTS.md.
+# The address and app password live only in the maintainer's .env.local (never committed), as
+# SUPABASE_AUTH_SMTP_USER and SUPABASE_AUTH_SMTP_PASS. Push this file from PowerShell in the repo root with:
+#   Get-Content .env.local | ? { $_ -match '^SUPABASE_AUTH_SMTP_' } | % { $k, $v = $_ -split '=', 2; Set-Item "env:$k" $v.Trim() }; npx supabase config push
 [auth.email.smtp]
 enabled = true
 host = "smtp.gmail.com"

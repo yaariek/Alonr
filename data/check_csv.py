@@ -173,7 +173,7 @@ def check_rows(rows: list[dict], header: list[str] | None = None) -> list[Proble
         label = f"provider {provider!r} isn't a known group" if provider else "provider is blank"
         warn(0, f"{label}, so {len(names)} hall(s) show as 'Other': {', '.join(names)}")
     if other_providers:
-        warn(0, f"known provider groups: {', '.join(sorted(set(PROVIDERS.values())))} (ask C to add more)")
+        warn(0, f"known provider groups: {', '.join(sorted(set(PROVIDERS.values())))} (new groups go in PROVIDERS in data/enrich.py)")
 
     return problems
 

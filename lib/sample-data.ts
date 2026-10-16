@@ -1,7 +1,7 @@
 import type { Campus, Property, ProviderGroup } from "@/lib/types";
 
 // SAMPLE DATA ONLY: approximate locations/prices so the UI works before Supabase is seeded.
-// Replaced by real rows from `data/seed.py` (Person C).
+// Used only without Supabase keys; otherwise the real rows from `data/seed.py` load.
 
 export const PROVIDER_COLOURS: Record<ProviderGroup, string> = {
   Unite: "#701b7d",

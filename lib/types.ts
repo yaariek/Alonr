@@ -1,5 +1,5 @@
-// Hand-written placeholder types. Person C replaces/extends these with
-// `npx supabase gen types typescript` output once the schema exists.
+// Hand-written app types shared by the UI. The database row types are generated
+// separately into lib/database.types.ts (`npm run db:types`).
 
 export type RoomKind = "ensuite" | "studio" | "shared_bathroom" | "twin" | "non_ensuite";
 

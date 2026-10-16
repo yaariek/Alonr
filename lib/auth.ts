@@ -5,7 +5,7 @@ import type { Database } from "@/lib/database.types";
 // - Real students (…ac.uk): we email them a 6-digit code (and a link), sent via Gmail SMTP
 //   (supabase/config.toml). They type the code, or tap the link on the same device.
 // - Testers (…@demo.ac.uk, created by data/seed.py): NO email is sent. They type the shared
-//   tester code (DEMO_PASSWORD, ask Person C), which is really their password.
+//   tester code (DEMO_PASSWORD, never committed), which is really their password.
 
 type Client = SupabaseClient<Database>;
 

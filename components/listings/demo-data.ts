@@ -10,8 +10,8 @@ const images = {
 const autumnStart = "2027-09-15";
 const summerEnd = "2028-06-30";
 
-// Temporary feed data for the UI. Person C's seeded listings and lib/data/listings.ts
-// replace this collection when the backend helpers are available.
+// Sample feed used when Supabase isn't configured (no keys in .env.local); with keys,
+// lib/data/listings.ts loads the real listings instead.
 export const DEMO_LISTINGS: RoomListing[] = [
   {
     id: "demo-kings-cross",
