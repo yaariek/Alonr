@@ -2,6 +2,7 @@
 
     python data/seed.py --dry-run    # show what would be written, no credentials needed
     python data/seed.py              # write (needs .env.local, see below)
+    python data/seed.py --demo-profiles-only  # update demo bios/countries/languages only
     python data/seed.py --skip-demo  # only properties + room types
     python data/seed.py --prune      # also delete halls/room types no longer in the CSV
     python data/seed.py --dry-run --prune  # list what --prune would delete (reads Supabase)
@@ -74,6 +75,37 @@ DEMO_PEOPLE = [
      "languages": ["English", "Japanese"], "lifestyle": {"drinking": "sometimes", "parties": False, "smoking": False,
                                                          "instruments": ["flute"], "pets": False, "personality": ["organised"]}},
 ]
+
+DEMO_COUNTRIES = {
+    "judge": "United Kingdom",
+    "amira": "Morocco",
+    "tom": "United Kingdom",
+    "mei": "China",
+    "jonas": "Germany",
+    "priya": "India",
+    "leo": "Ireland",
+    "sara": "United Kingdom",
+    "omar": "Pakistan",
+    "chloe": "France",
+    "ravi": "India",
+    "hana": "Japan",
+}
+
+
+def natural_join(items: list[str]) -> str:
+    if len(items) < 2:
+        return items[0] if items else "English"
+    if len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+    return f"{', '.join(items[:-1])} and {items[-1]}"
+
+
+def demo_profile_data(person: dict) -> dict:
+    country = DEMO_COUNTRIES[person["key"]]
+    profile = {k: v for k, v in person.items() if k != "key"}
+    profile["bio"] = f"My name is {person['display_name']} and I am from {country}. I can speak {natural_join(person['languages'])}."
+    profile["lifestyle"] = {**profile["lifestyle"], "nationality": country}
+    return profile
 
 # Hand-picked demo listings that tell the alonr story (hall slugs from properties.csv).
 # Price and flatmates come from the hall's room type. Three pairs match each other both ways
@@ -277,12 +309,35 @@ def get_or_create_user(sb, email: str, password: str) -> str:
         page += 1
 
 
+def find_user_id(sb, email: str) -> str | None:
+    page = 1
+    while True:
+        users = sb.auth.admin.list_users(page=page, per_page=200)
+        for user in users:
+            if (user.email or "").lower() == email:
+                return user.id
+        if len(users) < 200:
+            return None
+        page += 1
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--skip-demo", action="store_true")
+    ap.add_argument("--demo-profiles-only", action="store_true", help="update only demo profile bios, countries and languages")
     ap.add_argument("--prune", action="store_true", help="delete halls/room types that are no longer in the CSV")
     args = ap.parse_args()
+
+    if args.demo_profiles_only:
+        if args.dry_run:
+            print(f"would update {len(DEMO_PEOPLE)} demo profiles (bios, countries and spoken languages)")
+            return 0
+        from supabase import create_client
+        env = load_env()
+        sb = create_client(env["url"], env["key"])
+        update_demo_profiles(sb)
+        return 0
 
     if not ENRICHED.exists():
         sys.exit("Run python data/enrich.py first")
@@ -333,12 +388,25 @@ def main() -> int:
     return 0
 
 
+def update_demo_profiles(sb) -> None:
+    updated = 0
+    for person in DEMO_PEOPLE:
+        uid = find_user_id(sb, demo_email(person["key"]))
+        if uid is None:
+            print(f"skipped missing demo account: {demo_email(person['key'])}")
+            continue
+        sb.table("profiles").update(demo_profile_data(person) | {"is_demo": True}) \
+            .eq("id", uid).execute()
+        updated += 1
+    print(f"updated {updated} demo profiles; passwords, listings and chats were left untouched")
+
+
 def seed_demo(sb, env: dict, ids: dict[str, str], demo: list[dict]) -> None:
     user_ids = {}
     for person in DEMO_PEOPLE:
         uid = get_or_create_user(sb, demo_email(person["key"]), env["demo_password"])
         user_ids[person["key"]] = uid
-        sb.table("profiles").update({k: v for k, v in person.items() if k != "key"} | {"is_demo": True}) \
+        sb.table("profiles").update(demo_profile_data(person) | {"is_demo": True}) \
             .eq("id", uid).execute()
     print(f"demo users ready: {', '.join(demo_email(k) for k in user_ids)}")
 

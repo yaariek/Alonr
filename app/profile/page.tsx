@@ -209,8 +209,8 @@ export default function ProfilePage() {
                   <span className="block text-right text-xs font-normal text-muted-foreground">{profileBio.length}/500</span>
                 </label>
                 <label htmlFor="profile-nationality" className="block space-y-1.5 text-sm font-medium">
-                  Nationality <span className="font-normal text-muted-foreground">(optional)</span>
-                  <Input id="profile-nationality" value={nationality} onChange={(event) => setNationality(event.target.value)} maxLength={80} placeholder="e.g. British" />
+                  Country of origin <span className="font-normal text-muted-foreground">(optional)</span>
+                  <Input id="profile-nationality" value={nationality} onChange={(event) => setNationality(event.target.value)} maxLength={80} placeholder="e.g. Morocco" />
                 </label>
                 <Button type="button" className="w-full" onClick={saveProfileDetails} disabled={savingProfile}>
                   {savingProfile ? "Saving…" : "Save profile"}
