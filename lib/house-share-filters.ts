@@ -6,7 +6,7 @@ import type {
   HouseShareStudyLevel,
 } from "@/lib/types";
 import { closestHouseShareAreaDistanceKm, houseShareMoveInDifferenceDays, HOUSE_SHARE_LOCATION_WINDOW_KM, HOUSE_SHARE_MOVE_IN_WINDOW_DAYS } from "@/lib/house-share-distance";
-import { getHouseShareAgeGroup, type HouseShareAgeGroup } from "@/app/houseshare/age-groups";
+import { getHouseShareAgeGroup, type HouseShareAgeGroup } from "@/lib/house-share-age-groups";
 
 export interface HouseShareFilters {
   query?: string;

@@ -13,7 +13,7 @@ import { filterHouseShare, type HouseShareFilters } from "@/lib/house-share-filt
 import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
 import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "./demo-storage";
 import { createClient } from "@/lib/supabase/client";
-import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "./age-groups";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "@/lib/house-share-age-groups";
 import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
 
 type Layout = "grid" | "list";

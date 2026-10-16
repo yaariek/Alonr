@@ -1,4 +1,4 @@
-import { HOUSE_SHARE_AGE_GROUPS, type HouseSharePostWithAgeGroup } from "./age-groups";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseSharePostWithAgeGroup } from "@/lib/house-share-age-groups";
 
 const LONDON_AREAS = [
   "Acton", "Balham", "Bermondsey", "Bethnal Green", "Brixton", "Brockley",

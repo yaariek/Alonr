@@ -4,7 +4,7 @@ import type {
 } from "@/lib/types";
 import { closestHouseShareAreaDistanceKm, houseShareMoveInDifferenceDays, HOUSE_SHARE_LOCATION_WINDOW_KM, HOUSE_SHARE_MOVE_IN_WINDOW_DAYS } from "@/lib/house-share-distance";
 import type { HouseShareFilters } from "@/lib/house-share-filters";
-import { getHouseShareAgeGroup } from "@/app/houseshare/age-groups";
+import { getHouseShareAgeGroup } from "@/lib/house-share-age-groups";
 
 const MOVE_IN_WEIGHT = 35;
 const LOCATION_WEIGHT = 35;

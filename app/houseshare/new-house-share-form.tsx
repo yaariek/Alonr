@@ -16,7 +16,7 @@ import type {
   HouseShareGenderPreference,
   HouseShareStudyLevel,
 } from "@/lib/types";
-import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, type HouseSharePostWithAgeGroup } from "./age-groups";
+import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, type HouseSharePostWithAgeGroup } from "@/lib/house-share-age-groups";
 import { DEMO_HOUSESHARE_POSTS } from "./demo-data";
 import { saveLocalHouseSharePost } from "./demo-storage";
 import { createClient } from "@/lib/supabase/client";
