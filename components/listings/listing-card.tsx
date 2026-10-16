@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate, roomKindLabel } from "@/lib/format";
 import { HallImage } from "@/components/property/HallImage";
+import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
 import { listingsAreMutualMatches } from "./matching";
 import type { RoomListing } from "./types";
 
@@ -108,9 +109,7 @@ export function ListingCard({
 
         <div className="flex items-center justify-between border-t pt-2.5">
           <div className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-              {listing.ownerName.slice(0, 1).toUpperCase()}
-            </span>
+            <ProfilePreview profileId={listing.ownerId} name={listing.ownerName} dummyNationality={demoNationalityFor(listing.ownerName)} className="size-7 text-[10px]" />
             <span className="text-xs text-muted-foreground">{listing.ownerName}</span>
           </div>
           <span className="mr-2 text-xs text-muted-foreground">{listing.likes ? `${listing.likes} ${listing.likes === 1 ? "like" : "likes"}` : "Be the first to like"}</span>

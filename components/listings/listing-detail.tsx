@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
 import { startConversation } from "@/lib/data/listings";
 import { useProperties } from "@/lib/data/use-properties";
 import { formatDate, roomKindLabel } from "@/lib/format";
@@ -139,7 +140,7 @@ export function ListingDetail({ id }: { id: string }) {
           <CardContent className="space-y-4">
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{listing.description || "No extra details added yet."}</p>
             <div className="flex items-center gap-2 border-t pt-3 text-sm">
-              <span className="flex size-9 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">{listing.ownerName.slice(0, 1)}</span>
+              <ProfilePreview profileId={listing.ownerId} name={listing.ownerName} dummyNationality={demoNationalityFor(listing.ownerName)} className="size-9 text-sm" />
               <span><span className="block font-medium">{listing.ownerName}</span><span className="text-xs text-muted-foreground">Verified student</span></span>
               {isMine && <Badge variant="outline" className="ml-auto">Yours</Badge>}
             </div>

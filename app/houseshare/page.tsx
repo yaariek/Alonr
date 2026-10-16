@@ -14,6 +14,7 @@ import { scoreHouseShareCompatibility } from "@/lib/house-share-compatibility";
 import { EMPTY_LOCAL_HOUSESHARE_POSTS, getLocalHouseSharePosts, subscribeLocalHouseSharePosts } from "./demo-storage";
 import { createClient } from "@/lib/supabase/client";
 import { HOUSE_SHARE_AGE_GROUPS, type HouseShareAgeGroup, getHouseShareAgeGroup } from "./age-groups";
+import { demoNationalityFor, ProfilePreview } from "@/components/profile/profile-preview";
 
 type Layout = "grid" | "list";
 type View = "explore" | "match";
@@ -197,7 +198,7 @@ function HouseShareCard({ post, score }: { post: HouseSharePost; score?: HouseSh
   return (
     <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       <div className="flex aspect-[1.45] flex-col items-center justify-center gap-3 bg-gradient-to-br from-primary/15 via-amber-50 to-rose-100 text-primary">
-        <span className="flex size-20 items-center justify-center rounded-full border-4 border-white/80 bg-white/80 text-2xl font-bold shadow-sm">{post.name.slice(0, 1).toUpperCase()}</span>
+        <ProfilePreview profileId={post.user_id} name={post.name} dummyNationality={demoNationalityFor(post.name)} className="size-20 border-4 border-white/80 text-2xl shadow-sm" />
         <span className="rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-foreground">{currentTenants} current · {post.total_tenants} total</span>
         {score?.hasCriteria && <span aria-label={`${score.percentage}% compatibility`} className={cn("rounded-full px-4 py-1.5 text-2xl font-bold leading-none", score.percentage >= 70 ? "bg-green-100 text-green-800" : score.percentage >= 50 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800")}>{score.percentage}%</span>}
       </div>

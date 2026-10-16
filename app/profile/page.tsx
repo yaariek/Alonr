@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, ChevronRight, Heart, House, LogOut, MessageCircle, Plus } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Heart, House, LogOut, MessageCircle, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { PersonAvatar } from "@/components/chat/person-avatar";
+import { ProfilePreview } from "@/components/profile/profile-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -181,7 +181,7 @@ export default function ProfilePage() {
         <div className="space-y-4">
           <Card>
             <CardContent className="flex items-center gap-4 py-1">
-              <PersonAvatar id={me.id} name={me.displayName ?? me.email} className="size-14 text-xl" />
+              <ProfilePreview profileId={me.id} name={me.displayName ?? me.email} bio={profileBio} nationality={nationality} className="size-14 text-xl" />
               <div className="min-w-0 flex-1">
                 <p className="flex flex-wrap items-center gap-2 text-lg font-semibold leading-tight">
                   {me.displayName ?? "Student"}
@@ -194,24 +194,29 @@ export default function ProfilePage() {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>About you</CardTitle>
-              <CardDescription>Add a short bio and nationality to your profile.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <label htmlFor="profile-bio" className="block space-y-1.5 text-sm font-medium">
-                Bio
-                <textarea id="profile-bio" value={profileBio} onChange={(event) => setProfileBio(event.target.value)} maxLength={500} rows={4} placeholder="A little about you and what you’re looking for in a home…" className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm font-normal shadow-xs outline-none focus-visible:ring-3 focus-visible:ring-ring/50" />
-                <span className="block text-right text-xs font-normal text-muted-foreground">{profileBio.length}/500</span>
-              </label>
-              <label htmlFor="profile-nationality" className="block space-y-1.5 text-sm font-medium">
-                Nationality <span className="font-normal text-muted-foreground">(optional)</span>
-                <Input id="profile-nationality" value={nationality} onChange={(event) => setNationality(event.target.value)} maxLength={80} placeholder="e.g. British" />
-              </label>
-              <Button type="button" className="w-full" onClick={saveProfileDetails} disabled={savingProfile}>
-                {savingProfile ? "Saving…" : "Save profile details"}
-              </Button>
-            </CardContent>
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <span>
+                  <span className="block font-semibold">Profile bio and nationality</span>
+                  <span className="mt-1 block text-sm font-normal text-muted-foreground">Click to edit your profile details</span>
+                </span>
+                <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+              </summary>
+              <CardContent className="space-y-3 border-t pt-4">
+                <label htmlFor="profile-bio" className="block space-y-1.5 text-sm font-medium">
+                  Bio
+                  <textarea id="profile-bio" value={profileBio} onChange={(event) => setProfileBio(event.target.value)} maxLength={500} rows={4} placeholder="A little about you and what you’re looking for in a home…" className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm font-normal shadow-xs outline-none focus-visible:ring-3 focus-visible:ring-ring/50" />
+                  <span className="block text-right text-xs font-normal text-muted-foreground">{profileBio.length}/500</span>
+                </label>
+                <label htmlFor="profile-nationality" className="block space-y-1.5 text-sm font-medium">
+                  Nationality <span className="font-normal text-muted-foreground">(optional)</span>
+                  <Input id="profile-nationality" value={nationality} onChange={(event) => setNationality(event.target.value)} maxLength={80} placeholder="e.g. British" />
+                </label>
+                <Button type="button" className="w-full" onClick={saveProfileDetails} disabled={savingProfile}>
+                  {savingProfile ? "Saving…" : "Save profile"}
+                </Button>
+              </CardContent>
+            </details>
           </Card>
 
           <Card>
